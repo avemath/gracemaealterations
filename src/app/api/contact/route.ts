@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { resend, CONTACT_EMAIL, FROM_EMAIL } from "@/lib/resend";
+import { getResend, CONTACT_EMAIL, FROM_EMAIL } from "@/lib/resend";
 
 interface ContactPayload {
   name: string;
@@ -113,6 +113,7 @@ export async function POST(req: NextRequest) {
   `;
 
   try {
+    const resend = getResend();
     const { error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: CONTACT_EMAIL,
