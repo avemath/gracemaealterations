@@ -1,11 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    // Add domains here if using external images
-    // domains: [],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+        pathname: "/images/**",
+      },
+    ],
     formats: ["image/avif", "image/webp"],
   },
-  // Redirect trailing slashes for cleaner canonical URLs
   trailingSlash: false,
 };
 
