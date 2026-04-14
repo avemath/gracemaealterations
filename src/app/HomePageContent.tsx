@@ -1,9 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import SanityImage from "@/components/ui/SanityImage";
 import RevealImage from "@/components/ui/RevealImage";
+import RevealText from "@/components/ui/RevealText";
 import Button from "@/components/ui/Button";
 import CTABanner from "@/components/sections/CTABanner";
 import ProcessSteps from "@/components/sections/ProcessSteps";
@@ -96,10 +98,18 @@ const fadeUp = {
 export default function HomePageContent({ data }: { data: HomePageData }) {
   const { site, heroImage, trustStats, services, portfolioItems, bio, aboutSecondaryImage, testimonials, text } = data;
 
+  // ── Hero parallax ─────────────────────────────────────────────
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress: heroScroll } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const heroParallaxY = useTransform(heroScroll, [0, 1], ["0%", "-12%"]);
+
   return (
     <>
       {/* ── HERO ──────────────────────────────────────────────── */}
-      <section className="relative min-h-screen overflow-hidden bg-ivory linen-overlay" aria-label="Hero section">
+      <section ref={heroRef} className="relative min-h-screen overflow-hidden bg-ivory linen-overlay" aria-label="Hero section">
 
         {/* Desktop: portrait image covers right half of viewport */}
         <motion.div
@@ -109,15 +119,18 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
           transition={{ duration: 1.1, delay: 0.3, ease: "easeOut" }}
           aria-hidden="true"
         >
-          <SanityImage
-            image={heroImage}
-            fill
-            priority
-            placeholderLabel="HERO_PORTRAIT_IMAGE"
-            placeholderRatio="portrait"
-            alt={`${site.name} — Pittsburgh bridal seamstress`}
-            sizes="48vw"
-          />
+          {/* Parallax inner — taller than container so there's room to translate */}
+          <motion.div className="absolute inset-x-0 top-0" style={{ height: "120%", y: heroParallaxY }}>
+            <SanityImage
+              image={heroImage}
+              fill
+              priority
+              placeholderLabel="HERO_PORTRAIT_IMAGE"
+              placeholderRatio="portrait"
+              alt={`${site.name} — Pittsburgh bridal seamstress`}
+              sizes="48vw"
+            />
+          </motion.div>
           <div className="absolute inset-0 bg-gradient-to-r from-ivory via-ivory/25 to-transparent pointer-events-none" />
         </motion.div>
 
@@ -130,13 +143,14 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                 {text.heroSectionLabel}
               </motion.p>
 
-              <motion.h1
-                className="font-cormorant italic text-charcoal leading-[0.9]"
-                style={{ fontSize: "clamp(3.5rem, 8vw, 7.5rem)" }}
-                custom={1} initial="hidden" animate="visible" variants={fadeUp}
-              >
-                {site.tagline}
-              </motion.h1>
+              <RevealText onMount delay={0.18}>
+                <h1
+                  className="font-cormorant italic text-charcoal leading-[0.9]"
+                  style={{ fontSize: "clamp(3.5rem, 8vw, 7.5rem)" }}
+                >
+                  {site.tagline}
+                </h1>
+              </RevealText>
 
               <motion.div
                 className="w-12 h-px bg-gold my-8"

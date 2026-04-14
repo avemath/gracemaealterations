@@ -1,8 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import SanityImage from "@/components/ui/SanityImage";
 import RevealImage from "@/components/ui/RevealImage";
+import RevealText from "@/components/ui/RevealText";
 import CTABanner from "@/components/sections/CTABanner";
 import type { SanityImage as SanityImageType, SanityValue } from "@/lib/sanity.queries";
 
@@ -53,24 +55,35 @@ const valText = {
 };
 
 export default function AboutPageContent({ site, about, values }: Props) {
+  // ── Hero parallax ───────────────────────────────────────────
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress: heroScroll } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const heroParallaxY = useTransform(heroScroll, [0, 1], ["0%", "-15%"]);
+
   return (
     <>
       {/* ── HERO ─────────────────────────────────────────────── */}
       <section
+        ref={heroRef}
         className="relative flex items-end overflow-hidden"
         style={{ minHeight: "72vh" }}
         aria-label="About hero"
       >
-        <div className="absolute inset-0 z-0">
-          <SanityImage
-            image={about.heroImage}
-            fill
-            priority
-            placeholderLabel="ABOUT_HERO_IMAGE"
-            placeholderRatio="landscape"
-            alt={`${site.name} — Pittsburgh seamstress at work`}
-            sizes="100vw"
-          />
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <motion.div className="absolute inset-x-0 top-0" style={{ height: "120%", y: heroParallaxY }}>
+            <SanityImage
+              image={about.heroImage}
+              fill
+              priority
+              placeholderLabel="ABOUT_HERO_IMAGE"
+              placeholderRatio="landscape"
+              alt={`${site.name} — Pittsburgh seamstress at work`}
+              sizes="100vw"
+            />
+          </motion.div>
         </div>
         <div
           className="absolute inset-0 z-10 pointer-events-none"
@@ -94,15 +107,21 @@ export default function AboutPageContent({ site, about, values }: Props) {
         />
 
         <div className="relative z-20 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-40 pt-32">
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.2 }}>
-            <p className="section-label text-gold/80 mb-4">{about.heroLabel}</p>
+          <motion.p
+            className="section-label text-gold/80 mb-4"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            {about.heroLabel}
+          </motion.p>
+          <RevealText onMount delay={0.35}>
             <h1
               className="font-cormorant italic text-ivory leading-none"
               style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}
             >
               {site.name}
             </h1>
-          </motion.div>
+          </RevealText>
         </div>
       </section>
 
@@ -118,9 +137,11 @@ export default function AboutPageContent({ site, about, values }: Props) {
               transition={{ duration: 0.7 }}
             >
               <p className="section-label mb-4">{about.storyLabel}</p>
-              <h2 id="story-heading" className="font-cormorant italic text-charcoal text-4xl lg:text-5xl mb-6">
-                {about.storyHeading}
-              </h2>
+              <RevealText delay={0.1}>
+                <h2 id="story-heading" className="font-cormorant italic text-charcoal text-4xl lg:text-5xl mb-6">
+                  {about.storyHeading}
+                </h2>
+              </RevealText>
               <div className="w-12 h-px bg-gold mb-8" aria-hidden="true" />
               <p className="font-jost text-charcoal/65 text-sm leading-relaxed mb-6">{about.paragraph1}</p>
               <p className="font-jost text-charcoal/65 text-sm leading-relaxed mb-6">{about.paragraph2}</p>
@@ -167,7 +188,9 @@ export default function AboutPageContent({ site, about, values }: Props) {
             transition={{ duration: 0.6 }}
           >
             <p className="section-label mb-4">{about.valuesLabel}</p>
-            <h2 id="values-heading" className="font-cormorant italic text-charcoal text-4xl lg:text-5xl">{about.valuesHeading}</h2>
+            <RevealText delay={0.1}>
+              <h2 id="values-heading" className="font-cormorant italic text-charcoal text-4xl lg:text-5xl">{about.valuesHeading}</h2>
+            </RevealText>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14">
@@ -217,12 +240,14 @@ export default function AboutPageContent({ site, about, values }: Props) {
           >
             <p className="section-label text-gold/70 mb-6">{about.independenceLabel}</p>
             <div className="w-12 h-px bg-gold mx-auto mb-10" aria-hidden="true" />
-            <h2
-              id="independent-heading"
-              className="font-cormorant italic text-ivory text-4xl lg:text-5xl xl:text-6xl leading-tight mb-10"
-            >
-              {about.independenceHeading}
-            </h2>
+            <RevealText delay={0.15}>
+              <h2
+                id="independent-heading"
+                className="font-cormorant italic text-ivory text-4xl lg:text-5xl xl:text-6xl leading-tight mb-10"
+              >
+                {about.independenceHeading}
+              </h2>
+            </RevealText>
             <blockquote className="font-cormorant italic text-ivory/65 text-xl lg:text-2xl max-w-2xl mx-auto leading-relaxed">
               &ldquo;{about.independenceQuote}&rdquo;
             </blockquote>
