@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import SanityImage from "@/components/ui/SanityImage";
+import RevealImage from "@/components/ui/RevealImage";
 import CTABanner from "@/components/sections/CTABanner";
 import type { SanityImage as SanityImageType, SanityValue } from "@/lib/sanity.queries";
 
@@ -126,26 +127,31 @@ export default function AboutPageContent({ site, about, values }: Props) {
               <p className="font-jost text-charcoal/65 text-sm leading-relaxed">{about.paragraph3}</p>
             </motion.div>
 
-            <motion.div
-              className="relative lg:sticky lg:top-28"
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              <SanityImage
-                image={about.secondaryImage}
-                placeholderLabel="ABOUT_SECONDARY_IMAGE"
-                placeholderRatio="tall"
-                alt="Close-up of hands at work — precision sewing"
-              />
-              <div className="absolute -bottom-3 -right-3 w-full h-full border border-gold/25 pointer-events-none" aria-hidden="true" />
+            <div className="relative lg:sticky lg:top-28">
+              <div className="relative">
+                <RevealImage delay={0.2}>
+                  <SanityImage
+                    image={about.secondaryImage}
+                    placeholderLabel="ABOUT_SECONDARY_IMAGE"
+                    placeholderRatio="tall"
+                    alt="Close-up of hands at work — precision sewing"
+                  />
+                </RevealImage>
+                <motion.div
+                  className="absolute -bottom-3 -right-3 w-full h-full border border-gold/25 pointer-events-none"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.95, duration: 0.5 }}
+                  aria-hidden="true"
+                />
+              </div>
               <blockquote className="mt-10 border-l-2 border-gold pl-6">
                 <p className="font-cormorant italic text-charcoal text-xl lg:text-2xl leading-snug">
                   &ldquo;{about.pullQuote}&rdquo;
                 </p>
               </blockquote>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
