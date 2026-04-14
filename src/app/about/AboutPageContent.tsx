@@ -31,14 +31,6 @@ interface Props {
   values: SanityValue[];
 }
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  visible: (i: number) => ({
-    opacity: 1, y: 0,
-    transition: { duration: 0.65, delay: i * 0.1, ease: "easeOut" as const },
-  }),
-};
-
 // Values block — staggered children so each element animates in sequence
 const valBlock = {
   hidden: {},
