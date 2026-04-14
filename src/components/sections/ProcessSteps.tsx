@@ -48,17 +48,9 @@ const THREAD_PATH =
   "C 316,46 316,100 294,100 " +
   "C 200,82 80,118 6,100 " +   // S-curve connector: rises right, dips left
   "C -16,100 -16,146 6,146 " +
-  "C 70,134 220,158 294,146";    // row 2: wave ±12 above/below y=146
-
-// ── Trailing end ───────────────────────────────────────────────────────────
-//
-// Drawn as a separate path so it doesn't affect the main thread's length or
-// the PIERCE_POINTS thresholds. Curves right → down → left below block 6,
-// always staying at x>288 or y>200 so it is never inside the stitch mask.
-const TRAIL_PATH =
-  "M 294,146 " +
-  "C 308,146 316,172 306,190 " +
-  "C 296,208 264,216 230,216";
+  "C 70,134 220,158 294,146 " +  // row 2: wave ±12 above/below y=146
+  "C 308,146 316,172 306,190 " + // trail: curves right and down out of block 6
+  "C 296,208 264,216 230,216";   // trail: curves left below block 6
 
 // ── Pierce points ──────────────────────────────────────────────────────────
 //
@@ -83,10 +75,10 @@ const PIERCE_POINTS = [
   // Row 2 — same strategy
   { cx: 4,   cy: 146, threshold: 0.72 }, // enter block 4 (far-left, on U-turn)
   { cx: 72,  cy: 143, threshold: 0.78 }, // exit  block 4  (shifted left from 84)
-  { cx: 100, cy: 143, threshold: 0.79 }, // enter block 5  (at column boundary)
-  { cx: 173, cy: 147, threshold: 0.87 }, // exit  block 5
-  { cx: 200, cy: 149, threshold: 0.88 }, // enter block 6
-  { cx: 282, cy: 147, threshold: 0.94 }, // exit  block 6
+  { cx: 100, cy: 143, threshold: 0.82 }, // enter block 5  (at column boundary)
+  { cx: 173, cy: 147, threshold: 0.88 }, // exit  block 5
+  { cx: 200, cy: 149, threshold: 0.91 }, // enter block 6
+  { cx: 282, cy: 147, threshold: 0.97 }, // exit  block 6
 ] as const;
 
 // ── Block body rectangles ──────────────────────────────────────────────────
@@ -120,16 +112,17 @@ export default function ProcessSteps({
   const gridRef    = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: gridRef,
-    offset: ["start 0.8", "end 0.45"],
+    offset: ["start 0.65", "end 0.45"],
   });
 
   // ── SVG refs ───────────────────────────────────────────────────
-  const threadPathRef  = useRef<SVGPathElement>(null);
-  const trailPathRef   = useRef<SVGPathElement>(null);
-  const needleRef      = useRef<SVGGElement>(null);
-  const threadLenRef   = useRef(0);
-  const trailLenRef    = useRef(0);
-  const pierceRefsArr  = useRef<(SVGGElement | null)[]>([]);
+  const threadPathRef      = useRef<SVGPathElement>(null);
+  const needleRef          = useRef<SVGGElement>(null);
+  const threadLenRef       = useRef(0);
+  const pierceRefsArr      = useRef<(SVGGElement | null)[]>([]);
+  // Thresholds computed dynamically from actual path geometry so they stay
+  // accurate when the path length changes (e.g. after adding the trail).
+  const pierceThresholdsRef = useRef<number[]>(PIERCE_POINTS.map(p => p.threshold));
 
   useEffect(() => {
     // Use rAF so the SVG is laid out before we call getTotalLength().
@@ -143,23 +136,30 @@ export default function ProcessSteps({
       if (len <= 0) { requestAnimationFrame(init); return; }
       threadLenRef.current = len;
 
+      // Walk the path at 800 steps and find the v value where the thread tip
+      // is closest to each pierce point's (cx, cy). This gives exact thresholds
+      // that automatically account for the actual path length.
+      const computed: number[] = [];
+      for (const { cx, cy } of PIERCE_POINTS) {
+        let bestV = 0, bestDist = Infinity;
+        for (let i = 0; i <= 800; i++) {
+          const frac = i / 800;
+          const p = path.getPointAtLength(frac * len);
+          const d = Math.hypot(p.x - cx, p.y - cy);
+          if (d < bestDist) { bestDist = d; bestV = frac; }
+        }
+        computed.push(bestV);
+      }
+      pierceThresholdsRef.current = computed;
+
       // Apply current scroll immediately so a mid-scroll page load looks right
       const v = Math.max(0, Math.min(1, scrollYProgress.get()));
       path.style.strokeDasharray  = String(len);
       path.style.strokeDashoffset = String(len * (1 - v));
 
-      const trail = trailPathRef.current;
-      if (trail) {
-        const tLen = trail.getTotalLength();
-        trailLenRef.current = tLen;
-        const trailV = Math.max(0, (v - 0.99) / 0.01);
-        trail.style.strokeDasharray  = String(tLen);
-        trail.style.strokeDashoffset = String(tLen * (1 - trailV));
-      }
-
-      PIERCE_POINTS.forEach((pt, i) => {
+      PIERCE_POINTS.forEach((_pt, i) => {
         const el = pierceRefsArr.current[i];
-        if (el) el.style.opacity = v >= pt.threshold ? "1" : "0";
+        if (el) el.style.opacity = v >= computed[i] ? "1" : "0";
       });
     };
     requestAnimationFrame(init);
@@ -197,18 +197,10 @@ export default function ProcessSteps({
       }
     }
 
-    // Trail draws in at v=0.99–1.00, after the straight piece out of block 6
-    // has fully drawn so the curve never appears ahead of the thread tip.
-    const trail    = trailPathRef.current;
-    const trailLen = trailLenRef.current;
-    if (trail && trailLen > 0) {
-      const trailV = Math.max(0, (v - 0.99) / 0.01);
-      trail.style.strokeDashoffset = String(trailLen * (1 - trailV));
-    }
-
-    PIERCE_POINTS.forEach((pt, i) => {
+    const thresholds = pierceThresholdsRef.current;
+    PIERCE_POINTS.forEach((_pt, i) => {
       const el = pierceRefsArr.current[i];
-      if (el) el.style.opacity = v >= pt.threshold ? "1" : "0";
+      if (el) el.style.opacity = v >= thresholds[i] ? "1" : "0";
     });
 
     if (mobileLineRef.current) {
@@ -265,7 +257,7 @@ export default function ProcessSteps({
                       fontSize: "4.5rem",
                       color: hovered === i
                         ? "rgba(201,168,76,0.55)"
-                        : "rgba(201,168,76,0.18)",
+                        : "rgba(201,168,76,0.30)",
                     }}
                     aria-hidden="true"
                   >
@@ -378,23 +370,6 @@ export default function ProcessSteps({
                 strokeLinejoin="round"
                 style={{ strokeDasharray: 9999, strokeDashoffset: 9999 }}
                 mask="url(#stitch-mask)"
-                filter="url(#thread-glow)"
-              />
-
-              {/*
-                Trailing end — draws in from v=0.90 to v=1.00 as a loose thread
-                curving right-then-down-then-left below block 6.
-                Not masked: stays at x>288 or y>200 throughout.
-              */}
-              <path
-                ref={trailPathRef}
-                d={TRAIL_PATH}
-                fill="none"
-                stroke="rgba(201,168,76,0.22)"
-                strokeWidth="0.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                style={{ strokeDasharray: 9999, strokeDashoffset: 9999 }}
                 filter="url(#thread-glow)"
               />
 
