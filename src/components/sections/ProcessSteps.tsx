@@ -257,7 +257,7 @@ export default function ProcessSteps({
                       fontSize: "4.5rem",
                       color: hovered === i
                         ? "rgba(201,168,76,0.55)"
-                        : "rgba(201,168,76,0.30)",
+                        : "rgba(201,168,76,0.45)",
                     }}
                     aria-hidden="true"
                   >
