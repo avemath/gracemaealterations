@@ -30,9 +30,12 @@ const fadeUp = {
 //
 // ViewBox "0 0 300 200". Grid: 3 columns × 2 rows (100 SVG units each).
 //
-// ENTRY  — two-segment S-wave coming in from upper-left. The second segment's
-//   last control at (4,46) means the thread arrives nearly horizontal so the
-//   junction with row 1 is smooth (no visible kink).
+// ENTRY  — lead-in from off-screen left, then a two-segment S-wave.
+//   Starts at M(-150,2), well outside the viewport, so the thread appears
+//   to arrive from off the page. A single cubic C(-100,2)(-20,-4)(-10,2)
+//   carries it to the original entry point with C¹ continuity:
+//   tangent at (-10,2) = (-10,2)−(-20,−4) = (10,6), which matches the
+//   departure tangent of the next segment (0,8)−(−10,2) = (10,6). ✓
 //
 // ROW 1/2 — single cubic with P1 *above* baseline and P2 *below* so the
 //   thread makes one gentle wave up then down (like a real loose strand).
@@ -41,7 +44,8 @@ const fadeUp = {
 // U-TURNS — x=316 / x=-16 for generous, well-rounded hooks.
 // CONNECTOR — bows to y=105, stays in the visible gap zone (y=94–106).
 const THREAD_PATH =
-  "M -10,2 " +
+  "M -150,2 " +
+  "C -100,2 -20,-4 -10,2 " +  // off-screen lead-in; C¹-smooth at (-10,2)
   "C 0,8 2,18 -4,26 " +
   "C -10,34 4,46 6,46 " +
   "C 70,34 220,58 294,46 " +     // row 1: wave ±12 above/below y=46
@@ -333,7 +337,7 @@ export default function ProcessSteps({
                   Between rows (y=94–106) always visible — connector lives here.
                 */}
                 <mask id="stitch-mask" maskUnits="userSpaceOnUse">
-                  <rect x="-20" y="-20" width="340" height="240" fill="white" />
+                  <rect x="-200" y="-20" width="520" height="240" fill="white" />
                   {/* Row 1 — black rects match BLOCK_BODIES x-ranges */}
                   <rect x="8"   y="0"   width="64" height="94" fill="black" />{/* x=8–72    */}
                   <rect x="100" y="0"   width="73" height="94" fill="black" />{/* x=100–173 */}
