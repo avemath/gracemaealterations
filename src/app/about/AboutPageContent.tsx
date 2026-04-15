@@ -181,7 +181,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
       <section className="bg-blush py-14 lg:py-20 px-6" aria-labelledby="values-heading">
         <div className="max-w-7xl mx-auto">
           <motion.div
-            className="mb-14"
+            className="mb-6"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
@@ -189,7 +189,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
           >
             <p className="section-label mb-4">{about.valuesLabel}</p>
             <RevealText delay={0.1}>
-              <h2 id="values-heading" className="font-cormorant italic text-charcoal text-7xl lg:text-8xl">{about.valuesHeading}</h2>
+              <h2 id="values-heading" className="font-cormorant italic text-charcoal text-8xl lg:text-9xl leading-none">{about.valuesHeading}</h2>
             </RevealText>
           </motion.div>
 
