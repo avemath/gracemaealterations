@@ -102,7 +102,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
         />
         <div
           className="absolute bottom-0 left-0 right-0 z-[15] pointer-events-none"
-          style={{ height: "220px", background: "linear-gradient(to top, #FAF7F2 0%, #FAF7F2 15%, rgba(250,247,242,0.85) 40%, rgba(250,247,242,0.4) 65%, transparent 100%)" }}
+          style={{ height: "360px", background: "linear-gradient(to top, #FAF7F2 0%, #FAF7F2 3%, rgba(250,247,242,0.92) 10%, rgba(250,247,242,0.62) 20%, rgba(250,247,242,0.28) 32%, rgba(250,247,242,0.07) 44%, transparent 54%)" }}
           aria-hidden="true"
         />
 
