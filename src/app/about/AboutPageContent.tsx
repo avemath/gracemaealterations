@@ -193,7 +193,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
             </RevealText>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14 mt-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14 -mt-6">
             {values.map((value, i) => (
               <motion.div
                 key={value._id}
