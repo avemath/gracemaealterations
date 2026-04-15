@@ -47,7 +47,7 @@ export default function Navbar({ siteName, businessName }: NavbarProps) {
         {/* Dark gradient layer — visible when not scrolled, fades out on scroll */}
         <div
           className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ${showBg ? "opacity-0" : "opacity-100"}`}
-          style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.32) 65%, transparent 100%)" }}
+          style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.26) 65%, transparent 100%)" }}
           aria-hidden="true"
         />
 
