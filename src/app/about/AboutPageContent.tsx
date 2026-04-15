@@ -189,11 +189,11 @@ export default function AboutPageContent({ site, about, values }: Props) {
           >
             <p className="section-label mb-4">{about.valuesLabel}</p>
             <RevealText delay={0.1}>
-              <h2 id="values-heading" className="font-cormorant italic text-charcoal text-8xl lg:text-9xl leading-none">{about.valuesHeading}</h2>
+              <h2 id="values-heading" className="font-cormorant italic text-charcoal leading-none" style={{ fontSize: "clamp(6rem, 14vw, 13rem)" }}>{about.valuesHeading}</h2>
             </RevealText>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14 -mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14 -mt-14">
             {values.map((value, i) => (
               <motion.div
                 key={value._id}
