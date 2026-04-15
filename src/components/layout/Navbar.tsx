@@ -79,7 +79,7 @@ export default function Navbar({ siteName, businessName }: NavbarProps) {
                 href={link.href}
                 className={`relative font-jost font-medium text-xs tracking-[0.18em] uppercase transition-colors duration-300 group ${
                   showBg
-                    ? pathname === link.href ? "text-gold" : "text-gold/70 hover:text-gold"
+                    ? pathname === link.href ? "text-gold_dark" : "text-gold hover:text-gold_dark"
                     : pathname === link.href ? "text-ivory" : "text-ivory/80 hover:text-ivory"
                 }`}
               >
