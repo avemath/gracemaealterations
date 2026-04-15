@@ -187,8 +187,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6 }}
           >
-            <p className="font-cormorant_sc text-gold tracking-[0.25em] uppercase text-lg mb-4">{about.valuesLabel}</p>
-            <h2 id="values-heading" className="font-cormorant italic text-charcoal text-3xl lg:text-4xl leading-snug">{about.valuesHeading}</h2>
+            <h2 id="values-heading" className="font-cormorant_sc text-gold tracking-[0.25em] uppercase text-lg">{about.valuesLabel}</h2>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14">
