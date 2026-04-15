@@ -181,7 +181,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
       <section className="bg-blush py-14 lg:py-20 px-6" aria-labelledby="values-heading">
         <div className="max-w-7xl mx-auto">
           <motion.div
-            className="mb-6"
+            className="mb-0"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
@@ -193,7 +193,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
             </RevealText>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14 mt-8">
             {values.map((value, i) => (
               <motion.div
                 key={value._id}
