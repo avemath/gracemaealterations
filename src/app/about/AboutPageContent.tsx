@@ -181,19 +181,17 @@ export default function AboutPageContent({ site, about, values }: Props) {
       <section className="bg-blush py-14 lg:py-20 px-6" aria-labelledby="values-heading">
         <div className="max-w-7xl mx-auto">
           <motion.div
-            className="mb-0"
+            className="mb-8"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6 }}
           >
             <p className="section-label mb-4">{about.valuesLabel}</p>
-            <RevealText delay={0.1}>
-              <h2 id="values-heading" className="font-cormorant italic text-charcoal leading-none" style={{ fontSize: "clamp(6rem, 14vw, 13rem)" }}>{about.valuesHeading}</h2>
-            </RevealText>
+            <h2 id="values-heading" className="font-cormorant italic text-charcoal leading-none" style={{ fontSize: "clamp(6rem, 14vw, 13rem)" }}>{about.valuesHeading}</h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14 -mt-14">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14">
             {values.map((value, i) => (
               <motion.div
                 key={value._id}
