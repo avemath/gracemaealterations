@@ -41,24 +41,25 @@ export default function Navbar({ siteName, businessName }: NavbarProps) {
 
   return (
     <>
-      {/* ── NAV VEIL — sits at z-49, below header, fades away on scroll ── */}
-      <div
-        className={`fixed top-0 left-0 right-0 z-49 pointer-events-none transition-opacity duration-500 ${showBg ? "opacity-0" : "opacity-100"}`}
-        style={{ height: "120px", background: "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, transparent 100%)" }}
-        aria-hidden="true"
-      />
-
       {/* ── HEADER — z-50 so it always floats above the mobile menu ── */}
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          showBg
-            ? "bg-ivory/93 backdrop-blur-md shadow-[0_1px_0_rgba(232,224,216,0.8)]"
-            : "backdrop-blur-[2px]"
-        }`}
-        role="banner"
-      >
+      <header className="fixed top-0 left-0 right-0 z-50" role="banner">
+
+        {/* Dark gradient layer — visible when not scrolled, fades out on scroll */}
+        <div
+          className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ${showBg ? "opacity-0" : "opacity-100"}`}
+          style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.48) 65%, transparent 100%)" }}
+          aria-hidden="true"
+        />
+
+        {/* Ivory background layer — fades in on scroll */}
+        <div
+          className={`absolute inset-0 pointer-events-none transition-opacity duration-500 backdrop-blur-md shadow-[0_1px_0_rgba(232,224,216,0.8)] ${showBg ? "opacity-100" : "opacity-0"}`}
+          style={{ background: "rgba(250,247,242,0.93)" }}
+          aria-hidden="true"
+        />
+
         <nav
-          className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between h-16 lg:h-20"
+          className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between h-16 lg:h-20"
           aria-label="Main navigation"
         >
           {/* Logo / Name */}
