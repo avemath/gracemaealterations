@@ -189,7 +189,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
           >
             <p className="section-label mb-4">{about.valuesLabel}</p>
             <RevealText delay={0.1}>
-              <h2 id="values-heading" className="font-cormorant italic text-charcoal" style={{ fontSize: "clamp(4rem, 10vw, 10rem)" }}>{about.valuesHeading}</h2>
+              <h2 id="values-heading" className="font-cormorant italic text-charcoal text-7xl lg:text-8xl">{about.valuesHeading}</h2>
             </RevealText>
           </motion.div>
 
