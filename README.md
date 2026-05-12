@@ -1,6 +1,6 @@
 # Grace Mae Alterations
 
-Marketing website for Grace Mae Alterations — a bridal and clothing alterations business based in Pittsburgh, PA. Built with Next.js 14 and Sanity CMS, deployed on Vercel.
+Marketing website for Grace Mae Alterations - a bridal and clothing alterations business based in Pittsburgh, PA. Built with Next.js 14 and Sanity CMS, deployed on Vercel.
 
 ## Tech Stack
 
@@ -20,24 +20,24 @@ Marketing website for Grace Mae Alterations — a bridal and clothing alteration
 
 | Route | Description |
 |---|---|
-| `/` | Home — hero, services overview, portfolio preview, about teaser, testimonials, process steps, CTA |
-| `/about` | About — bio, values, pull quote, secondary image |
-| `/services` | Services — service cards with pricing ranges |
-| `/portfolio` | Portfolio — photo grid with lightbox, before/after slider |
-| `/contact` | Contact — inquiry form (bridal, tailoring, custom), waitlist mode |
+| `/` | Home - hero, services overview, portfolio preview, about teaser, testimonials, process steps, CTA |
+| `/about` | About - bio, values, pull quote, secondary image |
+| `/services` | Services - service cards with pricing ranges |
+| `/portfolio` | Portfolio - photo grid with lightbox, before/after slider |
+| `/contact` | Contact - inquiry form (bridal, tailoring, custom), waitlist mode |
 | `/studio` | Embedded Sanity Studio (content editing) |
 
 ## Features
 
-- **Inquiry form** — service-specific fields for bridal, tailoring, and custom work; photo attachment support; waitlist mode when bookings are full
-- **Email notifications** — Resend sends a formatted notification to Grace and a confirmation email to the client on every submission
-- **Sanity CMS** — all page content and images are editable via the embedded Studio; the app falls back to static `src/data/content.ts` values when Sanity is not configured
-- **Portfolio lightbox** — click any portfolio image to open a full-screen lightbox
-- **Before/after slider** — drag to reveal before and after on featured transformations
-- **Testimonial carousel** — auto-cycling with manual navigation
-- **Framer Motion animations** — page transitions, scroll-triggered text and image reveals
+- **Inquiry form** - service-specific fields for bridal, tailoring, and custom work; photo attachment support; waitlist mode when bookings are full
+- **Email notifications** - Resend sends a formatted notification to Grace and a confirmation email to the client on every submission
+- **Sanity CMS** - all page content and images are editable via the embedded Studio; the app falls back to static `src/data/content.ts` values when Sanity is not configured
+- **Portfolio lightbox** - click any portfolio image to open a full-screen lightbox
+- **Before/after slider** - drag to reveal before and after on featured transformations
+- **Testimonial carousel** - auto-cycling with manual navigation
+- **Framer Motion animations** - page transitions, scroll-triggered text and image reveals
 - **Custom cursor**, scroll progress bar, sticky mobile and desktop CTAs
-- **SEO** — JSON-LD LocalBusiness structured data, OG image, sitemap, robots.txt
+- **SEO** - JSON-LD LocalBusiness structured data, OG image, sitemap, robots.txt
 
 ## Project Structure
 
@@ -72,7 +72,7 @@ site/
 
 ### Prerequisites
 - Node.js 18+
-- A Sanity project (free at sanity.io) — optional, app runs without it
+- A Sanity project (free at sanity.io) - optional, app runs without it
 - A Resend account for contact form emails
 
 ### Install
@@ -87,7 +87,7 @@ npm install
 Create a `.env.local` file in the `site/` directory:
 
 ```env
-# Sanity CMS (optional — app falls back to static content without these)
+# Sanity CMS (optional - app falls back to static content without these)
 NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
 NEXT_PUBLIC_SANITY_DATASET=production
 SANITY_API_TOKEN=your_sanity_api_token
