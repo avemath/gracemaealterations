@@ -13,7 +13,7 @@ const config: Config = {
         charcoal: "#1C1C1C",
         gold: "#C9A84C",
         blush: "#E8E0D8",
-        near_black: "#0F0F0F",
+        near_black: "#242020",
         gold_light: "#D4B86A",
         gold_dark: "#A8882E",
       },

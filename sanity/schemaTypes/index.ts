@@ -3,6 +3,7 @@ import { homePage } from "./homePage";
 import { aboutPage } from "./aboutPage";
 import { servicesPage } from "./servicesPage";
 import { contactPage } from "./contactPage";
+import { portfolioPage } from "./portfolioPage";
 import { service } from "./service";
 import { testimonial } from "./testimonial";
 import { portfolioItem } from "./portfolioItem";
@@ -16,6 +17,7 @@ export const schemaTypes = [
   aboutPage,
   servicesPage,
   contactPage,
+  portfolioPage,
   // Lists
   service,
   testimonial,

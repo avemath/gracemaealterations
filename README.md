@@ -1,36 +1,131 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Grace Mae Alterations
 
-## Getting Started
+Marketing website for Grace Mae Alterations — a bridal and clothing alterations business based in Pittsburgh, PA. Built with Next.js 14 and Sanity CMS, deployed on Vercel.
 
-First, run the development server:
+## Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 14 (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS, styled-components |
+| Animation | Framer Motion |
+| CMS | Sanity v3 (embedded Studio at `/studio`) |
+| Email | Resend |
+| Hosting | Vercel |
+| Analytics | Vercel Analytics |
+| Sitemap | next-sitemap |
+
+## Pages
+
+| Route | Description |
+|---|---|
+| `/` | Home — hero, services overview, portfolio preview, about teaser, testimonials, process steps, CTA |
+| `/about` | About — bio, values, pull quote, secondary image |
+| `/services` | Services — service cards with pricing ranges |
+| `/portfolio` | Portfolio — photo grid with lightbox, before/after slider |
+| `/contact` | Contact — inquiry form (bridal, tailoring, custom), waitlist mode |
+| `/studio` | Embedded Sanity Studio (content editing) |
+
+## Features
+
+- **Inquiry form** — service-specific fields for bridal, tailoring, and custom work; photo attachment support; waitlist mode when bookings are full
+- **Email notifications** — Resend sends a formatted notification to Grace and a confirmation email to the client on every submission
+- **Sanity CMS** — all page content and images are editable via the embedded Studio; the app falls back to static `src/data/content.ts` values when Sanity is not configured
+- **Portfolio lightbox** — click any portfolio image to open a full-screen lightbox
+- **Before/after slider** — drag to reveal before and after on featured transformations
+- **Testimonial carousel** — auto-cycling with manual navigation
+- **Framer Motion animations** — page transitions, scroll-triggered text and image reveals
+- **Custom cursor**, scroll progress bar, sticky mobile and desktop CTAs
+- **SEO** — JSON-LD LocalBusiness structured data, OG image, sitemap, robots.txt
+
+## Project Structure
+
+```
+site/
+├── src/
+│   ├── app/               # Next.js App Router pages
+│   │   ├── api/contact/   # Contact form API route (Resend)
+│   │   ├── about/
+│   │   ├── contact/
+│   │   ├── portfolio/
+│   │   ├── services/
+│   │   └── studio/        # Embedded Sanity Studio
+│   ├── components/
+│   │   ├── layout/        # Navbar, Footer, SiteChrome, CTAs, cursor, transitions
+│   │   ├── sections/      # CTABanner, ProcessSteps, TestimonialsSection
+│   │   └── ui/            # Accordion, BeforeAfterSlider, Lightbox, CountUp, etc.
+│   ├── data/
+│   │   └── content.ts     # Static fallback content (used when Sanity is not configured)
+│   └── lib/
+│       ├── sanity.client.ts   # Sanity client setup
+│       ├── sanity.queries.ts  # GROQ queries + merged data fetchers
+│       ├── sanity.image.ts    # Image URL builder
+│       └── resend.ts          # Resend client and email config
+├── sanity/
+│   └── schemaTypes/       # Sanity schema definitions
+├── public/                # Static assets, sitemap, robots.txt
+└── sanity.config.ts       # Sanity Studio configuration
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup and Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
+- Node.js 18+
+- A Sanity project (free at sanity.io) — optional, app runs without it
+- A Resend account for contact form emails
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Install
 
-## Learn More
+```sh
+cd site
+npm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Environment Variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Create a `.env.local` file in the `site/` directory:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```env
+# Sanity CMS (optional — app falls back to static content without these)
+NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_TOKEN=your_sanity_api_token
 
-## Deploy on Vercel
+# Resend (required for contact form emails)
+RESEND_API_KEY=your_resend_api_key
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Email addresses (defaults shown below)
+CONTACT_EMAIL=inquiries@gracemaealterations.com
+FROM_EMAIL=hello@gracemaealterations.com
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Used by next-sitemap
+SITE_URL=https://gracemaealterations.com
+```
+
+`NEXT_PUBLIC_*` variables are exposed to the browser. All others are server-side only.
+
+## Running in Development
+
+```sh
+cd site
+npm run dev
+# → http://localhost:3000
+```
+
+The Sanity Studio is available at `http://localhost:3000/studio` when `NEXT_PUBLIC_SANITY_PROJECT_ID` is set.
+
+## Building for Production
+
+```sh
+cd site
+npm run build
+```
+
+The build also runs `next-sitemap` to generate `public/sitemap.xml` and `public/robots.txt`.
+
+## Deployment
+
+The site deploys to Vercel. Set all environment variables in the Vercel project dashboard under **Settings → Environment Variables**.
+
+The `SITE_URL` variable must be set in Vercel for sitemap generation to use the correct domain.

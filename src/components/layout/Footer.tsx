@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { SITE } from "@/data/content";
 
 const NAV_LINKS = [
   { label: "Services", href: "/services" },
@@ -27,7 +26,23 @@ const InstagramIcon = () => (
   </svg>
 );
 
-export default function Footer() {
+interface FooterProps {
+  siteName: string;
+  businessName: string;
+  location: string;
+  availability: string;
+  instagram: string;
+  instagramUrl: string;
+}
+
+export default function Footer({
+  siteName,
+  businessName,
+  location,
+  availability,
+  instagram,
+  instagramUrl,
+}: FooterProps) {
   const year = new Date().getFullYear();
 
   return (
@@ -40,11 +55,11 @@ export default function Footer() {
             <Link
               href="/"
               className="font-cormorant italic text-2xl text-ivory hover:text-gold transition-colors duration-300"
-              aria-label={`${SITE.businessName} — home`}
+              aria-label={`${businessName} — home`}
             >
-              {SITE.name}
+              {siteName}
             </Link>
-            <p className="font-jost text-xs tracking-widest uppercase text-ivory/40 mt-1">
+            <p className="font-jost text-xs tracking-widest uppercase text-ivory/60 mt-1">
               Bridal &amp; Clothing Alterations
             </p>
           </div>
@@ -68,27 +83,27 @@ export default function Footer() {
           {/* Location + Instagram */}
           <div className="flex flex-col items-start lg:items-end gap-3">
             <p className="font-jost text-xs tracking-widest uppercase text-ivory/50">
-              {SITE.location} &nbsp;|&nbsp; {SITE.availability}
+              {location} &nbsp;|&nbsp; {availability}
             </p>
             <a
-              href={SITE.instagramUrl}
+              href={instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-ivory/50 hover:text-gold transition-colors duration-300"
-              aria-label={`Follow ${SITE.name} on Instagram`}
+              aria-label={`Follow ${siteName} on Instagram`}
             >
               <InstagramIcon />
-              <span className="font-jost text-xs">{SITE.instagram}</span>
+              <span className="font-jost text-xs">{instagram}</span>
             </a>
           </div>
         </div>
 
         {/* Bottom row */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-8">
-          <p className="font-jost text-xs text-ivory/30">
-            &copy; {year} {SITE.businessName}. All rights reserved.
+          <p className="font-jost text-xs text-ivory/50">
+            &copy; {year} {businessName}. All rights reserved.
           </p>
-          <p className="font-jost text-xs text-ivory/25">
+          <p className="font-jost text-xs text-ivory/50">
             Pittsburgh, PA &mdash; Available by Appointment
           </p>
         </div>
