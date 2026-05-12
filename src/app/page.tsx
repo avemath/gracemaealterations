@@ -22,7 +22,7 @@ export default async function HomePage() {
   return (
     <HomePageContent
       data={{
-        site: { name: site.name, subTagline: site.subTagline },
+        site: { name: site.name, tagline: site.tagline, subTagline: site.subTagline, bookingNote: site.bookingNote },
         heroImage: home.heroImage,
         trustStats: home.trustStats,
         services,
@@ -34,6 +34,24 @@ export default async function HomePage() {
         },
         aboutSecondaryImage: about.secondaryImage,
         testimonials,
+        text: {
+          heroSectionLabel: home.heroSectionLabel,
+          heroCredentialText: home.heroCredentialText,
+          servicesLabel: home.servicesLabel,
+          servicesHeading: home.servicesHeading,
+          portfolioLabel: home.portfolioLabel,
+          portfolioHeading: home.portfolioHeading,
+          aboutTeaserLabel: home.aboutTeaserLabel,
+          testimonialsLabel: home.testimonialsLabel,
+          testimonialsHeading: home.testimonialsHeading,
+          processLabel: home.processLabel,
+          processHeading: home.processHeading,
+          processCTA: home.processCTA,
+          processSteps: home.processSteps,
+          ctaHeadline: home.ctaHeadline,
+          ctaSubhead: home.ctaSubhead,
+          ctaButton: home.ctaButton,
+        },
       }}
     />
   );

@@ -9,7 +9,7 @@ export function getResend() {
 }
 
 export const CONTACT_EMAIL =
-  process.env.CONTACT_EMAIL ?? "gracematherne@gmail.com";
+  process.env.CONTACT_EMAIL ?? "inquiries@gracemaealterations.com";
 
 export const FROM_EMAIL =
   process.env.FROM_EMAIL ?? "hello@gracemaealterations.com";

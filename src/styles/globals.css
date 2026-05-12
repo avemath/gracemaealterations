@@ -29,6 +29,13 @@
     background-color: #C9A84C;
     color: #FAF7F2;
   }
+
+  /* Focus-visible ring for keyboard nav */
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #C9A84C80;
+    border-radius: 1px;
+  }
 }
 
 @layer components {
@@ -40,16 +47,36 @@
     @apply text-gold tracking-[0.25em] text-xs uppercase font-cormorant_sc;
   }
 
+  /* Buttons — subtle lift + shadow on hover */
   .btn-gold {
-    @apply bg-gold text-ivory px-8 py-3.5 text-sm tracking-widest uppercase font-jost transition-all duration-300 hover:bg-gold_dark;
+    @apply relative bg-gold text-ivory px-8 py-3.5 text-xs tracking-widest uppercase font-jost
+           transition-all duration-300
+           hover:bg-gold_dark hover:-translate-y-px hover:shadow-[0_4px_16px_rgba(201,168,76,0.35)]
+           active:translate-y-0 active:shadow-none;
   }
 
   .btn-outline {
-    @apply border border-gold text-gold px-8 py-3.5 text-sm tracking-widest uppercase font-jost transition-all duration-300 hover:bg-gold hover:text-ivory;
+    @apply relative border border-gold text-gold px-8 py-3.5 text-xs tracking-widest uppercase font-jost
+           transition-all duration-300
+           hover:bg-gold hover:text-ivory hover:-translate-y-px hover:shadow-[0_4px_16px_rgba(201,168,76,0.25)]
+           active:translate-y-0 active:shadow-none;
   }
 
   .btn-outline-ivory {
-    @apply border border-ivory text-ivory px-8 py-3.5 text-sm tracking-widest uppercase font-jost transition-all duration-300 hover:bg-ivory hover:text-charcoal;
+    @apply border border-ivory text-ivory px-8 py-3.5 text-xs tracking-widest uppercase font-jost
+           transition-all duration-300
+           hover:bg-ivory hover:text-charcoal hover:-translate-y-px
+           active:translate-y-0;
+  }
+
+  /* Page hero — consistent across interior pages */
+  .page-hero {
+    @apply relative flex items-end overflow-hidden;
+    min-height: 48vh;
+  }
+
+  .page-hero-content {
+    @apply relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-14 pt-36 lg:pt-44;
   }
 }
 
@@ -63,9 +90,24 @@
   z-index: 1;
 }
 
-/* Scrollbar styling */
+/* Custom cursor — hide native cursor on pointer devices */
+.custom-cursor,
+.custom-cursor * {
+  cursor: none !important;
+}
+
+/* Hide scrollbar (used for testimonial mobile carousel) */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Styled scrollbar everywhere else */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
   background: #FAF7F2;
