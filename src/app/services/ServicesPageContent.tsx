@@ -56,7 +56,6 @@ export default function ServicesPageContent({ services, page }: Props) {
               priority
               placeholderLabel="SERVICES_HERO_IMAGE"
               placeholderRatio="landscape"
-              alt="Services background — fabric or gown detail"
               sizes="100vw"
             />
           </motion.div>

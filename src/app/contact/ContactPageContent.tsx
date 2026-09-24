@@ -332,7 +332,7 @@ export default function ContactPageContent({ site, faq, contactImage, text }: Pr
                 <p className="font-cormorant italic text-charcoal text-lg leading-snug">&ldquo;{site.responseTime}&rdquo;</p>
               </div>
               <div className="overflow-hidden max-h-96">
-                <SanityImage image={contactImage} placeholderLabel="CONTACT_IMAGE" placeholderRatio="landscape" alt="The studio workspace" />
+                <SanityImage image={contactImage} placeholderLabel="CONTACT_IMAGE" placeholderRatio="landscape" />
               </div>
             </motion.div>
 
