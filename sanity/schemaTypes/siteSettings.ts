@@ -38,6 +38,38 @@ export const siteSettings = defineType({
       type: "boolean",
       initialValue: true,
     }),
+    // ── Limited availability (per service) ──────────────────────────────────
+    defineField({
+      name: "limitedMode",
+      title: "Limited availability mode",
+      description: "On when you're open for some services but not others. The switch above stays on; only the services listed below go to a waitlist.",
+      type: "boolean",
+      initialValue: false,
+    }),
+    defineField({
+      name: "waitlistServices",
+      title: "Services on waitlist",
+      description: "These services show a waitlist notice and switch the contact form into waitlist mode. Everything else books normally.",
+      type: "array",
+      of: [{ type: "string" }],
+      options: {
+        list: [
+          { title: "Bridal", value: "bridal" },
+          { title: "Everyday Tailoring", value: "tailoring" },
+          { title: "Custom & Repairs", value: "custom" },
+        ],
+      },
+    }),
+    defineField({
+      name: "reopensLabel",
+      title: "When waitlisted services reopen, e.g. early 2027",
+      type: "string",
+    }),
+    defineField({
+      name: "limitedNote",
+      title: "Short availability line shown under hero and on contact page",
+      type: "string",
+    }),
     defineField({
       name: "phone",
       title: "Business Phone / Text Number",

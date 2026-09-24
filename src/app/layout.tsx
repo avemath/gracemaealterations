@@ -205,8 +205,8 @@ export default async function RootLayout({
             <PageTransition>{children}</PageTransition>
           </main>
         </SiteChrome>
-        <StickyMobileCTA />
-        <StickyDesktopCTA />
+        <StickyMobileCTA limitedMode={site.limitedMode} reopensLabel={site.reopensLabel} />
+        <StickyDesktopCTA limitedMode={site.limitedMode} reopensLabel={site.reopensLabel} />
         <Analytics />
       </body>
     </html>

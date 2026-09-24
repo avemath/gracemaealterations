@@ -10,6 +10,8 @@ interface ContactPayload {
   garmentDetails?: string;
   referralSource?: string;
   isWaitlist?: boolean;
+  /** e.g. "early 2027" — when the waitlisted service reopens. */
+  reopensLabel?: string;
   attachments?: { filename: string; content: string }[];
   // Bridal-specific
   fabricNotes?: string;
@@ -266,6 +268,15 @@ export async function POST(req: NextRequest) {
 
   // ── Confirmation email to client ──────────────────────────
 
+  // "bridal waitlist" reads better than a bare "waitlist" when we know which
+  // service is closed.
+  const waitlistServiceWord =
+    body.serviceType === "bridal" ? "bridal " : body.serviceType === "custom" ? "custom work " : "";
+
+  const waitlistIntro = body.reopensLabel
+    ? `Hi ${escapeHtml(body.name)}, you're on my ${waitlistServiceWord}waitlist. I'll reach out in order as dates open for ${escapeHtml(body.reopensLabel)}.`
+    : `Hi ${escapeHtml(body.name)}, your request has been received and you're on my waitlist. I'll reach out as soon as a spot opens up.`;
+
   const confirmationEmail = body.isWaitlist
     ? `
       <div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;color:#1C1C1C;">
@@ -275,7 +286,7 @@ export async function POST(req: NextRequest) {
         </div>
         <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
           <p style="font-size:15px;line-height:1.7;color:#1C1C1C;margin:0 0 12px;">
-            Hi ${escapeHtml(body.name)}, your request has been received and you're on my waitlist. I'll reach out as soon as a spot opens up.
+            ${waitlistIntro}
           </p>
           <p style="font-size:15px;line-height:1.7;color:#555;margin:0;">
             In the meantime, feel free to reply to this email with any questions.
