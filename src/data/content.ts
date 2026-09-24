@@ -9,18 +9,18 @@
 
 // ── IDENTITY ──────────────────────────────────────────────────
 export const SITE = {
-  name: "Grace Mae",          // ← UPDATE: Your full name
+  name: "Grace Mae",
   businessName: "Grace Mae Alterations",
   tagline: "Sewn with precision.",
   subTagline: "Every stitch tailored to you — and only you.",
   location: "Pittsburgh, PA",
   email: "inquiries@gracemaealterations.com",
-  instagram: "@gracemaealterations",         // ← UPDATE: Your Instagram handle
-  instagramUrl: "https://instagram.com/gracemaealterations", // ← UPDATE
+  instagram: "@gracemaealterations",
+  instagramUrl: "https://instagram.com/gracemaealterations",
   availability: "Available by Appointment",
   responseTime: "I respond to all inquiries within 24 hours.",
   bookingNote: "Now scheduling Spring & Summer 2026 consultations",
-  phone: "",                    // ← UPDATE: Your business phone number (e.g. "(412) 555-0000") — leave blank to hide
+  phone: "",                    // e.g. "(412) 555-0000" — blank hides the call/text row
   isAcceptingClients: true,     // ← Set to false to put the WHOLE contact form into Waitlist mode
 
   // ── Limited availability ────────────────────────────────────
@@ -407,13 +407,3 @@ export const CONTACT_TEXT = {
   waitlistSuccessMessage: "You're on my waitlist. I'll reach out as soon as a spot opens up.",
 };
 
-// ── IMAGE PATHS ───────────────────────────────────────────────
-// Update these paths when you add real photos.
-// All images go in /public/images/
-export const IMAGES = {
-  HERO_PORTRAIT: "/images/hero-portrait.jpg",
-  ABOUT_HERO: "/images/about-hero.jpg",
-  ABOUT_SECONDARY: "/images/about-secondary.jpg",
-  SERVICES_HERO: "/images/services-hero.jpg",
-  CONTACT: "/images/contact.jpg",
-};

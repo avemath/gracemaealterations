@@ -22,10 +22,16 @@ export default function CountUp({ value, duration = 1400, className }: Props) {
   const isInView = useInView(ref, { once: true, margin: "-40px" });
   const parsed = parse(value);
   const [current, setCurrent] = useState(0);
+  // Server HTML and the first client render show the final number, so crawlers
+  // and no-JS readers see "500+" rather than "0+". The count only starts once
+  // we know we're in a browser that can animate it.
+  const [mounted, setMounted] = useState(false);
   const hasStarted = useRef(false);
 
+  useEffect(() => { setMounted(true); }, []);
+
   useEffect(() => {
-    if (!isInView || !parsed || hasStarted.current) return;
+    if (!mounted || !isInView || !parsed || hasStarted.current) return;
     hasStarted.current = true;
 
     const end = parsed.num;
@@ -41,15 +47,17 @@ export default function CountUp({ value, duration = 1400, className }: Props) {
     };
 
     requestAnimationFrame(tick);
-  }, [isInView, duration, parsed]);
+  }, [mounted, isInView, duration, parsed]);
 
   if (!parsed) {
     return <span ref={ref} className={className}>{value}</span>;
   }
 
+  const displayed = mounted ? (isInView ? current : 0) : parsed.num;
+
   return (
     <span ref={ref} className={className}>
-      {parsed.before}{isInView ? current : 0}{parsed.after}
+      {parsed.before}{displayed}{parsed.after}
     </span>
   );
 }
