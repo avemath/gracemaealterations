@@ -60,6 +60,21 @@ const client = createClient({ projectId, dataset, apiVersion: "2024-01-01", toke
 
 const PREPARED_DIR = join(APP_ROOT, "assets", "prepared");
 
+/**
+ * Uploads dedupe on originalFilename. When a source photo is replaced, bump its
+ * version here so the new file uploads as <name>-v2.jpg instead of silently
+ * reusing the old asset.
+ */
+const VERSIONS = {
+  "grace-portrait-studio.jpg": 2,
+};
+
+/** assets/prepared name → the originalFilename it is stored under in Sanity. */
+function assetFilename(file) {
+  const version = VERSIONS[file];
+  return version ? file.replace(/\.jpg$/, `-v${version}.jpg`) : file;
+}
+
 // ── Slot assignments ─────────────────────────────────────────────────────────
 // Each entry: which prepared file goes into which document field, with the
 // hotspot the layout crops around. Do not swap these — the crops were composed
@@ -145,7 +160,8 @@ const SERVICE_SLOTS = [
 const assetIdCache = new Map();
 
 /** Upload the file, or reuse the asset already in the dataset under that name. */
-async function getAssetId(filename) {
+async function getAssetId(file) {
+  const filename = assetFilename(file);
   if (assetIdCache.has(filename)) return assetIdCache.get(filename);
 
   const existing = await client.fetch(
@@ -159,10 +175,10 @@ async function getAssetId(filename) {
     return existing;
   }
 
-  const path = join(PREPARED_DIR, filename);
+  const path = join(PREPARED_DIR, file);
   if (!existsSync(path)) {
     throw new Error(
-      `${filename} is missing from assets/prepared/ — run "npm run images:prepare" first.`
+      `${file} is missing from assets/prepared/ — run "npm run images:prepare" first.`
     );
   }
 

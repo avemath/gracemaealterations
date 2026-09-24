@@ -43,7 +43,7 @@ const JPEG_OPTS = { quality: 90, mozjpeg: false, chromaSubsampling: "4:4:4" };
  */
 const WANTED = {
   "grace-portrait-wall": ["grace masters face wall background"],
-  "grace-portrait-studio": ["file_00000000800481f6b03e732e200eccbd", "grace portrait"],
+  "grace-portrait-studio": ["grace studio portrait", "grace portrait", "file_00000000800481f6b03e732e200eccbd"],
   "atelier-workroom": ["desk w dress rack"],
   "lace-and-organza": ["lace and pink tulle"],
   "hem-detail": ["thimble and measuring tape"],
@@ -70,8 +70,14 @@ const found = {};
 const missing = [];
 
 for (const [canonical, aliases] of Object.entries(WANTED)) {
+  // Aliases are tried in order, so the first one wins when an older file with
+  // a later alias is still sitting in the folder.
   const wanted = aliases.map((a) => a.trim().toLowerCase().replace(/\s+/g, " "));
-  const match = candidates.find((f) => wanted.includes(stem(f)));
+  let match;
+  for (const alias of wanted) {
+    match = candidates.find((f) => stem(f) === alias);
+    if (match) break;
+  }
   if (match) found[canonical] = match;
   else missing.push(`${canonical}  (looked for: ${aliases.join(" | ")})`);
 }
