@@ -202,7 +202,10 @@ export default function PortfolioPageContent({ items, portfolioPageData }: Props
                   <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/50 transition-all duration-500" aria-hidden="true" />
                   {/* Label — slides up */}
                   <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-400 ease-out">
-                    <p className="font-cormorant italic text-ivory text-lg">{item.label}</p>
+                    <p className="font-cormorant italic text-ivory text-lg leading-tight">{item.label}</p>
+                    {item.caption && (
+                      <p className="font-jost text-ivory/75 text-xs leading-snug mt-1">{item.caption}</p>
+                    )}
                     <div className="w-5 h-px bg-gold mt-1.5" aria-hidden="true" />
                   </div>
                   {/* Expand icon */}
@@ -289,9 +292,16 @@ export default function PortfolioPageContent({ items, portfolioPageData }: Props
                 height={800}
               />
               {/* Caption bar */}
-              <div className="flex items-center justify-between mt-4 px-1">
-                <p className="font-cormorant italic text-ivory/60 text-sm">{lightboxItem.label}</p>
-                <p className="font-jost text-ivory/55 text-xs tracking-widest">
+              <div className="flex items-start justify-between gap-6 mt-4 px-1">
+                <div>
+                  <p className="font-cormorant italic text-ivory/80 text-base">{lightboxItem.label}</p>
+                  {lightboxItem.caption && (
+                    <p className="font-jost text-ivory/55 text-xs leading-relaxed mt-1">
+                      {lightboxItem.caption}
+                    </p>
+                  )}
+                </div>
+                <p className="font-jost text-ivory/55 text-xs tracking-widest flex-shrink-0 mt-1">
                   {lightboxIndex + 1} / {filtered.length}
                 </p>
               </div>

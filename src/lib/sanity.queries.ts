@@ -163,6 +163,8 @@ export interface SanityPortfolioItem {
   _id: string;
   image?: SanityImage;
   label: string;
+  caption?: string | null;
+  featured?: boolean | null;
   type: "bridal" | "tailoring" | "custom";
   order: number;
 }
@@ -277,7 +279,7 @@ export async function getTestimonials(): Promise<SanityTestimonial[] | null> {
 
 export async function getPortfolioItems(): Promise<SanityPortfolioItem[] | null> {
   return safeFetch(`*[_type == "portfolioItem"] | order(order asc) {
-    _id, image{ asset->, alt, hotspot }, label, type, order
+    _id, image{ asset->, alt, hotspot }, label, caption, featured, type, order
   }`);
 }
 
@@ -443,6 +445,8 @@ export async function getMergedPortfolioItems() {
     _id: String(item.id),
     image: undefined as SanityImage | undefined,
     label: item.label,
+    caption: null,
+    featured: false,
     type: item.type as "bridal" | "tailoring" | "custom",
     order: item.id,
   }));
