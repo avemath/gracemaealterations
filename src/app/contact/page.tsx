@@ -13,6 +13,12 @@ export default async function ContactPage() {
       site={site}
       faq={faq}
       contactImage={page.image ?? null}
+      availability={{
+        limitedMode: site.limitedMode,
+        waitlistServices: site.waitlistServices,
+        reopensLabel: site.reopensLabel,
+        limitedNote: site.limitedNote,
+      }}
       text={{
         heroLabel: page.heroLabel,
         heroHeading: page.heroHeading,

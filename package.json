@@ -10,7 +10,9 @@
     "lint": "next lint",
     "images:prepare": "node scripts/prepare-images.mjs",
     "images:upload": "node scripts/upload-images.mjs",
-    "images": "npm run images:prepare && npm run images:upload"
+    "images": "npm run images:prepare && npm run images:upload",
+    "availability:limited": "node scripts/set-availability.mjs --limited",
+    "availability:open": "node scripts/set-availability.mjs --open"
   },
   "dependencies": {
     "@sanity/image-url": "^1.2.0",

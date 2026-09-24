@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SanityImage from "@/components/ui/SanityImage";
 import Accordion from "@/components/ui/Accordion";
@@ -121,6 +121,25 @@ interface ContactText {
   waitlistSuccessMessage: string;
 }
 
+interface Availability {
+  limitedMode: boolean;
+  waitlistServices: string[];
+  reopensLabel: string;
+  limitedNote: string;
+}
+
+const SERVICE_TITLES: Record<string, string> = {
+  bridal: "Bridal",
+  tailoring: "Tailoring",
+  custom: "Custom",
+};
+
+/** First four-digit year in a label like "early 2027", or null. */
+function reopenYear(label: string): number | null {
+  const match = label.match(/\b(\d{4})\b/);
+  return match ? parseInt(match[1], 10) : null;
+}
+
 interface Props {
   site: {
     email: string; instagram: string; instagramUrl: string;
@@ -129,12 +148,13 @@ interface Props {
   };
   faq: SanityFaqItem[];
   contactImage: SanityImageType | null;
+  availability: Availability;
   text: ContactText;
 }
 
 // ── Main component ─────────────────────────────────────────────
 
-export default function ContactPageContent({ site, faq, contactImage, text }: Props) {
+export default function ContactPageContent({ site, faq, contactImage, availability, text }: Props) {
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM);
   const [errors, setErrors] = useState<FormErrors>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
@@ -143,8 +163,38 @@ export default function ContactPageContent({ site, faq, contactImage, text }: Pr
   const [bridalAlterations, setBridalAlterations] = useState<string[]>([]);
   const [tailoringAlterations, setTailoringAlterations] = useState<string[]>([]);
 
-  const isWaitlist = !site.isAcceptingClients;
+  const { limitedMode, waitlistServices, reopensLabel, limitedNote } = availability;
   const svc = formData.serviceType;
+
+  // Preselect the service from /contact?service=bridal. Read on mount rather
+  // than with useSearchParams so the page stays statically rendered.
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get("service");
+    if (requested && ["bridal", "tailoring", "custom", "unsure"].includes(requested)) {
+      setFormData((prev) => (prev.serviceType ? prev : { ...prev, serviceType: requested }));
+    }
+  }, []);
+
+  // Site-wide waitlist (everything is closed) vs. this one service being
+  // waitlisted while the rest of the site books normally.
+  const siteWideWaitlist = !site.isAcceptingClients;
+  const serviceWaitlisted = limitedMode && waitlistServices.includes(svc);
+  const isWaitlist = siteWideWaitlist || serviceWaitlisted;
+
+  const waitlistServiceTitle = SERVICE_TITLES[svc] ?? "";
+  const formHeading = serviceWaitlisted
+    ? `Join the ${waitlistServiceTitle} Waitlist`
+    : siteWideWaitlist
+    ? "Join the Waitlist"
+    : "Send a Request";
+
+  // Not a blocker — just an honest heads-up when the date falls before I reopen.
+  const reopensIn = reopenYear(reopensLabel);
+  const eventDateBeforeReopen =
+    serviceWaitlisted &&
+    !!formData.eventDate &&
+    reopensIn !== null &&
+    new Date(formData.eventDate) < new Date(`${reopensIn}-01-01T00:00:00`);
 
   const maxPhotos = svc === "bridal" ? 6 : svc === "tailoring" ? 3 : svc === "custom" ? 4 : 2;
   const photoHint =
@@ -221,6 +271,7 @@ export default function ContactPageContent({ site, faq, contactImage, text }: Pr
         body: JSON.stringify({
           ...formData,
           isWaitlist,
+          reopensLabel,
           alterationsNeeded: bridalAlterations,
           tailoringAlterations,
           attachments: attachments.map(({ filename, content }) => ({ filename, content })),
@@ -264,7 +315,7 @@ export default function ContactPageContent({ site, faq, contactImage, text }: Pr
 
       {/* ── WAITLIST BANNER ────────────────────────────────────── */}
       <AnimatePresence>
-        {isWaitlist && (
+        {siteWideWaitlist && (
           <motion.div
             initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
@@ -328,7 +379,10 @@ export default function ContactPageContent({ site, faq, contactImage, text }: Pr
                   </div>
                 </li>
               </ul>
-              <div className="border border-gold/20 bg-gold/5 p-5 mb-10">
+              <div className="border border-gold/20 bg-gold/5 p-5 mb-10 space-y-3">
+                {limitedMode && limitedNote && (
+                  <p className="font-jost text-charcoal/70 text-sm leading-relaxed">{limitedNote}</p>
+                )}
                 <p className="font-cormorant italic text-charcoal text-lg leading-snug">&ldquo;{site.responseTime}&rdquo;</p>
               </div>
               <div className="overflow-hidden max-h-96">
@@ -339,7 +393,7 @@ export default function ContactPageContent({ site, faq, contactImage, text }: Pr
             {/* ── Right: Form ───────────────────────────────────── */}
             <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.15 }}>
               <h2 className="font-cormorant italic text-charcoal text-3xl mb-8">
-                {isWaitlist ? "Join the Waitlist" : "Send a Request"}
+                {formHeading}
               </h2>
 
               {status === "success" ? (
@@ -400,6 +454,12 @@ export default function ContactPageContent({ site, faq, contactImage, text }: Pr
                         Event Date <span className="text-charcoal/50 normal-case tracking-normal">(if applicable)</span>
                       </label>
                       <input id="eventDate" name="eventDate" type="date" value={formData.eventDate} onChange={handleChange} className={`${fieldClass("eventDate")} bg-ivory`} />
+                      {eventDateBeforeReopen && (
+                        <p className="mt-2 font-jost text-xs text-charcoal/60 leading-relaxed" role="status">
+                          That&apos;s before I reopen for bridal. Send it anyway and I&apos;ll tell
+                          you honestly whether I can fit it in.
+                        </p>
+                      )}
                     </div>
 
                     {/* ── Service-specific section ─────────────── */}

@@ -39,7 +39,16 @@ interface HomePageText {
 }
 
 interface HomePageData {
-  site: { name: string; tagline: string; subTagline: string; bookingNote: string };
+  site: {
+    name: string;
+    tagline: string;
+    subTagline: string;
+    bookingNote: string;
+    limitedMode: boolean;
+    waitlistServices: string[];
+    reopensLabel: string;
+    limitedNote: string;
+  };
   heroImage: SanityImageType | null;
   trustStats: { value: string; label: string }[];
   services: SanityService[];
@@ -97,6 +106,11 @@ const fadeUp = {
 
 export default function HomePageContent({ data }: { data: HomePageData }) {
   const { site, heroImage, trustStats, services, portfolioItems, bio, aboutSecondaryImage, testimonials, text } = data;
+
+  // While limited availability is on, some services take waitlist requests
+  // instead of bookings.
+  const isWaitlisted = (serviceId: string) =>
+    site.limitedMode && site.waitlistServices.includes(serviceId);
 
   // ── Hero parallax ─────────────────────────────────────────────
   const heroRef = useRef<HTMLElement>(null);
@@ -186,8 +200,14 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                 variants={fadeUp}
               >
                 <span className="relative flex h-2 w-2 flex-shrink-0" aria-hidden="true">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold opacity-50" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-gold" />
+                  {site.limitedMode ? (
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-gold/60" />
+                  ) : (
+                    <>
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold opacity-50" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-gold" />
+                    </>
+                  )}
                 </span>
                 <p className="font-jost text-xs text-charcoal/65 tracking-[0.15em] uppercase">
                   {site.bookingNote}
@@ -303,14 +323,23 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                       <Icon />
                     </div>
                     <div className="w-8 h-px bg-gold/40 mb-6" aria-hidden="true" />
+                    {isWaitlisted(service.id) && (
+                      <p className="font-jost text-[10px] tracking-[0.2em] uppercase text-gold/80 mb-2">
+                        Booking for {site.reopensLabel}
+                      </p>
+                    )}
                     <h3 className="font-cormorant text-ivory text-2xl mb-3">{service.title}</h3>
                     <p className="font-jost text-ivory/50 text-sm leading-relaxed flex-1">{service.shortDescription}</p>
                     <Link
                       href={`/services#${service.id}`}
                       className="mt-6 inline-flex items-center gap-2 font-jost text-xs text-gold tracking-[0.18em] uppercase group-hover:text-gold_light transition-colors duration-300"
-                      aria-label={`Learn more about ${service.title}`}
+                      aria-label={
+                        isWaitlisted(service.id)
+                          ? `Join the waitlist for ${service.title}`
+                          : `Learn more about ${service.title}`
+                      }
                     >
-                      <span>Learn More</span>
+                      <span>{isWaitlisted(service.id) ? "Join the Waitlist" : "Learn More"}</span>
                       <motion.span
                         className="inline-block"
                         animate={{ x: [0, 4, 0] }}
@@ -484,6 +513,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
         headline={text.ctaHeadline}
         subhead={text.ctaSubhead}
         buttonLabel={text.ctaButton}
+        note={site.limitedMode ? site.limitedNote : undefined}
       />
     </>
   );
