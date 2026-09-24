@@ -112,6 +112,12 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
   const isWaitlisted = (serviceId: string) =>
     site.limitedMode && site.waitlistServices.includes(serviceId);
 
+  // Grace picks the home page preview with the "featured" toggle; before anyone
+  // has picked, fall back to the first four in display order.
+  const byOrder = [...portfolioItems].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  const featuredItems = byOrder.filter((item) => item.featured);
+  const previewItems = (featuredItems.length > 0 ? featuredItems : byOrder).slice(0, 4);
+
   // ── Hero parallax ─────────────────────────────────────────────
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress: heroScroll } = useScroll({
@@ -386,7 +392,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-3">
-            {portfolioItems.slice(0, 4).map((item, i) => (
+            {previewItems.map((item, i) => (
               <motion.div
                 key={item._id}
                 className="group relative overflow-hidden cursor-pointer"
@@ -409,6 +415,9 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                 <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/55 transition-all duration-500" aria-hidden="true" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-400 ease-out">
                   <p className="font-cormorant italic text-ivory text-lg leading-tight">{item.label}</p>
+                  {item.caption && (
+                    <p className="font-jost text-ivory/75 text-xs leading-snug mt-1">{item.caption}</p>
+                  )}
                   <div className="w-6 h-px bg-gold mt-2" aria-hidden="true" />
                 </div>
               </motion.div>

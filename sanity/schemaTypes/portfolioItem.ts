@@ -33,10 +33,22 @@ export const portfolioItem = defineType({
         layout: "radio",
       },
     }),
+    defineField({
+      name: "caption",
+      title: "Caption: what was done, e.g. 'French bustle, 5 points, cathedral hem'",
+      description: "The specific work in this photo. Shown under the label on hover and in the lightbox — this is what proves the expertise.",
+      type: "string",
+    }),
+    defineField({
+      name: "featured",
+      title: "Show in home page preview",
+      type: "boolean",
+      initialValue: false,
+    }),
     defineField({ name: "order", title: "Display Order (1 = first)", type: "number" }),
   ],
   orderings: [{ title: "Display Order", name: "orderAsc", by: [{ field: "order", direction: "asc" }] }],
   preview: {
-    select: { title: "label", subtitle: "type", media: "image" },
+    select: { title: "label", subtitle: "caption", media: "image" },
   },
 });

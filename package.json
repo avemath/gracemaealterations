@@ -12,7 +12,9 @@
     "images:upload": "node scripts/upload-images.mjs",
     "images": "npm run images:prepare && npm run images:upload",
     "availability:limited": "node scripts/set-availability.mjs --limited",
-    "availability:open": "node scripts/set-availability.mjs --open"
+    "availability:open": "node scripts/set-availability.mjs --open",
+    "portfolio:export": "node scripts/portfolio-captions.mjs --export",
+    "portfolio:apply": "node scripts/portfolio-captions.mjs --apply"
   },
   "dependencies": {
     "@sanity/image-url": "^1.2.0",
