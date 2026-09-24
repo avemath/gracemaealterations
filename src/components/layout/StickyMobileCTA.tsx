@@ -8,7 +8,13 @@ import { motion, AnimatePresence } from "framer-motion";
 // Pages where the sticky CTA is not useful
 const EXCLUDED = ["/contact", "/studio"];
 
-export default function StickyMobileCTA() {
+interface Props {
+  /** Limited availability: some services are waitlisted, the rest book normally. */
+  limitedMode?: boolean;
+  reopensLabel?: string;
+}
+
+export default function StickyMobileCTA({ limitedMode = false, reopensLabel = "" }: Props) {
   const [visible, setVisible] = useState(false);
   const pathname = usePathname();
 
@@ -43,6 +49,11 @@ export default function StickyMobileCTA() {
           aria-label="Book a consultation"
         >
           <div className="bg-ivory/97 backdrop-blur-md border-t border-blush px-4 py-3 pb-safe">
+            {limitedMode && reopensLabel && (
+              <p className="font-jost text-[10px] tracking-[0.16em] uppercase text-charcoal/50 text-center mb-2">
+                Bridal booking reopens {reopensLabel}
+              </p>
+            )}
             <Link
               href="/contact"
               className="btn-gold block w-full text-center"

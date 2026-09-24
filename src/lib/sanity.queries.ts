@@ -47,6 +47,10 @@ export interface SanitySiteSettings {
   metaDescription?: string;
   isAcceptingClients?: boolean;
   phone?: string;
+  limitedMode?: boolean;
+  waitlistServices?: string[];
+  reopensLabel?: string;
+  limitedNote?: string;
 }
 
 export interface SanityProcessStep {
@@ -305,6 +309,10 @@ export async function getMergedSite() {
     bookingNote: s?.bookingNote ?? SITE.bookingNote,
     isAcceptingClients: s?.isAcceptingClients ?? SITE.isAcceptingClients,
     phone: s?.phone ?? SITE.phone,
+    limitedMode: s?.limitedMode ?? SITE.limitedMode,
+    waitlistServices: s?.waitlistServices ?? SITE.waitlistServices,
+    reopensLabel: s?.reopensLabel ?? SITE.reopensLabel,
+    limitedNote: s?.limitedNote ?? SITE.limitedNote,
   };
 }
 

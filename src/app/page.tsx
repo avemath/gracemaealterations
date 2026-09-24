@@ -22,7 +22,16 @@ export default async function HomePage() {
   return (
     <HomePageContent
       data={{
-        site: { name: site.name, tagline: site.tagline, subTagline: site.subTagline, bookingNote: site.bookingNote },
+        site: {
+          name: site.name,
+          tagline: site.tagline,
+          subTagline: site.subTagline,
+          bookingNote: site.bookingNote,
+          limitedMode: site.limitedMode,
+          waitlistServices: site.waitlistServices,
+          reopensLabel: site.reopensLabel,
+          limitedNote: site.limitedNote,
+        },
         heroImage: home.heroImage,
         trustStats: home.trustStats,
         services,

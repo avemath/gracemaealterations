@@ -21,7 +21,16 @@ export const SITE = {
   responseTime: "I respond to all inquiries within 24 hours.",
   bookingNote: "Now scheduling Spring & Summer 2026 consultations",
   phone: "",                    // ← UPDATE: Your business phone number (e.g. "(412) 555-0000") — leave blank to hide
-  isAcceptingClients: true,     // ← Set to false to put the contact form into Waitlist mode
+  isAcceptingClients: true,     // ← Set to false to put the WHOLE contact form into Waitlist mode
+
+  // ── Limited availability ────────────────────────────────────
+  // Per-service version of the switch above: the site stays open for
+  // everything except the services listed in waitlistServices.
+  // Toggle with: npm run availability:limited / npm run availability:open
+  limitedMode: false,
+  waitlistServices: [] as string[],   // e.g. ["bridal"]
+  reopensLabel: "",                   // e.g. "early 2027"
+  limitedNote: "",                    // one line shown under the hero and on the contact page
   metaDescription:
     "Expert bridal and clothing alterations in Pittsburgh, PA. Grace Mae offers precision tailoring, wedding dress alterations, and custom work by appointment. Honest timelines. Exceptional craft.",
 };
@@ -293,7 +302,12 @@ export const FAQ = [
   {
     question: "Are you taking new clients?",
     answer:
-      "Yes — I'm currently accepting new clients for both bridal and everyday tailoring. I work by appointment only, so reach out through the contact form or email to check availability and schedule your first consultation.",
+      "Yes, for everyday tailoring and small repairs. Bridal and larger custom projects reopen early 2027. You can join the waitlist now and I'll contact you in order as dates open. If your date is sooner, mention it in your request and I'll tell you honestly whether it's possible.",
+  },
+  {
+    question: "When does bridal booking reopen?",
+    answer:
+      "Early 2027. Join the waitlist from the contact page and I'll reach out in order.",
   },
 ];
 

@@ -8,6 +8,8 @@ interface CTABannerProps {
   subhead?: string;
   buttonLabel?: string;
   buttonHref?: string;
+  /** Optional availability line shown under the button (limited mode). */
+  note?: string;
 }
 
 export default function CTABanner({
@@ -15,6 +17,7 @@ export default function CTABanner({
   subhead = "Book a consultation in Pittsburgh today.",
   buttonLabel = "Get in Touch",
   buttonHref = "/contact",
+  note,
 }: CTABannerProps) {
   return (
     <section className="relative bg-near_black py-20 lg:py-28 px-6 overflow-hidden" aria-labelledby="cta-heading">
@@ -62,6 +65,12 @@ export default function CTABanner({
           <Button variant="outline-ivory" href={buttonHref}>
             {buttonLabel}
           </Button>
+
+          {note && (
+            <p className="font-jost text-ivory/45 text-xs leading-relaxed max-w-md mx-auto mt-8">
+              {note}
+            </p>
+          )}
         </motion.div>
       </div>
     </section>

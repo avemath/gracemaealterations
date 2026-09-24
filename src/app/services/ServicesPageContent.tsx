@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import SanityImage from "@/components/ui/SanityImage";
 import RevealText from "@/components/ui/RevealText";
@@ -25,12 +26,23 @@ interface ServicesPageData {
   ctaButton: string;
 }
 
+interface Availability {
+  limitedMode: boolean;
+  waitlistServices: string[];
+  reopensLabel: string;
+  limitedNote: string;
+}
+
 interface Props {
   services: SanityService[];
   page: ServicesPageData;
+  availability: Availability;
 }
 
-export default function ServicesPageContent({ services, page }: Props) {
+export default function ServicesPageContent({ services, page, availability }: Props) {
+  const { limitedMode, waitlistServices, reopensLabel } = availability;
+  const isWaitlisted = (serviceId: string) =>
+    limitedMode && waitlistServices.includes(serviceId);
   // ── Hero parallax ───────────────────────────────────────────
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress: heroScroll } = useScroll({
@@ -111,15 +123,40 @@ export default function ServicesPageContent({ services, page }: Props) {
                   0{i + 1}
                 </p>
                 <div className="w-12 h-px bg-gold mb-6" aria-hidden="true" />
+
+                {isWaitlisted(service.id) && (
+                  <div className="border border-gold/30 bg-gold/5 p-5 mb-8 max-w-2xl">
+                    <p className="font-jost text-charcoal/70 text-sm leading-relaxed">
+                      {service.title} booking reopens {reopensLabel}. I&apos;m taking a limited
+                      waitlist now and will reach out in order as dates open.
+                    </p>
+                    <Link
+                      href={`/contact?service=${service.id}`}
+                      className="mt-4 inline-flex items-center gap-2 font-jost text-xs text-gold tracking-[0.18em] uppercase hover:text-gold_dark transition-colors duration-300"
+                    >
+                      Join the {service.title.split(" ")[0]} Waitlist
+                    </Link>
+                  </div>
+                )}
+
                 <h2
                   id={`${service.id}-heading`}
                   className="font-cormorant italic text-charcoal text-4xl lg:text-5xl mb-6"
                 >
                   {service.title}
                 </h2>
-                <p className="font-jost text-charcoal/65 text-base leading-relaxed max-w-2xl mb-12">
-                  {service.description}
-                </p>
+                <div className="mb-12">
+                  <p className="font-jost text-charcoal/65 text-base leading-relaxed max-w-2xl">
+                    {service.description}
+                  </p>
+
+                  {limitedMode && service.id === "custom" && !isWaitlisted(service.id) && (
+                    <p className="font-jost text-charcoal/65 text-base leading-relaxed max-w-2xl mt-4">
+                      Small repairs are open now; larger construction and restoration projects are
+                      booking for {reopensLabel}.
+                    </p>
+                  )}
+                </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
                   <div>
@@ -198,6 +235,7 @@ export default function ServicesPageContent({ services, page }: Props) {
         headline={page.ctaHeadline}
         subhead={page.ctaSubhead}
         buttonLabel={page.ctaButton}
+        note={limitedMode ? availability.limitedNote : undefined}
       />
     </>
   );
