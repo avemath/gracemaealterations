@@ -21,21 +21,26 @@ export default async function Image() {
     // Fall back to the flat ivory card
   }
 
-  // Cormorant Garamond Italic for the headline
-  let fontData: ArrayBuffer | null = null;
-  try {
-    const css = await fetch(
-      "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400",
-      { headers: { "User-Agent": "Mozilla/5.0" } }
-    ).then((r) => r.text());
+  /** Pull one Google font file out of the CSS the API returns. */
+  async function loadFont(family: string): Promise<ArrayBuffer | null> {
+    try {
+      const css = await fetch(`https://fonts.googleapis.com/css2?family=${family}`, {
+        headers: { "User-Agent": "Mozilla/5.0" },
+      }).then((r) => r.text());
 
-    const match = css.match(/src:\s*url\(([^)]+)\)/);
-    if (match?.[1]) {
-      fontData = await fetch(match[1]).then((r) => r.arrayBuffer());
+      const match = css.match(/src:\s*url\(([^)]+)\)/);
+      return match?.[1] ? await fetch(match[1]).then((r) => r.arrayBuffer()) : null;
+    } catch {
+      return null; // fall back to a system face
     }
-  } catch {
-    // Fall back to system serif
   }
+
+  // Cormorant Garamond Italic for the headline, Jost for the one sans line —
+  // without Jost embedded, satori renders that line in the serif too.
+  const [fontData, sansData] = await Promise.all([
+    loadFont("Cormorant+Garamond:ital,wght@1,400"),
+    loadFont("Jost:wght@300"),
+  ]);
 
   return new ImageResponse(
     (
@@ -106,7 +111,7 @@ export default async function Image() {
         >
           <div
             style={{
-              fontFamily: "sans-serif",
+              fontFamily: sansData ? "Jost" : "sans-serif",
               fontSize: "14px",
               letterSpacing: "0.22em",
               textTransform: "uppercase",
@@ -142,12 +147,13 @@ export default async function Image() {
 
           <div
             style={{
-              fontFamily: "sans-serif",
-              fontSize: "22px",
+              fontFamily: sansData ? "Jost" : "sans-serif",
+              fontSize: "20px",
               color: "rgba(28,28,28,0.62)",
               letterSpacing: "0.02em",
               lineHeight: 1.45,
-              maxWidth: "440px",
+              // Wide enough for the tagline to sit on one line in Jost.
+              maxWidth: "560px",
             }}
           >
             Sewn with precision. Every stitch tailored to you.
@@ -157,9 +163,14 @@ export default async function Image() {
     ),
     {
       ...size,
-      fonts: fontData
-        ? [{ name: "Cormorant", data: fontData, style: "italic" as const }]
-        : [],
+      fonts: [
+        ...(fontData
+          ? [{ name: "Cormorant", data: fontData, style: "italic" as const }]
+          : []),
+        ...(sansData
+          ? [{ name: "Jost", data: sansData, weight: 300 as const, style: "normal" as const }]
+          : []),
+      ],
     }
   );
 }

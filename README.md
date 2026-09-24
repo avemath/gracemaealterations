@@ -105,6 +105,30 @@ SITE_URL=https://gracemaealterations.com
 
 `NEXT_PUBLIC_*` variables are exposed to the browser. All others are server-side only.
 
+## Content Scripts
+
+All run from `site/` and need `SANITY_API_TOKEN` in `.env.local`.
+
+| Command | What it does |
+|---|---|
+| `npm run images` | Prepare and upload in one go |
+| `npm run images:prepare` | Copies the source photos into `assets/source-images/`, writes print-quality JPEGs to `assets/prepared/` (git-ignored), splits the service-card triptych, and builds `public/og-bg.jpg` |
+| `npm run images:upload` | Uploads `assets/prepared/` to Sanity and points each page field at the right asset with its hotspot. Reuses an asset when one already exists under the same filename, so re-running is free |
+| `npm run availability:limited` | Turns on limited availability: bridal goes to a waitlist, tailoring and small repairs stay open, and the hero pill, contact page and FAQ update to match |
+| `npm run availability:open` | Reopens everything and restores the normal copy |
+| `npm run portfolio:export` | Resolves the portfolio caption table into `content/portfolio-captions.json` for review |
+| `npm run portfolio:apply` | Patches Sanity from that file |
+| `node scripts/portfolio-captions.mjs --fetch` | Downloads every portfolio photo to `/tmp/portfolio/` so captions can be matched to the right image |
+| `node scripts/seed-sanity.mjs` | Populates a fresh dataset from `src/data/content.ts` |
+
+**Replacing a photo that is already in Sanity:** uploads dedupe on the original
+filename, so drop the new file in, then bump that file's entry in the `VERSIONS`
+map in `scripts/upload-images.mjs` — otherwise the old asset is silently reused.
+
+**Availability** is per service. `siteSettings.isAcceptingClients` is the older
+all-or-nothing switch and should stay on; `limitedMode` plus `waitlistServices`
+is what closes bridal while the rest of the site keeps booking.
+
 ## Running in Development
 
 ```sh

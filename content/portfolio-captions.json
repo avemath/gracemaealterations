@@ -150,7 +150,7 @@
     },
     {
       "_id": "a12744e1-6446-4eef-938c-3a1f402a4c35",
-      "currentLabel": "Printed Shirt",
+      "currentLabel": "Batik Top",
       "label": "Batik Top",
       "type": "custom",
       "caption": "Custom batik top, zipper set into the back",
@@ -162,7 +162,7 @@
     },
     {
       "_id": "25346c58-2468-41d8-a5ee-6f9aa50b7573",
-      "currentLabel": "Printed Shirt",
+      "currentLabel": "Batik Top",
       "label": "Batik Top",
       "type": "custom",
       "caption": "Custom batik top, zipper detail",
@@ -174,7 +174,7 @@
     },
     {
       "_id": "98ee15d2-6f94-4daa-a40f-2b3f937039b1",
-      "currentLabel": "Shirt and Blazer",
+      "currentLabel": "Batik Set",
       "label": "Batik Set",
       "type": "custom",
       "caption": "Custom batik set: cropped top and matching overshirt",
@@ -198,7 +198,7 @@
     },
     {
       "_id": "81369df5-f419-487d-a1d2-23981f482ad0",
-      "currentLabel": "Costume Fitting",
+      "currentLabel": "Annie Costume",
       "label": "Annie Costume",
       "type": "custom",
       "caption": "Costume built for the title role in Annie",
@@ -249,8 +249,8 @@
       "currentLabel": "Child's Blazer",
       "label": "Child's Blazer",
       "type": "custom",
-      "caption": "Custom child's blazer in pink houndstooth",
-      "alt": "Child's Blazer: Custom child's blazer in pink houndstooth",
+      "caption": "Custom child's blazer in red houndstooth",
+      "alt": "Child's Blazer: Custom child's blazer in red houndstooth",
       "featured": false,
       "order": 22,
       "verify": null,
@@ -282,7 +282,7 @@
     },
     {
       "_id": "41c1d493-dddf-4149-a9a9-52ef96416bc3",
-      "currentLabel": "Process",
+      "currentLabel": "Draping in Progress",
       "label": "Draping in Progress",
       "type": "custom",
       "caption": "Muslin draped and marked on the form",

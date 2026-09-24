@@ -86,7 +86,7 @@ const ROWS = {
 
   20: { label: "Yellow Satin Dress", type: "custom", retype: true, caption: "The same dress from the back, seams shaped through the waist", featured: false },
   21: { label: "Floral Dress", type: "custom", retype: true, caption: "Custom floral dress with lace sashes at the hip", featured: false },
-  22: { label: "Child's Blazer", type: "custom", retype: true, caption: "Custom child's blazer in pink houndstooth", featured: false },
+  22: { label: "Child's Blazer", type: "custom", retype: true, caption: "Custom child's blazer in red houndstooth", featured: false },
   23: { label: "Child's Blazer", type: "custom", retype: true, caption: "The same blazer in progress, pieces cut and interfaced", featured: false },
   24: { label: "Bodice in Progress", type: "custom", caption: "Muslin bodice pinned and marked on the form", featured: false },
   25: { label: "Draping in Progress", type: "custom", caption: "Muslin draped and marked on the form", featured: false },
