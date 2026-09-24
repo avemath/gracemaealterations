@@ -90,7 +90,7 @@ export default function ServicesPageContent({ services, page, availability }: Pr
 
         <div className="relative z-20 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-14 pt-36 lg:pt-44">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <p className="section-label mb-4">{page.heroLabel}</p>
+            <p className="section-label text-gold_dark mb-4">{page.heroLabel}</p>
             <RevealText onMount delay={0.2}>
               <h1 className="font-cormorant italic text-charcoal text-5xl lg:text-7xl mb-5">{page.heroHeading}</h1>
             </RevealText>

@@ -109,7 +109,8 @@ export default function AboutPageContent({ site, about, values }: Props) {
 
         <div className="relative z-20 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-40 pt-32">
           <motion.p
-            className="section-label text-gold/80 mb-4"
+            className="section-label text-gold_light mb-4"
+            style={{ textShadow: "0 1px 4px rgba(0,0,0,0.5)" }}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
