@@ -35,7 +35,7 @@ const jost = Jost({
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getMergedSite();
   return {
-    metadataBase: new URL("https://gracemaealterations.com"), // UPDATE: your actual domain
+    metadataBase: new URL("https://gracemaealterations.com"),
     title: {
       default: `${site.name} | Bridal & Clothing Alterations | Pittsburgh, PA`,
       template: `%s | ${site.businessName}`,
@@ -58,14 +58,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: site.businessName,
       title: `${site.name} | Bridal & Clothing Alterations | Pittsburgh, PA`,
       description: site.metaDescription,
-      images: [
-        {
-          url: "/og-image.png",
-          width: 1200,
-          height: 630,
-          alt: `${site.businessName} — Pittsburgh bridal alterations`,
-        },
-      ],
+      // No images here on purpose: Next resolves the opengraph-image route.
     },
     twitter: {
       card: "summary_large_image",
@@ -76,9 +69,6 @@ export async function generateMetadata(): Promise<Metadata> {
       index: true,
       follow: true,
       googleBot: { index: true, follow: true },
-    },
-    alternates: {
-      canonical: "https://gracemaealterations.com",
     },
   };
 }
@@ -101,7 +91,7 @@ export default async function RootLayout({
     description: site.metaDescription,
     url: "https://gracemaealterations.com",
     email: site.email,
-    image: "https://gracemaealterations.com/og-image.png",
+    image: "https://gracemaealterations.com/opengraph-image",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Pittsburgh",
