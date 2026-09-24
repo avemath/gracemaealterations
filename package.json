@@ -7,7 +7,10 @@
     "build": "next build && next-sitemap",
     "postbuild": "next-sitemap",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "images:prepare": "node scripts/prepare-images.mjs",
+    "images:upload": "node scripts/upload-images.mjs",
+    "images": "npm run images:prepare && npm run images:upload"
   },
   "dependencies": {
     "@sanity/image-url": "^1.2.0",
@@ -30,6 +33,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.35",
     "postcss": "^8",
+    "sharp": "^0.35.4",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
