@@ -49,6 +49,11 @@ export const portfolioItem = defineType({
   ],
   orderings: [{ title: "Display Order", name: "orderAsc", by: [{ field: "order", direction: "asc" }] }],
   preview: {
-    select: { title: "label", subtitle: "caption", media: "image" },
+    select: { title: "label", caption: "caption", type: "type", media: "image" },
+    prepare: ({ title, caption, type, media }) => ({
+      title,
+      subtitle: caption || type,
+      media,
+    }),
   },
 });
