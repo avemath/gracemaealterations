@@ -1,12 +1,27 @@
 import { ImageResponse } from "next/og";
+import { readFileSync } from "fs";
+import { join } from "path";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const alt = "Grace Mae Alterations — Pittsburgh Bridal Alterations";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+const IVORY = "#FAF7F2";
+const CHARCOAL = "#1C1C1C";
+const GOLD = "#C9A84C";
+
 export default async function Image() {
-  // Try to load Cormorant Garamond Italic for the headline
+  // Photographic background: silk on the left, lace and a thimble lower right.
+  let background: string | null = null;
+  try {
+    const file = readFileSync(join(process.cwd(), "public", "og-bg.jpg"));
+    background = `data:image/jpeg;base64,${file.toString("base64")}`;
+  } catch {
+    // Fall back to the flat ivory card
+  }
+
+  // Cormorant Garamond Italic for the headline
   let fontData: ArrayBuffer | null = null;
   try {
     const css = await fetch(
@@ -28,13 +43,43 @@ export default async function Image() {
         style={{
           width: "100%",
           height: "100%",
-          background: "#FAF7F2",
+          background: IVORY,
           display: "flex",
-          flexDirection: "column",
-          padding: "72px 80px",
           position: "relative",
         }}
       >
+        {/* Full-bleed photograph */}
+        {background && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={background}
+            alt=""
+            width={size.width}
+            height={size.height}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
+        )}
+
+        {/* Ivory wash behind the text block so the copy stays legible */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            bottom: 0,
+            width: "55%",
+            background:
+              "linear-gradient(to right, rgba(250,247,242,0.95) 0%, rgba(250,247,242,0.88) 55%, rgba(250,247,242,0) 100%)",
+          }}
+        />
+
         {/* Left gold accent bar */}
         <div
           style={{
@@ -43,93 +88,69 @@ export default async function Image() {
             top: 0,
             bottom: 0,
             width: "6px",
-            background: "#C9A84C",
+            background: GOLD,
           }}
         />
 
-        {/* Top label */}
+        {/* Text block over the left 55% */}
         <div
           style={{
-            fontFamily: "sans-serif",
-            fontSize: "14px",
-            letterSpacing: "0.22em",
-            textTransform: "uppercase",
-            color: "#C9A84C",
-            marginBottom: "32px",
-            marginLeft: "2px",
-          }}
-        >
-          Pittsburgh, PA · Bridal &amp; Clothing Alterations
-        </div>
-
-        {/* Main headline */}
-        <div
-          style={{
-            fontFamily: fontData ? "Cormorant" : "Georgia, serif",
-            fontStyle: "italic",
-            fontSize: "118px",
-            color: "#1C1C1C",
-            lineHeight: 0.88,
-            marginBottom: "36px",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Grace Mae
-        </div>
-
-        {/* Gold rule */}
-        <div
-          style={{
-            width: "56px",
-            height: "2px",
-            background: "#C9A84C",
-            marginBottom: "28px",
-          }}
-        />
-
-        {/* Tagline */}
-        <div
-          style={{
-            fontFamily: "sans-serif",
-            fontSize: "24px",
-            color: "rgba(28,28,28,0.5)",
-            letterSpacing: "0.02em",
-            flex: 1,
-          }}
-        >
-          Sewn with precision.
-        </div>
-
-        {/* Bottom bar */}
-        <div
-          style={{
+            position: "relative",
             display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            borderTop: "1px solid #E8E0D8",
-            paddingTop: "28px",
+            flexDirection: "column",
+            justifyContent: "center",
+            width: "55%",
+            height: "100%",
+            padding: "72px 0 72px 80px",
           }}
         >
           <div
             style={{
               fontFamily: "sans-serif",
-              fontSize: "18px",
-              color: "rgba(28,28,28,0.35)",
-              letterSpacing: "0.08em",
+              fontSize: "14px",
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              color: GOLD,
+              marginBottom: "28px",
             }}
           >
-            gracemaealterations.com
+            Pittsburgh Bridal Alterations
           </div>
+
+          <div
+            style={{
+              fontFamily: fontData ? "Cormorant" : "Georgia, serif",
+              fontStyle: "italic",
+              fontSize: "112px",
+              color: CHARCOAL,
+              lineHeight: 0.9,
+              letterSpacing: "-0.01em",
+              marginBottom: "32px",
+            }}
+          >
+            Grace Mae
+          </div>
+
+          <div
+            style={{
+              width: "56px",
+              height: "2px",
+              background: GOLD,
+              marginBottom: "28px",
+            }}
+          />
+
           <div
             style={{
               fontFamily: "sans-serif",
-              fontSize: "13px",
-              color: "#C9A84C",
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
+              fontSize: "22px",
+              color: "rgba(28,28,28,0.62)",
+              letterSpacing: "0.02em",
+              lineHeight: 1.45,
+              maxWidth: "440px",
             }}
           >
-            By Appointment Only
+            Sewn with precision. Every stitch tailored to you.
           </div>
         </div>
       </div>
