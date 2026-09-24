@@ -62,33 +62,36 @@ const IMAGE_DIR = "/tmp/portfolio";
 
 const ROWS = {
   1: { label: "Bridal Gown", type: "bridal", caption: "Bustle added and detachable sleeves constructed, worn on the day", featured: true },
-  2: { label: "Bridal Gown", type: "bridal", caption: "Lace gown after the final fitting, pressed and ready for pickup", featured: true, verify: "alt was \"4\"" },
+  2: { label: "Bridal Gown", type: "bridal", caption: "The same gown on the wedding morning, detachable sleeves on", featured: true },
   3: { label: "Bustle Fitting", type: "bridal", caption: "Train gathered and pinned at the bustle fitting", featured: true },
   4: { label: "Bridal Party", type: "bridal", caption: "Full bridal party, every dress fitted and altered", featured: true },
   5: { label: "Bustle", type: "bridal", caption: "Bustle set, train secured for the reception", featured: false, verify: "bustle style and number of points" },
   6: { label: "Bustle", type: "bridal", caption: "Bustle set, train secured for the reception", featured: false, verify: "bustle style and number of points" },
-  7: { label: "Bride and Bridesmaid", type: "bridal", caption: "Both dresses altered for the day", featured: false, verify: "what was done to each dress" },
-  8: { label: "Final Press", type: "bridal", caption: "Steamed and pressed before pickup", featured: false },
+  7: { label: "Bride and Bridesmaid", type: "bridal", caption: "Bridesmaid dress: skirt waist taken in and hem raised 3 inches", featured: false },
+  8: { label: "Final Press", type: "bridal", caption: "Steaming on the wedding morning — a final press is included before every pickup", featured: false },
 
   10: { label: "Bridesmaid Dress", type: "tailoring", caption: "Magenta satin, hem raised and skirt waist taken in", featured: false },
   11: { label: "Bridesmaid Dress", type: "tailoring", caption: "Back view: waist taken in and corset closure repaired", featured: false },
   12: { label: "Evening Gown", type: "tailoring", caption: "Hem raised and slit re-cut to length", featured: false },
   13: { label: "Hem in Progress", type: "tailoring", caption: "Pinned and marked at the first fitting", featured: false },
-  14: { label: "Printed Shirt", type: "tailoring", retype: true, caption: "Zipper installed on a printed shirt", featured: false, verify: "replaced or newly added" },
-  15: { label: "Printed Shirt", type: "tailoring", retype: true, caption: "Zipper installed, detail", featured: false, verify: "replaced or newly added" },
-  16: { label: "Shirt and Blazer", type: "tailoring", retype: true, caption: "Printed shirt and blazer, tailored to fit", featured: false, verify: "made from scratch or altered" },
-  17: { label: "Swim Top", type: "tailoring", retype: true, caption: "Straps shortened and re-secured", featured: false, verify: "what the fix was" },
-  18: { label: "Costume Fitting", type: "custom", retype: true, caption: "Stage costume fitted for a production", featured: false, verify: "which production" },
-  19: { label: "Yellow Satin Dress", type: "tailoring", retype: true, caption: "Fitted through the bodice and hem", featured: false, verify: "alteration or custom build" },
 
-  20: { label: "Yellow Satin Dress", type: "tailoring", retype: true, caption: "Bodice detail after fitting", featured: false, verify: "same garment as 19" },
-  21: { label: "Floral Dress", type: "custom", caption: "Floral print dress", featured: false, verify: "custom build or alteration" },
-  22: { label: "Child's Blazer", type: "tailoring", retype: true, caption: "Pink blazer sized down through the sleeves and body", featured: false, verify: "what was taken in" },
-  23: { label: "Child's Blazer", type: "tailoring", retype: true, caption: "In progress, opened up and pinned for resizing", featured: false, verify: "what was taken in" },
-  24: { label: "Bodice in Progress", type: "custom", caption: "Boned bodice pinned on the form during construction", featured: false, verify: "what this became" },
-  25: { label: "In Progress", type: "custom", caption: "Sash and closure fitted on the form", featured: false, verify: "what this became" },
-  26: { label: "Horned Ski Mask", type: "custom", caption: "Custom horned balaclava", featured: false, verify: "knit or crochet" },
-  27: { label: "Boxer Shorts", type: "custom", caption: "Custom boxer shorts in green plaid", featured: false, verify: "how many pairs, and the monogram" },
+  // Everything below is something Grace built, so it belongs in Custom even
+  // though a few of them read like repairs from the outside.
+  14: { label: "Batik Top", type: "custom", retype: true, caption: "Custom batik top, zipper set into the back", featured: false },
+  15: { label: "Batik Top", type: "custom", retype: true, caption: "Custom batik top, zipper detail", featured: false },
+  16: { label: "Batik Set", type: "custom", retype: true, caption: "Custom batik set: cropped top and matching overshirt", featured: false },
+  17: { label: "Swim Top", type: "custom", retype: true, caption: "Custom swim top, made to fit", featured: false },
+  18: { label: "Annie Costume", type: "custom", retype: true, caption: "Costume built for the title role in Annie", featured: false },
+  19: { label: "Yellow Satin Dress", type: "custom", retype: true, caption: "Custom yellow satin dress, built from scratch", featured: false },
+
+  20: { label: "Yellow Satin Dress", type: "custom", retype: true, caption: "The same dress from the back, seams shaped through the waist", featured: false },
+  21: { label: "Floral Dress", type: "custom", retype: true, caption: "Custom floral dress with lace sashes at the hip", featured: false },
+  22: { label: "Child's Blazer", type: "custom", retype: true, caption: "Custom child's blazer in pink houndstooth", featured: false },
+  23: { label: "Child's Blazer", type: "custom", retype: true, caption: "The same blazer in progress, pieces cut and interfaced", featured: false },
+  24: { label: "Bodice in Progress", type: "custom", caption: "Muslin bodice pinned and marked on the form", featured: false },
+  25: { label: "Draping in Progress", type: "custom", caption: "Muslin draped and marked on the form", featured: false },
+  26: { label: "Horned Ski Mask", type: "custom", caption: "Custom horned balaclava", featured: false },
+  27: { label: "Boxer Shorts", type: "custom", caption: "Custom boxer shorts, made in a batch with one pair monogrammed", featured: false },
 };
 
 // ── Photo-confirmed matches ───────────────────────────────────────────────────
@@ -121,27 +124,16 @@ const RESOLVED = {
   "001b1260-b73b-4b50-94e3-c72faf778d6f": 22, // pink houndstooth blazer laid flat
   "4b1c2b0d-904f-4226-9f39-d183cf6c837a": 23, // the same blazer opened up into pieces
   "1f52fb95-e5f7-4032-8b2a-b89da931892a": 24, // muslin bodice pinned and marked on a form
+  "41c1d493-dddf-4149-a9a9-52ef96416bc3": 25, // muslin draped on a form, CUT 2 marked
   "e6daa0fc-a9a8-4963-90bf-343fddb4b0cc": 26, // blue spiked balaclava
   "50bc4ba0-e405-41d6-aeaa-c51bf8d2885a": 27, // a batch of boxer shorts in assorted prints
 };
 
 /** Photo does not match the row's caption — patch everything but the caption. */
-const CAPTION_NEEDS_GRACE = {
-  "23222aa8-d791-4928-8fac-c998dbe08747":
-    "Photo is the bride being fastened into the gown on the morning, not a pressed gown ready for pickup.",
-  "23c4f86c-438e-4ec1-9b6a-9f53960f4e7d":
-    "Photo is a full-length back view, not a bodice close-up.",
-  "1f52fb95-e5f7-4032-8b2a-b89da931892a":
-    "Muslin bodice pinned on the form — no boning visible, so \"boned bodice\" is unconfirmed.",
-  "50bc4ba0-e405-41d6-aeaa-c51bf8d2885a":
-    "Photo is a batch of many pairs in assorted prints (one monogrammed HH), not a single green plaid pair.",
-};
+const CAPTION_NEEDS_GRACE = {};
 
 /** No row describes this photo — left exactly as it is. */
-const UNMATCHED = {
-  "41c1d493-dddf-4149-a9a9-52ef96416bc3":
-    "\"Process\": muslin draping on a form with a loose panel and CUT 2 marked. Row 25 describes a sash or belt, which this is not.",
-};
+const UNMATCHED = {};
 
 // ── Before/after slider ───────────────────────────────────────────────────────
 
