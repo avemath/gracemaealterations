@@ -1,5 +1,20 @@
+import type { Metadata } from "next";
 import { getMergedSite, getMergedFaq, getMergedContactPage } from "@/lib/sanity.queries";
 import ContactPageContent from "./ContactPageContent";
+
+export const metadata: Metadata = {
+  title: { absolute: "Book a Consultation | Grace Mae Alterations | Pittsburgh, PA" },
+  description:
+    "Request a bridal or tailoring consultation in Pittsburgh. Every inquiry gets a personal reply.",
+  alternates: { canonical: "https://gracemaealterations.com/contact" },
+  openGraph: {
+    title: "Book a Consultation | Grace Mae Alterations | Pittsburgh, PA",
+    description:
+      "Request a bridal or tailoring consultation in Pittsburgh. Every inquiry gets a personal reply.",
+    url: "https://gracemaealterations.com/contact",
+  },
+};
+
 
 export default async function ContactPage() {
   const [site, faq, page] = await Promise.all([

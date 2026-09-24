@@ -39,8 +39,9 @@ export default function SanityImage({
 
     // Crop around the editor's hotspot instead of the centre of the frame.
     const hotspot = image.hotspot;
+    const pct = (n: number) => `${Math.round(n * 10000) / 100}%`;
     const objectPosition = hotspot
-      ? `${hotspot.x * 100}% ${hotspot.y * 100}%`
+      ? `${pct(hotspot.x)} ${pct(hotspot.y)}`
       : "50% 50%";
 
     if (fill) {
