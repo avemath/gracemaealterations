@@ -47,7 +47,7 @@ export default function Navbar({ siteName, businessName }: NavbarProps) {
         {/* Dark gradient layer — visible when not scrolled, fades out on scroll */}
         <div
           className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ${showBg ? "opacity-0" : "opacity-100"}`}
-          style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.18) 65%, transparent 100%)" }}
+          style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.5) 45%, rgba(0,0,0,0.22) 78%, transparent 100%)" }}
           aria-hidden="true"
         />
 
@@ -65,7 +65,7 @@ export default function Navbar({ siteName, businessName }: NavbarProps) {
           {/* Logo / Name */}
           <Link
             href="/"
-            className={`font-cormorant italic text-xl lg:text-2xl transition-colors duration-300 tracking-wide ${showBg ? "text-gold hover:text-gold_light" : "text-gold hover:text-gold_light"}`}
+            className={`font-cormorant italic text-xl lg:text-2xl transition-colors duration-300 tracking-wide ${showBg ? "text-gold hover:text-gold_dark" : "text-gold_light hover:text-ivory"}`}
             aria-label={`${businessName} — home`}
           >
             {siteName}
@@ -80,7 +80,7 @@ export default function Navbar({ siteName, businessName }: NavbarProps) {
                 className={`relative font-jost font-medium text-xs tracking-[0.18em] uppercase transition-colors duration-300 group ${
                   showBg
                     ? pathname === link.href ? "text-gold_dark" : "text-gold hover:text-gold_dark"
-                    : pathname === link.href ? "text-ivory" : "text-ivory/80 hover:text-ivory"
+                    : pathname === link.href ? "text-ivory" : "text-ivory/90 hover:text-ivory"
                 }`}
               >
                 {link.label}
