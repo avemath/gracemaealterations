@@ -11,6 +11,7 @@ import type { SanityImage as SanityImageType, SanityValue } from "@/lib/sanity.q
 interface AboutData {
   heroImage: SanityImageType | null;
   secondaryImage: SanityImageType | null;
+  portraitImage: SanityImageType | null;
   heroLabel: string;
   storyLabel: string;
   storyHeading: string;
@@ -80,7 +81,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
               priority
               placeholderLabel="ABOUT_HERO_IMAGE"
               placeholderRatio="landscape"
-              alt={`${site.name} — Pittsburgh seamstress at work`}
+              alt={about.heroImage?.alt ?? `${site.name} — Pittsburgh seamstress at work`}
               sizes="100vw"
             />
           </motion.div>
@@ -152,10 +153,9 @@ export default function AboutPageContent({ site, about, values }: Props) {
               <div className="relative">
                 <RevealImage delay={0.2}>
                   <SanityImage
-                    image={about.secondaryImage}
-                    placeholderLabel="ABOUT_SECONDARY_IMAGE"
-                    placeholderRatio="tall"
-                    alt="Close-up of hands at work — precision sewing"
+                    image={about.portraitImage ?? about.secondaryImage}
+                    placeholderLabel="ABOUT_PORTRAIT_IMAGE"
+                    placeholderRatio="square"
                   />
                 </RevealImage>
                 <motion.div

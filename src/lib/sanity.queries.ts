@@ -20,7 +20,14 @@ import {
 // ── TYPES ─────────────────────────────────────────────────────
 
 export interface SanityImage {
-  asset?: { _ref?: string; _id?: string; url?: string };
+  asset?: {
+    _ref?: string;
+    _id?: string;
+    url?: string;
+    metadata?: {
+      dimensions?: { width: number; height: number; aspectRatio: number };
+    };
+  };
   alt?: string;
   hotspot?: { x: number; y: number };
 }
@@ -77,6 +84,7 @@ export interface SanityHomePage {
 export interface SanityAboutPage {
   heroImage?: SanityImage;
   secondaryImage?: SanityImage;
+  portraitImage?: SanityImage;
   heroLabel?: string;
   storyLabel?: string;
   storyHeading?: string;
@@ -144,6 +152,7 @@ export interface SanityService {
   priceRange: string;
   priceNote: string;
   freeConsult?: string;
+  cardImage?: SanityImage | null;
 }
 
 export interface SanityPortfolioItem {
@@ -210,6 +219,7 @@ export async function getAboutPage(): Promise<SanityAboutPage | null> {
   return safeFetch(`*[_type == "aboutPage"][0]{
     heroImage{ asset->, alt, hotspot },
     secondaryImage{ asset->, alt, hotspot },
+    portraitImage{ asset->, alt, hotspot },
     heroLabel, storyLabel, storyHeading,
     paragraph1, paragraph2, paragraph3, pullQuote,
     valuesLabel, valuesHeading,
@@ -252,7 +262,8 @@ export async function getServices(): Promise<SanityService[] | null> {
   return safeFetch(`*[_type == "service"] | order(order asc) {
     _id, title, "id": slug.current, icon,
     shortDescription, description, services,
-    priceRange, priceNote, freeConsult
+    priceRange, priceNote, freeConsult,
+    cardImage{ asset->, alt, hotspot }
   }`);
 }
 
@@ -326,6 +337,7 @@ export async function getMergedAboutPage() {
   return {
     heroImage: a?.heroImage ?? null,
     secondaryImage: a?.secondaryImage ?? null,
+    portraitImage: a?.portraitImage ?? null,
     heroLabel: a?.heroLabel ?? ABOUT_TEXT.heroLabel,
     storyLabel: a?.storyLabel ?? ABOUT_TEXT.storyLabel,
     storyHeading: a?.storyHeading ?? ABOUT_TEXT.storyHeading,
@@ -406,6 +418,7 @@ export async function getMergedServices() {
     priceRange: svc.priceRange,
     priceNote: svc.priceNote,
     freeConsult: svc.freeConsult,
+    cardImage: null,
   }));
 }
 

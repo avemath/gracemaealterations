@@ -42,6 +42,15 @@ export const aboutPage = defineType({
       fields: [defineField({ name: "alt", title: "Alt Text", type: "string" })],
     }),
     defineField({
+      name: "portraitImage",
+      title: "Portrait (beside story text)",
+      description: "A portrait of you, rendered square beside the bio on the About page. Falls back to the Story Image when empty.",
+      group: "story",
+      type: "image",
+      options: { hotspot: true },
+      fields: [defineField({ name: "alt", title: "Alt Text", type: "string" })],
+    }),
+    defineField({
       name: "storyLabel",
       title: "Story Section — Label",
       group: "story",

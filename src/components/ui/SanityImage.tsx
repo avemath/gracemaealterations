@@ -14,6 +14,7 @@ interface SanityImageProps {
   height?: number;
   priority?: boolean;
   sizes?: string;
+  "aria-hidden"?: boolean;
 }
 
 export default function SanityImage({
@@ -27,6 +28,7 @@ export default function SanityImage({
   height,
   priority = false,
   sizes,
+  "aria-hidden": ariaHidden,
 }: SanityImageProps) {
   // Show real image if Sanity asset exists
   if (image?.asset) {
@@ -35,6 +37,12 @@ export default function SanityImage({
     catch { return <ImagePlaceholder label={placeholderLabel} aspectRatio={placeholderRatio} className={className} />; }
     const resolvedAlt = alt ?? image.alt ?? placeholderLabel;
 
+    // Crop around the editor's hotspot instead of the centre of the frame.
+    const hotspot = image.hotspot;
+    const objectPosition = hotspot
+      ? `${hotspot.x * 100}% ${hotspot.y * 100}%`
+      : "50% 50%";
+
     if (fill) {
       return (
         <Image
@@ -42,21 +50,29 @@ export default function SanityImage({
           alt={resolvedAlt}
           fill
           className={`object-cover ${className}`}
+          style={{ objectPosition }}
           priority={priority}
           sizes={sizes ?? "(max-width: 768px) 100vw, 50vw"}
+          aria-hidden={ariaHidden}
         />
       );
     }
+
+    // Without explicit dimensions, use the asset's own — a hardcoded 4:3 box
+    // crops every portrait in half.
+    const dimensions = image.asset.metadata?.dimensions;
 
     return (
       <Image
         src={src}
         alt={resolvedAlt}
-        width={width ?? 800}
-        height={height ?? 600}
+        width={width ?? dimensions?.width ?? 800}
+        height={height ?? dimensions?.height ?? 600}
         className={`object-cover w-full h-full ${className}`}
+        style={{ objectPosition }}
         priority={priority}
         sizes={sizes ?? "(max-width: 768px) 100vw, 50vw"}
+        aria-hidden={ariaHidden}
       />
     );
   }

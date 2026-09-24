@@ -127,7 +127,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               priority
               placeholderLabel="HERO_PORTRAIT_IMAGE"
               placeholderRatio="portrait"
-              alt={`${site.name} — Pittsburgh bridal seamstress`}
+              alt={heroImage?.alt ?? `${site.name} — Pittsburgh bridal seamstress`}
               sizes="48vw"
             />
           </motion.div>
@@ -209,7 +209,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
             image={heroImage}
             placeholderLabel="HERO_PORTRAIT_IMAGE"
             placeholderRatio="portrait"
-            alt={`${site.name} — Pittsburgh bridal seamstress`}
+            alt={heroImage?.alt ?? `${site.name} — Pittsburgh bridal seamstress`}
             priority
           />
         </motion.div>
@@ -277,34 +277,49 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               return (
                 <motion.article
                   key={service._id}
-                  className="group relative bg-near_black p-8 lg:p-10 flex flex-col overflow-hidden transition-all duration-400"
+                  className="group relative bg-near_black p-8 lg:p-10 flex flex-col overflow-hidden transition-all duration-400 min-h-[22rem]"
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.6, delay: i * 0.12 }}
                   whileHover={{ y: -6, transition: { duration: 0.3 } }}
                 >
-                  <div className="absolute top-0 left-0 right-0 h-px bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" aria-hidden="true" />
-                  <div className="mb-6 transition-transform duration-300 group-hover:scale-110 group-hover:translate-y-[-2px] origin-left">
-                    <Icon />
-                  </div>
-                  <div className="w-8 h-px bg-gold/40 mb-6" aria-hidden="true" />
-                  <h3 className="font-cormorant text-ivory text-2xl mb-3">{service.title}</h3>
-                  <p className="font-jost text-ivory/50 text-sm leading-relaxed flex-1">{service.shortDescription}</p>
-                  <Link
-                    href={`/services#${service.id}`}
-                    className="mt-6 inline-flex items-center gap-2 font-jost text-xs text-gold tracking-[0.18em] uppercase group-hover:text-gold_light transition-colors duration-300"
-                    aria-label={`Learn more about ${service.title}`}
-                  >
-                    <span>Learn More</span>
-                    <motion.span
-                      className="inline-block"
-                      animate={{ x: [0, 4, 0] }}
-                      transition={{ repeat: Infinity, duration: 2, ease: "easeInOut", repeatDelay: 1 }}
+                  {service.cardImage && (
+                    <div className="absolute inset-0" aria-hidden="true">
+                      <SanityImage
+                        image={service.cardImage}
+                        fill
+                        placeholderLabel="SERVICE_CARD_IMAGE"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="opacity-30 group-hover:opacity-45 transition-opacity duration-500"
+                        aria-hidden
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-near_black via-near_black/70 to-near_black/20" />
+                    </div>
+                  )}
+                  <div className="absolute top-0 left-0 right-0 h-px bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left z-20" aria-hidden="true" />
+                  <div className="relative z-10 flex flex-col flex-1">
+                    <div className="mb-6 transition-transform duration-300 group-hover:scale-110 group-hover:translate-y-[-2px] origin-left">
+                      <Icon />
+                    </div>
+                    <div className="w-8 h-px bg-gold/40 mb-6" aria-hidden="true" />
+                    <h3 className="font-cormorant text-ivory text-2xl mb-3">{service.title}</h3>
+                    <p className="font-jost text-ivory/50 text-sm leading-relaxed flex-1">{service.shortDescription}</p>
+                    <Link
+                      href={`/services#${service.id}`}
+                      className="mt-6 inline-flex items-center gap-2 font-jost text-xs text-gold tracking-[0.18em] uppercase group-hover:text-gold_light transition-colors duration-300"
+                      aria-label={`Learn more about ${service.title}`}
                     >
-                      <ArrowRight />
-                    </motion.span>
-                  </Link>
+                      <span>Learn More</span>
+                      <motion.span
+                        className="inline-block"
+                        animate={{ x: [0, 4, 0] }}
+                        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut", repeatDelay: 1 }}
+                      >
+                        <ArrowRight />
+                      </motion.span>
+                    </Link>
+                  </div>
                 </motion.article>
               );
             })}
@@ -402,7 +417,6 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                   image={aboutSecondaryImage}
                   placeholderLabel="ABOUT_SECONDARY_IMAGE"
                   placeholderRatio="tall"
-                  alt="Hands at work — close-up of sewing craft"
                 />
               </RevealImage>
               <motion.div
