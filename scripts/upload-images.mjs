@@ -84,10 +84,12 @@ const SINGLETON_SLOTS = [
   {
     docId: "homePage",
     field: "heroImage",
-    file: "grace-portrait-wall.jpg",
-    hotspot: { x: 0.6, y: 0.3 },
+    file: "grace-hero.jpg",
+    // Cropped above her hands, so her face sits slightly lower in the frame
+    // than it does in the uncropped 2:3 original.
+    hotspot: { x: 0.6, y: 0.32 },
     alt: "Grace Mae, bridal seamstress in Pittsburgh",
-    note: "Home hero — right 48% of the viewport, ivory gradient over its left edge",
+    note: "Home hero — right 48% of the viewport, ivory gradient over the curtain side",
   },
   {
     docId: "aboutPage",
