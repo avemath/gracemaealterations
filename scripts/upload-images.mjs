@@ -65,9 +65,13 @@ const PREPARED_DIR = join(APP_ROOT, "assets", "prepared");
  * version here so the new file uploads as <name>-v2.jpg instead of silently
  * reusing the old asset.
  */
-const VERSIONS = {
-  "grace-portrait-studio.jpg": 2,
-};
+const VERSIONS = {};
+
+/**
+ * Assets no longer used by any slot. After the patches land, each is deleted
+ * if nothing references it any more.
+ */
+const RETIRED = ["grace-portrait-studio.jpg", "grace-portrait-studio-v2.jpg"];
 
 /** assets/prepared name → the originalFilename it is stored under in Sanity. */
 function assetFilename(file) {
@@ -94,10 +98,11 @@ const SINGLETON_SLOTS = [
   {
     docId: "aboutPage",
     field: "portraitImage",
-    file: "grace-portrait-studio.jpg",
-    hotspot: { x: 0.5, y: 0.35 },
-    alt: "Grace Mae in her alterations studio",
-    note: "About story column — square, beside the bio",
+    file: "grace-portrait-wall.jpg",
+    reuseOnly: true,
+    hotspot: { x: 0.6, y: 0.3 },
+    alt: "Grace Mae, formally trained designer and Pittsburgh seamstress",
+    note: "About story column — square crop of the master's hood photo, beside the bio",
   },
   {
     docId: "aboutPage",
@@ -162,7 +167,7 @@ const SERVICE_SLOTS = [
 const assetIdCache = new Map();
 
 /** Upload the file, or reuse the asset already in the dataset under that name. */
-async function getAssetId(file) {
+async function getAssetId(file, { reuseOnly = false } = {}) {
   const filename = assetFilename(file);
   if (assetIdCache.has(filename)) return assetIdCache.get(filename);
 
@@ -175,6 +180,12 @@ async function getAssetId(file) {
     console.log(`  ↻ reused    ${filename.padEnd(28)} ${existing}`);
     assetIdCache.set(filename, existing);
     return existing;
+  }
+
+  if (reuseOnly) {
+    throw new Error(
+      `${filename} is marked reuse-only but no asset with that originalFilename exists in Sanity.`
+    );
   }
 
   const path = join(PREPARED_DIR, file);
@@ -233,7 +244,7 @@ console.log(`\n🖼   Uploading prepared images to Sanity (${projectId}/${datase
 
 console.log("📄  Page images");
 for (const slot of SINGLETON_SLOTS) {
-  const assetId = await getAssetId(slot.file);
+  const assetId = await getAssetId(slot.file, { reuseOnly: slot.reuseOnly });
   await patchDocAndDraft(slot.docId, slot.field, imageValue(assetId, slot.alt, slot.hotspot));
   console.log(`    ${slot.note}`);
   console.log("");
@@ -251,6 +262,34 @@ for (const slot of SERVICE_SLOTS) {
   }
   const assetId = await getAssetId(slot.file);
   await patchDocAndDraft(docId, slot.field, imageValue(assetId, slot.alt, slot.hotspot));
+  console.log("");
+}
+
+// ── Retire assets nothing points at any more ─────────────────────────────────
+
+if (RETIRED.length > 0) {
+  console.log("🧹  Retired assets");
+  for (const filename of RETIRED) {
+    const assetId = await client.fetch(
+      `*[_type == "sanity.imageAsset" && originalFilename == $filename][0]._id`,
+      { filename }
+    );
+    if (!assetId) {
+      console.log(`  – ${filename.padEnd(30)} not in the dataset`);
+      continue;
+    }
+    const refs = await client.fetch(`*[references($id)]{_id, _type}`, { id: assetId });
+    if (refs.length > 0) {
+      console.log(
+        `  ! ${filename.padEnd(30)} kept — still referenced by ${refs
+          .map((r) => `${r._id} (${r._type})`)
+          .join(", ")}`
+      );
+      continue;
+    }
+    await client.delete(assetId);
+    console.log(`  ✓ ${filename.padEnd(30)} deleted  ${assetId}`);
+  }
   console.log("");
 }
 
