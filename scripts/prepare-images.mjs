@@ -37,11 +37,18 @@ const PUBLIC_DIR = join(APP_ROOT, "public");
 
 const JPEG_OPTS = { quality: 90, mozjpeg: false, chromaSubsampling: "4:4:4" };
 
+// ── Config ────────────────────────────────────────────────────────────────────
+// The hero photo is 2:3; cropping to the top ~79% keeps the belt and ends the
+// frame above her hands, which reads better inside the hero mask.
+const HERO_CROP_ABOVE_HANDS = true;
+const HERO_CROP_RATIO = 1210 / 1536;
+
 /**
  * canonical name -> accepted source filenames (extension removed, matched
  * case-insensitively). The first entry is the name used in the write-up.
  */
 const WANTED = {
+  "grace-hero": ["grace_darkhair_standing_maternity"],
   "grace-portrait-wall": ["grace masters face wall background"],
   "grace-portrait-studio": ["grace studio portrait", "grace portrait", "file_00000000800481f6b03e732e200eccbd"],
   "atelier-workroom": ["desk w dress rack"],
@@ -106,10 +113,21 @@ for (const [canonical, filename] of Object.entries(found)) {
 
   // Prepared JPEG at native resolution — no resize, ICC kept, rest stripped.
   const out = join(PREPARED_DIR, `${canonical}.jpg`);
-  const info = await sharp(from).keepIccProfile().jpeg(JPEG_OPTS).toFile(out);
+  let pipeline = sharp(from).keepIccProfile();
+
+  if (canonical === "grace-hero" && HERO_CROP_ABOVE_HANDS) {
+    // A straight crop, never a resample: take the top rows and leave the
+    // pixels themselves alone.
+    const { width, height } = await sharp(from).metadata();
+    const keep = Math.min(height, Math.round(height * HERO_CROP_RATIO));
+    pipeline = pipeline.extract({ left: 0, top: 0, width, height: keep });
+  }
+
+  const info = await pipeline.jpeg(JPEG_OPTS).toFile(out);
 
   console.log(
-    `  ✓ ${canonical.padEnd(24)} ${String(info.width).padStart(5)}x${String(info.height).padEnd(5)}  ← ${filename}`
+    `  ✓ ${canonical.padEnd(24)} ${String(info.width).padStart(5)}x${String(info.height).padEnd(5)}  ← ${filename}` +
+      (canonical === "grace-hero" && HERO_CROP_ABOVE_HANDS ? "  (cropped above hands)" : "")
   );
 }
 
