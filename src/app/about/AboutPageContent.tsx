@@ -153,11 +153,18 @@ export default function AboutPageContent({ site, about, values }: Props) {
             <div className="relative lg:sticky lg:top-28">
               <div className="relative">
                 <RevealImage delay={0.2}>
-                  <SanityImage
-                    image={about.portraitImage ?? about.secondaryImage}
-                    placeholderLabel="ABOUT_PORTRAIT_IMAGE"
-                    placeholderRatio="square"
-                  />
+                  {/* Fixed square so the hotspot actually crops — a portrait
+                      asset would otherwise render at its own 2:3 and show her
+                      full torso. */}
+                  <div className="relative w-full aspect-square">
+                    <SanityImage
+                      image={about.portraitImage ?? about.secondaryImage}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 40vw"
+                      placeholderLabel="ABOUT_PORTRAIT_IMAGE"
+                      placeholderRatio="square"
+                    />
+                  </div>
                 </RevealImage>
                 <motion.div
                   className="absolute -bottom-3 -right-3 w-full h-full border border-gold/25 pointer-events-none"
