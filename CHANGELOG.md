@@ -2,6 +2,19 @@
 
 Newest first. Grace facing notes live in `site/content/FOR-GRACE.md`.
 
+## Second audit, September 2026
+
+- `fix: second audit follow-ups`:
+  - One bridal timeline everywhere: the first fitting is 8 to 12 weeks before the wedding, and getting in touch 3 to 6 months ahead leaves room for it. The FAQ, the services page and the timing line in Grace's enquiry emails now agree (the email used to call 8 to 12 weeks "tight").
+  - The availability line reads "Bridal waitlist open for early 2027" instead of repeating "By appointment", which the footer and contact page already say.
+  - On phones: portfolio captions are always shown over a soft gradient (they were hover only, so phones never saw them), the contact form comes before the contact details, and the hero pill puts each lane on its own line.
+  - The faint "01, 02, 03" step numbers are drawn with CSS, so contrast checkers skip them and the axe tests no longer need an exclusion.
+  - The About eyebrow is ivory with a stronger shadow, readable over the photo. Footer links and the "Learn more" and "Read Grace's story" links are bigger tap targets.
+  - The Sanity client no longer ships to the browser (the image URL helper builds without it), the About and Services hero photos load first, and the page connects to the image CDN early.
+  - Bridal party requests get their own button on the services page, and the home bridal card says "Waitlist for early 2027".
+  - `npm run copy:fixes` fixes four grammar slips in the live copy, including the half sentence the dash tidy left in the tailoring description.
+  - CI on `main` no longer cancels an older commit's run when two merges land close together.
+
 ## Type and stats bar, September 2026
 
 - `revert: Georgia and system sans, big gold stats bar`: Cormorant Garamond and Jost were live for a few hours and read as too thin and hard to read, so the site goes back to what visitors always saw: Georgia headings and the system sans-serif body, now set on purpose and with no web fonts downloaded. The home page gets back its large stats bar (B.S. Fashion Design, 500+ garments altered, Pittsburgh, PA), in gold_dark, with the garment count ticking up as it scrolls in. The small four-item trust strip it replaced is gone.

@@ -40,8 +40,10 @@ interface FooterProps {
 }
 
 const columnHeading = "font-jost font-medium text-ivory text-xs tracking-[0.22em] uppercase mb-4";
+// The vertical padding makes each link a comfortable tap target (32px tall)
+// without spreading the columns out; the lists below tighten to match.
 const linkClass =
-  "font-jost text-ivory/75 text-sm hover:text-ivory transition-colors duration-300";
+  "inline-block py-1.5 font-jost text-ivory/75 text-sm hover:text-ivory transition-colors duration-300";
 
 export default function Footer({
   siteName,
@@ -88,7 +90,7 @@ export default function Footer({
             <a href={`mailto:${email}`} className={`${linkClass} block break-words`}>
               {email}
             </a>
-            <Link href="/contact" className={`${linkClass} block mt-2`}>
+            <Link href="/contact" className={`${linkClass} block`}>
               Send a request
             </Link>
           </div>
@@ -97,7 +99,7 @@ export default function Footer({
           {guides.length > 0 && (
             <div>
               <h2 className={columnHeading}>Guides</h2>
-              <ul className="space-y-2">
+              <ul>
                 {guides.map((guide) => (
                   <li key={guide.slug}>
                     <Link href={`/guides/${guide.slug}`} className={linkClass}>
@@ -112,7 +114,7 @@ export default function Footer({
           {/* Policies */}
           <div>
             <h2 className={columnHeading}>{hasPolicies ? "Policies" : "Elsewhere"}</h2>
-            <ul className="space-y-2">
+            <ul>
               {hasPolicies && (
                 <li>
                   <Link href="/policies" className={linkClass}>

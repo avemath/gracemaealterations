@@ -144,6 +144,9 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Every hero and portfolio image comes from here; opening the
+            connection early saves a round trip on the LCP image. */}
+        <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="anonymous" />
         <script
           dangerouslySetInnerHTML={{
             __html: "document.documentElement.classList.add('js')",

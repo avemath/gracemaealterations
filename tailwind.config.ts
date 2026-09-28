@@ -8,6 +8,11 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        // Phones and tablets, where nothing can hover: anything revealed on
+        // hover has to be shown outright instead.
+        touch: { raw: "(hover: none)" },
+      },
       colors: {
         ivory: "#FAF7F2",
         charcoal: "#1C1C1C",

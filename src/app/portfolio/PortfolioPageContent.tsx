@@ -211,8 +211,8 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
                     />
                     {/* Hover and keyboard-focus overlay */}
                     <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/50 group-focus-within:bg-charcoal/50 transition-all duration-500" aria-hidden="true" />
-                    {/* Label, slides up */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 group-focus-within:translate-y-0 transition-transform duration-400 ease-out">
+                    {/* Label, slides up on hover; always shown on touch screens */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 group-focus-within:translate-y-0 transition-transform duration-400 ease-out touch:translate-y-0 touch:pt-12 touch:bg-gradient-to-t touch:from-near_black/85 touch:via-near_black/50 touch:to-transparent">
                       <p className="font-cormorant italic text-ivory text-lg leading-tight">{item.label}</p>
                       {item.caption && (
                         <p className="font-jost text-ivory/75 text-xs leading-snug mt-1">{item.caption}</p>
@@ -230,7 +230,7 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
                   {item.slug && (
                     <Link
                       href={`/portfolio/${item.slug}`}
-                      className="absolute bottom-3 right-3 z-10 font-jost text-[10px] tracking-[0.16em] uppercase text-ivory bg-near_black/70 px-2.5 py-1.5 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100 transition-opacity duration-300"
+                      className="absolute bottom-3 right-3 z-10 font-jost text-[10px] tracking-[0.16em] uppercase text-ivory bg-near_black/70 px-2.5 py-1.5 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100 transition-opacity duration-300 touch:opacity-100 touch:top-3 touch:bottom-auto touch:py-2.5"
                     >
                       Read the case study
                       <span className="sr-only">: {item.label}</span>

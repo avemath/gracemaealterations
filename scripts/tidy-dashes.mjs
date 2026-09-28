@@ -6,14 +6,17 @@
  *   npm run copy:tidy-dashes -- --dry-run   # list every change, write nothing
  *   npm run copy:tidy-dashes                # apply (needs SANITY_API_TOKEN)
  *
- * Each dash becomes a full stop when a new sentence follows it ("the waist —
- * I handle it" → "the waist. I handle it") and a comma otherwise ("ever wear —
- * and it deserves" → "ever wear, and it deserves"). A dash that opens a line,
- * as in a sign-off, is dropped. En dashes in ranges ($75 – $450) are left alone.
+ * Each dash becomes a full stop when a new sentence follows it ("I fit the
+ * dress — I don't rebuild it" → "I fit the dress. I don't rebuild it") and a
+ * comma otherwise ("ever wear — and it deserves" → "ever wear, and it
+ * deserves"). A dash that opens a line, as in a sign-off, is dropped. En dashes
+ * in ranges ($75 – $450) are left alone.
  *
  * Walks every string in every published document and draft, alt text
  * included, and patches only the strings that change. Run the dry run first
- * and read it: the rule is right for this site's copy, but it is a rule.
+ * and read it: the rule is right for most of this site's copy, but it is a
+ * rule. It split "a jacket that needs to come in through the waist — I handle
+ * it" into a sentence that never finishes; copy-fixes.mjs puts the comma back.
  */
 
 import { createClient } from "@sanity/client";

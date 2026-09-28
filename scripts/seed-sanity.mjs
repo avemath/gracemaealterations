@@ -267,7 +267,7 @@ await createIfMissing({
   shortDescription:
     "From sweeping cathedral trains to intricate lace bodices, bridal work is where precision is non-negotiable.",
   description:
-    "Your wedding dress is the most important garment you'll ever wear — and it deserves to fit as if it was made for you alone. With extensive bridal alteration experience including time at David's Bridal, I understand exactly what it takes to transform an off-the-rack gown into something that feels completely custom. Every fitting is unhurried, every stitch deliberate.",
+    "Your wedding dress is the most important garment you'll ever wear — and it deserves to fit as if it were made for you alone. With extensive bridal alteration experience including time at David's Bridal, I understand exactly what it takes to transform an off-the-rack gown into something that feels completely custom. Every fitting is unhurried, every stitch deliberate.",
   services: [
     "Hem adjustments (standard, cathedral, horsehair)",
     "Bustle addition (American, French, Austrian)",
@@ -276,7 +276,7 @@ await createIfMissing({
     "Corset back conversion and boning work",
     "Lace and beading repair and transfer",
     "Veil customization and attachment",
-    "Train preservation and preservation prep",
+    "Gown and train preservation prep",
   ],
   priceRange: "$75 – $450+",
   priceNote: "depending on complexity and fabric",
@@ -377,7 +377,7 @@ await createIfMissing({
   order: 2,
   title: "Precision Craft",
   description:
-    "Formal training in fashion design, hands-on work in a professional costume shop, and experience as a lead bridal alterations specialist means I've worked with the full range of fabrics, silhouettes, and fit challenges. I bring that foundation to every stitch.",
+    "Formal training in fashion design, hands-on work in a professional costume shop, and experience as a lead bridal alterations specialist mean I've worked with the full range of fabrics, silhouettes, and fit challenges. I bring that foundation to every stitch.",
 });
 await createIfMissing({
   _id: "value-attention",

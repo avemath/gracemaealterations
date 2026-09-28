@@ -266,10 +266,8 @@ export default function ProcessSteps({
                         : "rgba(201,168,76,0.45)",
                     }}
                     aria-hidden="true"
-                    data-decorative
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </p>
+                    data-numeral={String(i + 1).padStart(2, "0")}
+                  />
 
                   <div className="flex items-center gap-2">
                     <div
@@ -438,9 +436,11 @@ export default function ProcessSteps({
                     aria-hidden="true"
                   />
                   <div className="flex items-center gap-3 mb-2">
-                    <p className="font-cormorant text-gold/30 text-3xl font-light leading-none" aria-hidden="true" data-decorative>
-                      {String(i + 1).padStart(2, "0")}
-                    </p>
+                    <p
+                      className="font-cormorant text-gold/30 text-3xl font-light leading-none"
+                      aria-hidden="true"
+                      data-numeral={String(i + 1).padStart(2, "0")}
+                    />
                     {step.note && (
                       <span className="font-jost text-[0.65rem] tracking-[0.18em] uppercase text-gold border border-gold/35 px-1.5 py-0.5">
                         {step.note}
