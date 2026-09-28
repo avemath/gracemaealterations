@@ -124,7 +124,7 @@ When you are ready to take bridal again, you have two choices.
 - Availability Note
 - Short availability line shown under hero and on contact page
 
-**The faster one, if Ave is around:** ask him to run `npm run availability:open` from the site folder. That flips the switch and rewrites all three lines back to normal wording in one go, including the two frequently asked questions about bridal reopening. Running `npm run availability:limited` puts it back the way it is now.
+**The faster one:** ask me to run `npm run availability:open` from the site folder. That flips the switch and rewrites all three lines back to normal wording in one go, including the two frequently asked questions about bridal reopening. Running `npm run availability:limited` puts it back the way it is now.
 
 Either way the buttons across the site change by themselves. You do not have to hunt for them.
 
