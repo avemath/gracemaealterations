@@ -10,6 +10,8 @@ import Button from "@/components/ui/Button";
 import CTABanner from "@/components/sections/CTABanner";
 import ProcessSteps from "@/components/sections/ProcessSteps";
 import CountUp from "@/components/ui/CountUp";
+import AvailabilityPill from "@/components/ui/AvailabilityPill";
+import { ctas } from "@/lib/cta";
 import TestimonialCarousel from "@/components/ui/TestimonialCarousel";
 import type {
   SanityImage as SanityImageType,
@@ -48,9 +50,9 @@ interface HomePageData {
     waitlistServices: string[];
     reopensLabel: string;
     limitedNote: string;
+    trustItems: string[];
   };
   heroImage: SanityImageType | null;
-  trustStats: { value: string; label: string }[];
   services: SanityService[];
   portfolioItems: SanityPortfolioItem[];
   bio: { paragraph1: string; paragraph2: string; pullQuote: string };
@@ -105,12 +107,14 @@ const fadeUp = {
 };
 
 export default function HomePageContent({ data }: { data: HomePageData }) {
-  const { site, heroImage, trustStats, services, portfolioItems, bio, aboutSecondaryImage, testimonials, text } = data;
+  const { site, heroImage, services, portfolioItems, bio, aboutSecondaryImage, testimonials, text } = data;
 
   // While limited availability is on, some services take waitlist requests
   // instead of bookings.
   const isWaitlisted = (serviceId: string) =>
     site.limitedMode && site.waitlistServices.includes(serviceId);
+
+  const { primary, secondary } = ctas(site);
 
   // Grace picks the home page preview with the "featured" toggle; before anyone
   // has picked, fall back to the first four in display order.
@@ -167,9 +171,17 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
           <div className="min-h-screen flex items-center">
             <div className="w-full lg:max-w-[520px] py-32 lg:py-0">
 
-              <motion.p className="section-label mb-6" custom={0} initial={false} animate="visible" variants={fadeUp}>
-                {text.heroSectionLabel}
+              <motion.p className="section-label mb-5" custom={0} initial={false} animate="visible" variants={fadeUp}>
+                Pittsburgh bridal alterations &amp; tailoring
               </motion.p>
+
+              <AvailabilityPill
+                limitedMode={site.limitedMode}
+                reopensLabel={site.reopensLabel}
+                limitedNote={site.limitedNote}
+                bookingNote={site.bookingNote}
+                className="mb-6"
+              />
 
               <RevealText onMount delay={0.18}>
                 <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-charcoal">
@@ -187,43 +199,15 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                 className="font-jost text-charcoal/75 text-base lg:text-lg max-w-sm mb-10 leading-relaxed"
                 custom={3} initial={false} animate="visible" variants={fadeUp}
               >
-                {site.subTagline}
-              </motion.p>
-
-              <motion.p
-                className="font-jost text-sm text-charcoal/55 tracking-[0.03em] italic max-w-sm mb-8 leading-relaxed"
-                custom={4} initial={false} animate="visible" variants={fadeUp}
-              >
-                {text.heroCredentialText}
+                A formally trained designer and former Lead Alterations Specialist at
+                David&rsquo;s Bridal, fitting one client at a time.
               </motion.p>
 
               <motion.div className="flex flex-wrap gap-4" custom={5} initial={false} animate="visible" variants={fadeUp}>
-                <Button variant="gold" href="/services">View Services</Button>
-                <Button variant="outline" href="/contact">Book a Consultation</Button>
+                <Button variant="gold" href={primary.href}>{primary.label}</Button>
+                <Button variant="outline" href={secondary.href}>{secondary.label}</Button>
               </motion.div>
 
-              {/* Availability signal */}
-              <motion.div
-                className="flex items-center gap-2.5 mt-8"
-                custom={6}
-                initial={false}
-                animate="visible"
-                variants={fadeUp}
-              >
-                <span className="relative flex h-2 w-2 flex-shrink-0" aria-hidden="true">
-                  {site.limitedMode ? (
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-gold/60" />
-                  ) : (
-                    <>
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold opacity-50" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-gold" />
-                    </>
-                  )}
-                </span>
-                <p className="font-jost text-xs text-charcoal/75 tracking-[0.15em] uppercase">
-                  {site.bookingNote}
-                </p>
-              </motion.div>
             </div>
           </div>
         </div>
@@ -246,29 +230,27 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
         </motion.div>
       </section>
 
-      {/* ── TRUST BAR ─────────────────────────────────────────── */}
+      {/* ── TRUST STRIP ───────────────────────────────────────── */}
       <section className="bg-ivory border-y border-blush py-10 lg:py-12" aria-label="Experience and credentials">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-0">
-            {trustStats.map((stat, i) => (
-              <motion.div
-                key={i}
-                className="flex items-center"
-                initial={false}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-              >
-                {i > 0 && (
-                  <div className="hidden sm:block w-px h-10 bg-gold/30 mx-10 lg:mx-16" aria-hidden="true" />
-                )}
-                <div className="text-center">
-                  <p className="font-cormorant text-charcoal text-3xl lg:text-4xl font-light"><CountUp value={stat.value} /></p>
-                  <p className="font-jost text-charcoal/75 text-xs tracking-[0.18em] uppercase mt-1">{stat.label}</p>
-                </div>
-              </motion.div>
+        <div className="max-w-5xl mx-auto px-6">
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 text-center">
+            {site.trustItems.map((item, i) => (
+              <li key={i} className="flex flex-col items-center gap-2">
+                <span className="w-6 h-px bg-gold" aria-hidden="true" />
+                <p className="font-jost text-charcoal/75 text-xs lg:text-sm tracking-[0.06em] leading-snug max-w-[22ch]">
+                  {/* The one number in the strip still counts up. */}
+                  {/^\d/.test(item) ? (
+                    <>
+                      <CountUp value={item.split(" ")[0]} />{" "}
+                      {item.split(" ").slice(1).join(" ")}
+                    </>
+                  ) : (
+                    item
+                  )}
+                </p>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
 
@@ -331,7 +313,14 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                       </p>
                     )}
                     <h3 className="font-cormorant text-ivory text-2xl mb-3">{service.title}</h3>
-                    <p className="font-jost text-ivory/70 text-sm leading-relaxed flex-1">{service.shortDescription}</p>
+                    <p className="font-jost text-ivory/70 text-sm leading-relaxed flex-1">
+                      {service.id === "tailoring"
+                        ? "Hems, waists, sleeves and zips, done cleanly, usually within two weeks."
+                        : service.shortDescription}
+                    </p>
+                    {service.id === "tailoring" && (
+                      <p className="font-cormorant text-ivory text-xl lining-nums mt-4">from $20</p>
+                    )}
                     <Link
                       href={`/services#${service.id}`}
                       className="mt-6 inline-flex items-center gap-2 font-jost text-xs text-gold tracking-[0.18em] uppercase group-hover:text-gold_light transition-colors duration-300"
@@ -437,6 +426,8 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
         sectionLabel={text.processLabel}
         heading={text.processHeading}
         ctaText={text.processCTA}
+        ctaLabel={primary.label}
+        ctaHref={primary.href}
         steps={text.processSteps}
       />
 
@@ -474,14 +465,17 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               <blockquote className="font-cormorant italic text-charcoal text-2xl lg:text-3xl leading-snug mb-8 border-l-2 border-gold pl-6">
                 &ldquo;{bio.pullQuote}&rdquo;
               </blockquote>
-              <p className="font-jost text-charcoal/75 text-sm leading-relaxed mb-4">{bio.paragraph1}</p>
-              <p className="font-jost text-charcoal/75 text-sm leading-relaxed mb-10">{bio.paragraph2}</p>
+              <p className="font-jost text-charcoal/75 text-sm leading-[1.65] mb-10 max-w-[65ch]">
+                I trained as a designer at IUP and spent a year as Lead Alterations Specialist
+                at David&rsquo;s Bridal. Now I work for myself, one client at a time, out of a
+                studio in Pittsburgh. Every quote is itemized in writing before I cut a thread.
+              </p>
               <Link
                 href="/about"
                 className="inline-flex items-center gap-2 font-jost text-xs text-gold tracking-[0.18em] uppercase hover:text-gold_dark transition-colors duration-300 group"
-                aria-label="Read the full about story"
+                aria-label="Read Grace's story"
               >
-                My Story
+                Read Grace&rsquo;s story
                 <span className="transition-transform duration-300 group-hover:translate-x-1"><ArrowRight /></span>
               </Link>
             </motion.div>
@@ -518,7 +512,8 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
         headline={text.ctaHeadline}
         subhead={text.ctaSubhead}
         buttonLabel={text.ctaButton}
-        note={site.limitedMode ? site.limitedNote : undefined}
+        limitedMode={site.limitedMode}
+        reopensLabel={site.reopensLabel}
       />
     </>
   );

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getMergedPortfolioItems, getMergedPortfolioPage } from "@/lib/sanity.queries";
+import { getMergedPortfolioItems, getMergedPortfolioPage, getMergedSite } from "@/lib/sanity.queries";
 import PortfolioPageContent from "./PortfolioPageContent";
 
 export const metadata: Metadata = {
@@ -17,9 +17,16 @@ export const metadata: Metadata = {
 
 
 export default async function PortfolioPage() {
-  const [items, portfolioPageData] = await Promise.all([
+  const [items, portfolioPageData, site] = await Promise.all([
     getMergedPortfolioItems(),
     getMergedPortfolioPage(),
+    getMergedSite(),
   ]);
-  return <PortfolioPageContent items={items} portfolioPageData={portfolioPageData} />;
+  return (
+    <PortfolioPageContent
+      items={items}
+      portfolioPageData={portfolioPageData}
+      availability={{ limitedMode: site.limitedMode, reopensLabel: site.reopensLabel }}
+    />
+  );
 }

@@ -42,6 +42,17 @@ export default async function Image() {
     loadFont("Jost:wght@300"),
   ]);
 
+  // satori needs at least one font. If Google Fonts is unreachable at build or
+  // request time, fall back to the photograph on its own rather than throwing.
+  if (!fontData && !sansData) {
+    if (background) {
+      const bytes = readFileSync(join(process.cwd(), "public", "og-bg.jpg"));
+      return new Response(new Uint8Array(bytes), {
+        headers: { "Content-Type": "image/jpeg", "Cache-Control": "public, max-age=3600" },
+      });
+    }
+  }
+
   return new ImageResponse(
     (
       <div

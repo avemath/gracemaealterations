@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFocusTrap } from "@/lib/useFocusTrap";
+import { ctas } from "@/lib/cta";
 
 const NAV_LINKS = [
   { label: "Services", href: "/services" },
@@ -16,9 +17,12 @@ const NAV_LINKS = [
 interface NavbarProps {
   siteName: string;
   businessName: string;
+  limitedMode?: boolean;
+  reopensLabel?: string;
 }
 
-export default function Navbar({ siteName, businessName }: NavbarProps) {
+export default function Navbar({ siteName, businessName, limitedMode = false, reopensLabel = "" }: NavbarProps) {
+  const { primary } = ctas({ limitedMode, reopensLabel });
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -175,8 +179,8 @@ export default function Navbar({ siteName, businessName }: NavbarProps) {
               transition={{ delay: 0.45, duration: 0.45 }}
               className="mt-10"
             >
-              <Link href="/contact" className="btn-gold">
-                Book a Consultation
+              <Link href={primary.href} className="btn-gold">
+                {primary.label}
               </Link>
             </motion.div>
 

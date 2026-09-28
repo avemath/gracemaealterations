@@ -306,7 +306,7 @@ export async function POST(req: NextRequest) {
 
         <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
           <p style="font-size:15px;line-height:1.7;color:#1C1C1C;margin:0;">
-            Hi ${escapeHtml(body.name)}, thank you for reaching out. I've received your request and will be in touch within 24 hours to discuss your garment and schedule a consultation.
+            Hi ${escapeHtml(body.name)}, thank you for reaching out. I've received your request. I reply to every message within 2 business days, usually sooner.
           </p>
         </div>
 
