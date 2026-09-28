@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getResend, CONTACT_EMAIL, FROM_EMAIL } from "@/lib/resend";
+import {
+  BRIDAL_ALTERATION_LABELS,
+  SHOES_UNDERGARMENT_LABELS,
+} from "@/lib/contactOptions";
 
 interface ContactPayload {
   name: string;
   email: string;
-  phone?: string;
   serviceType?: string;
   eventDate?: string;
   garmentDetails?: string;
@@ -12,24 +15,17 @@ interface ContactPayload {
   isWaitlist?: boolean;
   /** Honeypot: any value means a bot filled it in. */
   company?: string;
-  /** e.g. "early 2027" — when the waitlisted service reopens. */
+  /** e.g. "early 2027", when the waitlisted service reopens. */
   reopensLabel?: string;
   attachments?: { filename: string; content: string }[];
-  // Bridal-specific
-  fabricNotes?: string;
+  // Bridal
+  dressDesigner?: string;
+  dressArrival?: string;
+  venue?: string;
   dressSizeOrdered?: string;
   currentStreetSize?: string;
   alterationsNeeded?: string[];
   shoesUndergarments?: string;
-  // Tailoring-specific
-  garmentType?: string;
-  tailoringAlterations?: string[];
-  // Shared
-  currentSize?: string;
-  // Bridal waitlist
-  dressDesigner?: string;
-  dressArrival?: string;
-  venue?: string;
   // Bridal party
   garmentCount?: string;
 }
@@ -51,56 +47,19 @@ function rateLimited(ip: string): boolean {
 }
 
 const SERVICE_LABELS: Record<string, string> = {
-  bridal: "Bridal (waitlist)",
+  bridal: "Bridal",
   tailoring: "Tailoring or repair",
   party: "Bridal party or special occasion",
-  custom: "Custom Work",
   unsure: "Not specified",
 };
 
-const REFERRAL_LABELS: Record<string, string> = {
-  google: "Google Search",
-  instagram: "Instagram",
-  wordofmouth: "Word of Mouth",
-  other: "Other",
-};
+// Gold #C9A84C fails contrast as text on white; email text uses gold_ink.
+const GOLD = "#C9A84C";
+const GOLD_INK = "#7A5F1E";
 
-const BRIDAL_ALTERATION_LABELS: Record<string, string> = {
-  hem: "Hem (standard / cathedral / horsehair)",
-  bustle: "Bustle addition",
-  bodice_waist: "Bodice / Waist adjustment",
-  corset_conversion: "Corset back conversion",
-  straps_sleeves: "Straps / Sleeves",
-  neckline: "Neckline modification",
-  cups_boning: "Cups / Boning",
-  lace_beading: "Lace / Beading work",
-  other: "Other (see notes)",
-};
-
-const TAILORING_ALTERATION_LABELS: Record<string, string> = {
-  hem: "Hem",
-  take_in: "Take in",
-  let_out: "Let out",
-  sleeve: "Sleeve length / taper",
-  waist: "Waist / Seat adjustment",
-  zipper: "Zipper repair / replacement",
-  other: "Other (see notes)",
-};
-
-const SHOES_LABELS: Record<string, string> = {
-  yes: "Yes — have both",
-  shoes_only: "Shoes only",
-  not_yet: "Not yet / still deciding",
-};
-
-const GARMENT_TYPE_LABELS: Record<string, string> = {
-  pants: "Pants / Trousers",
-  dress: "Dress",
-  skirt: "Skirt",
-  jacket: "Jacket / Blazer",
-  shirt: "Shirt / Blouse",
-  other: "Other",
-};
+/** Caps every free-text field so a bot cannot post a novel into Grace's inbox. */
+const MAX_TEXT = 5000;
+const MAX_ATTACHMENTS = 5;
 
 // ── Helpers ───────────────────────────────────────────────────
 
@@ -111,6 +70,10 @@ function escapeHtml(str: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+function clean(value: unknown): string {
+  return typeof value === "string" ? value.trim().slice(0, MAX_TEXT) : "";
 }
 
 function row(label: string, value: string) {
@@ -124,7 +87,7 @@ function row(label: string, value: string) {
 function section(title: string, content: string) {
   return `
     <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
-      <p style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#C9A84C;margin:0 0 16px;">${title}</p>
+      <p style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:${GOLD_INK};margin:0 0 16px;">${title}</p>
       ${content}
     </div>`;
 }
@@ -133,7 +96,7 @@ function whatToBringHtml(serviceType?: string): string {
   const lists: Record<string, string[]> = {
     bridal: [
       "Your wedding dress",
-      "The shoes you plan to wear on your wedding day — heel height directly affects hem length",
+      "The shoes you plan to wear on your wedding day, since heel height sets the hem length",
       "Any undergarments, shapewear, or a strapless bra you plan to wear with the gown",
       "Any accessories you'd like to try on with the dress",
     ],
@@ -141,10 +104,10 @@ function whatToBringHtml(serviceType?: string): string {
       "The garment(s) you need altered",
       "Shoes you plan to wear, if a hem adjustment is involved",
     ],
-    custom: [
-      "The garment(s) needing work",
-      "Any reference photos or inspiration images",
-      "Care tag information if the garment is vintage or delicate",
+    party: [
+      "Each garment, labelled with who will wear it",
+      "The shoes each person plans to wear, if hems are involved",
+      "Anyone being fitted, or a date when they can come in",
     ],
   };
   const items = lists[serviceType ?? ""] ?? [
@@ -159,16 +122,16 @@ function whatToBringHtml(serviceType?: string): string {
 // ── Route handler ─────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
-  let body: ContactPayload;
+  let raw: ContactPayload;
 
   try {
-    body = await req.json();
+    raw = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
   // Bots fill the hidden field in; accept and drop so they get no signal.
-  if (body.company && body.company.trim() !== "") {
+  if (clean(raw.company) !== "") {
     return NextResponse.json({ ok: true });
   }
 
@@ -183,171 +146,142 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  if (!body.name?.trim() || !body.email?.trim()) {
+  const name = clean(raw.name).slice(0, 200);
+  const email = clean(raw.email).slice(0, 320);
+  if (!name || !email) {
     return NextResponse.json({ error: "Name and email are required." }, { status: 400 });
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(body.email)) {
+  if (!emailRegex.test(email)) {
     return NextResponse.json({ error: "Invalid email address." }, { status: 400 });
   }
 
-  const serviceLabel = body.serviceType
-    ? (SERVICE_LABELS[body.serviceType] ?? body.serviceType)
-    : "Not specified";
-  const referralLabel = body.referralSource
-    ? (REFERRAL_LABELS[body.referralSource] ?? body.referralSource)
-    : "Not specified";
+  const serviceType = clean(raw.serviceType);
+  const isWaitlist = raw.isWaitlist === true;
+  const reopensLabel = clean(raw.reopensLabel).slice(0, 100);
+  const eventDate = clean(raw.eventDate);
+  const garmentDetails = clean(raw.garmentDetails);
+  const referral = clean(raw.referralSource).slice(0, 100);
+  const dressDesigner = clean(raw.dressDesigner);
+  const dressArrival = clean(raw.dressArrival);
+  const venue = clean(raw.venue);
+  const dressSizeOrdered = clean(raw.dressSizeOrdered).slice(0, 50);
+  const currentStreetSize = clean(raw.currentStreetSize).slice(0, 50);
+  const shoesUndergarments = clean(raw.shoesUndergarments);
+  const garmentCount = clean(raw.garmentCount).slice(0, 20);
+  const alterationsNeeded = Array.isArray(raw.alterationsNeeded)
+    ? raw.alterationsNeeded.map(clean).filter(Boolean).slice(0, 20)
+    : [];
+
+  const baseLabel = SERVICE_LABELS[serviceType] ?? "Not specified";
+  const serviceLabel = isWaitlist && serviceType === "bridal" ? `${baseLabel} (waitlist)` : baseLabel;
 
   // ── Email to Grace ────────────────────────────────────────
 
   const bridalSection =
-    body.serviceType === "bridal" &&
-    (body.fabricNotes || body.dressSizeOrdered || body.currentStreetSize ||
-      body.alterationsNeeded?.length || body.shoesUndergarments)
+    serviceType === "bridal" &&
+    (dressDesigner || dressArrival || venue || dressSizeOrdered || currentStreetSize ||
+      alterationsNeeded.length || shoesUndergarments)
       ? section(
-          "Dress Details",
+          "The Dress",
           `<table style="width:100%;border-collapse:collapse;">
-            ${body.fabricNotes ? row("Fabric / Construction", escapeHtml(body.fabricNotes)) : ""}
-            ${body.dressSizeOrdered ? row("Size Ordered", escapeHtml(body.dressSizeOrdered)) : ""}
-            ${body.currentStreetSize ? row("Current Street Size", escapeHtml(body.currentStreetSize)) : ""}
+            ${dressDesigner ? row("Designer / Shop", escapeHtml(dressDesigner)) : ""}
+            ${dressArrival ? row("Dress Arrives", escapeHtml(dressArrival)) : ""}
+            ${venue ? row("Venue", escapeHtml(venue)) : ""}
+            ${dressSizeOrdered ? row("Size Ordered", escapeHtml(dressSizeOrdered)) : ""}
+            ${currentStreetSize ? row("Street Size", escapeHtml(currentStreetSize)) : ""}
             ${
-              body.alterationsNeeded?.length
+              alterationsNeeded.length
                 ? row(
-                    "Alterations Needed",
+                    "Thinks It Needs",
                     escapeHtml(
-                      body.alterationsNeeded
-                        .map((a) => BRIDAL_ALTERATION_LABELS[a] ?? a)
-                        .join(", ")
+                      alterationsNeeded.map((a) => BRIDAL_ALTERATION_LABELS[a] ?? a).join(", ")
                     )
                   )
                 : ""
             }
             ${
-              body.shoesUndergarments
-                ? row("Shoes & Undergarments", escapeHtml(SHOES_LABELS[body.shoesUndergarments] ?? body.shoesUndergarments))
-                : ""
-            }
-          </table>`
-        )
-      : "";
-
-  const tailoringSection =
-    body.serviceType === "tailoring" &&
-    (body.garmentType || body.currentSize || body.tailoringAlterations?.length)
-      ? section(
-          "Garment Details",
-          `<table style="width:100%;border-collapse:collapse;">
-            ${body.garmentType ? row("Garment Type", escapeHtml(GARMENT_TYPE_LABELS[body.garmentType] ?? body.garmentType)) : ""}
-            ${body.currentSize ? row("Current Size", escapeHtml(body.currentSize)) : ""}
-            ${
-              body.tailoringAlterations?.length
+              shoesUndergarments
                 ? row(
-                    "Alterations Needed",
-                    escapeHtml(
-                      body.tailoringAlterations
-                        .map((a) => TAILORING_ALTERATION_LABELS[a] ?? a)
-                        .join(", ")
-                    )
+                    "Shoes & Undergarments",
+                    escapeHtml(SHOES_UNDERGARMENT_LABELS[shoesUndergarments] ?? shoesUndergarments)
                   )
                 : ""
             }
-          </table>`
-        )
-      : "";
-
-  const bridalWaitlistSection =
-    body.serviceType === "bridal" && (body.dressDesigner || body.dressArrival || body.venue)
-      ? section(
-          "Dress & Venue",
-          `<table style="width:100%;border-collapse:collapse;">
-            ${body.dressDesigner ? row("Designer / Shop", escapeHtml(body.dressDesigner)) : ""}
-            ${body.dressArrival ? row("Dress Arrives", escapeHtml(body.dressArrival)) : ""}
-            ${body.venue ? row("Venue", escapeHtml(body.venue)) : ""}
           </table>`
         )
       : "";
 
   const partySection =
-    body.serviceType === "party" && body.garmentCount
+    serviceType === "party" && garmentCount
       ? section(
           "Bridal Party",
           `<table style="width:100%;border-collapse:collapse;">
-            ${row("Garments", escapeHtml(body.garmentCount))}
+            ${row("Garments", escapeHtml(garmentCount))}
           </table>`
         )
       : "";
 
-  const customSection =
-    body.serviceType === "custom" && body.currentSize
-      ? section(
-          "Project Details",
-          `<table style="width:100%;border-collapse:collapse;">
-            ${row("Approximate Size", escapeHtml(body.currentSize))}
-          </table>`
-        )
-      : "";
-
-  const garmentNotesSection = body.garmentDetails?.trim()
+  const garmentNotesSection = garmentDetails
     ? section(
         "Notes",
-        `<p style="font-size:15px;line-height:1.7;color:#1C1C1C;margin:0;white-space:pre-wrap;">${escapeHtml(body.garmentDetails)}</p>`
+        `<p style="font-size:15px;line-height:1.7;color:#1C1C1C;margin:0;white-space:pre-wrap;">${escapeHtml(garmentDetails)}</p>`
       )
     : "";
 
   const graceEmail = `
     <div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;color:#1C1C1C;">
-      <div style="border-top:3px solid #C9A84C;padding:32px 0 16px;">
+      <div style="border-top:3px solid ${GOLD};padding:32px 0 16px;">
         <h1 style="font-size:28px;font-weight:400;font-style:italic;margin:0 0 8px;">
-          ${body.isWaitlist ? "New Waitlist Request" : "New Alteration Request"}
+          ${isWaitlist ? "New Waitlist Request" : "New Alteration Request"}
         </h1>
-        <p style="font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:#888;margin:0;">
+        <p style="font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:#767676;margin:0;">
           Via gracemaealterations.com
         </p>
       </div>
 
       <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
         <table style="width:100%;border-collapse:collapse;">
-          ${row("Name", escapeHtml(body.name))}
-          ${row("Email", `<a href="mailto:${escapeHtml(body.email)}" style="color:#C9A84C;">${escapeHtml(body.email)}</a>`)}
-          ${body.phone ? row("Phone", escapeHtml(body.phone)) : ""}
+          ${row("Name", escapeHtml(name))}
+          ${row("Email", `<a href="mailto:${escapeHtml(email)}" style="color:${GOLD_INK};">${escapeHtml(email)}</a>`)}
           ${row("Service", escapeHtml(serviceLabel))}
-          ${body.eventDate ? row("Event Date", escapeHtml(body.eventDate)) : ""}
-          ${row("Referral", escapeHtml(referralLabel))}
+          ${eventDate ? row(serviceType === "bridal" ? "Wedding Date" : "Event Date", escapeHtml(eventDate)) : ""}
+          ${row("Found Me Via", escapeHtml(referral || "Not specified"))}
         </table>
       </div>
 
       ${bridalSection}
-      ${bridalWaitlistSection}
       ${partySection}
-      ${tailoringSection}
-      ${customSection}
       ${garmentNotesSection}
 
       <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
-        <a href="mailto:${escapeHtml(body.email)}" style="display:inline-block;background:#C9A84C;color:#FAF7F2;text-decoration:none;padding:14px 28px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;">
-          Reply to ${escapeHtml(body.name)}
+        <a href="mailto:${escapeHtml(email)}" style="display:inline-block;background:${GOLD_INK};color:#FAF7F2;text-decoration:none;padding:14px 28px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;">
+          Reply to ${escapeHtml(name)}
         </a>
       </div>
     </div>`;
 
   // ── Confirmation email to client ──────────────────────────
 
-  // "bridal waitlist" reads better than a bare "waitlist" when we know which
-  // service is closed.
-  const waitlistServiceWord =
-    body.serviceType === "bridal" ? "bridal " : body.serviceType === "custom" ? "custom work " : "";
+  const waitlistServiceWord = serviceType === "bridal" ? "bridal " : "";
 
-  const waitlistIntro = body.reopensLabel
-    ? `Hi ${escapeHtml(body.name)}, you're on my ${waitlistServiceWord}waitlist. I'll reach out in order as dates open for ${escapeHtml(body.reopensLabel)}.`
-    : `Hi ${escapeHtml(body.name)}, your request has been received and you're on my waitlist. I'll reach out as soon as a spot opens up.`;
+  const waitlistIntro = reopensLabel
+    ? `Hi ${escapeHtml(name)}, you're on my ${waitlistServiceWord}waitlist. I'll reach out in order as dates open for ${escapeHtml(reopensLabel)}.`
+    : `Hi ${escapeHtml(name)}, your request has been received and you're on my waitlist. I'll reach out as soon as a spot opens up.`;
 
-  const confirmationEmail = body.isWaitlist
+  const signOff = `
+        <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
+          <p style="font-size:15px;font-style:italic;color:#1C1C1C;margin:0 0 4px;">Grace Mae</p>
+          <p style="font-size:12px;color:#767676;margin:0;">Grace Mae Alterations · Pittsburgh, PA · By appointment only</p>
+        </div>`;
+
+  const confirmationEmail = isWaitlist
     ? `
       <div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;color:#1C1C1C;">
-        <div style="border-top:3px solid #C9A84C;padding:32px 0 16px;">
+        <div style="border-top:3px solid ${GOLD};padding:32px 0 16px;">
           <h1 style="font-size:26px;font-weight:400;font-style:italic;margin:0 0 8px;">You're on my waitlist.</h1>
-          <p style="font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:#888;margin:0;">Grace Mae Alterations · Pittsburgh, PA</p>
+          <p style="font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:#767676;margin:0;">Grace Mae Alterations · Pittsburgh, PA</p>
         </div>
         <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
           <p style="font-size:15px;line-height:1.7;color:#1C1C1C;margin:0 0 12px;">
@@ -357,70 +291,67 @@ export async function POST(req: NextRequest) {
             In the meantime, feel free to reply to this email with any questions.
           </p>
         </div>
-        <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
-          <p style="font-size:14px;font-style:italic;color:#1C1C1C;margin:0 0 4px;">Grace Mae</p>
-          <p style="font-size:12px;color:#999;margin:0;">Grace Mae Alterations · Pittsburgh, PA · By appointment only</p>
-        </div>
+        ${signOff}
       </div>`
     : `
       <div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;color:#1C1C1C;">
-        <div style="border-top:3px solid #C9A84C;padding:32px 0 16px;">
+        <div style="border-top:3px solid ${GOLD};padding:32px 0 16px;">
           <h1 style="font-size:26px;font-weight:400;font-style:italic;margin:0 0 8px;">Your request was received.</h1>
-          <p style="font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:#888;margin:0;">Grace Mae Alterations · Pittsburgh, PA</p>
+          <p style="font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:#767676;margin:0;">Grace Mae Alterations · Pittsburgh, PA</p>
         </div>
 
         <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
           <p style="font-size:15px;line-height:1.7;color:#1C1C1C;margin:0;">
-            Hi ${escapeHtml(body.name)}, thank you for reaching out. I've received your request. I reply to every message within 2 business days, usually sooner.
+            Hi ${escapeHtml(name)}, thank you for reaching out. I've received your request. I reply to every message within 2 business days, usually sooner.
           </p>
         </div>
 
         <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
-          <p style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#C9A84C;margin:0 0 16px;">What Happens Next</p>
+          <p style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:${GOLD_INK};margin:0 0 16px;">What Happens Next</p>
           <ol style="font-size:14px;line-height:1.9;color:#555;padding-left:20px;margin:0;">
             <li>I'll review your request and reach out to schedule your first fitting.</li>
-            <li>At the consultation we'll look at the garment together, discuss the alterations, and I'll give you a quote and realistic timeline.</li>
+            <li>At the fitting we'll look at the garment together, talk through the alterations, and I'll give you a quote and a realistic timeline.</li>
             <li>Alterations begin after the fitting and a deposit. I'll keep you updated along the way.</li>
           </ol>
         </div>
 
         <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
-          <p style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#C9A84C;margin:0 0 16px;">What to Bring to Your First Fitting</p>
-          ${whatToBringHtml(body.serviceType)}
+          <p style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:${GOLD_INK};margin:0 0 16px;">What to Bring to Your First Fitting</p>
+          ${whatToBringHtml(serviceType)}
         </div>
 
         <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
           <p style="font-size:14px;line-height:1.7;color:#555;margin:0;">
             Questions in the meantime? Reply to this email or reach me at
-            <a href="mailto:${escapeHtml(CONTACT_EMAIL)}" style="color:#C9A84C;">${escapeHtml(CONTACT_EMAIL)}</a>.
+            <a href="mailto:${escapeHtml(CONTACT_EMAIL)}" style="color:${GOLD_INK};">${escapeHtml(CONTACT_EMAIL)}</a>.
           </p>
         </div>
-
-        <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
-          <p style="font-size:15px;font-style:italic;color:#1C1C1C;margin:0 0 4px;">Grace Mae</p>
-          <p style="font-size:12px;color:#999;margin:0;">Grace Mae Alterations · Pittsburgh, PA · By appointment only</p>
-        </div>
+        ${signOff}
       </div>`;
 
   // Build attachments
-  const emailAttachments = (body.attachments ?? [])
-    .filter((a) => a.filename && a.content)
+  const emailAttachments = (Array.isArray(raw.attachments) ? raw.attachments : [])
+    .slice(0, MAX_ATTACHMENTS)
+    .filter((a) => typeof a?.filename === "string" && typeof a?.content === "string" && a.content)
     .map((a) => {
       const base64 = a.content.includes(",") ? a.content.split(",")[1] : a.content;
-      return { filename: a.filename, content: Buffer.from(base64, "base64") };
+      return {
+        filename: a.filename.replace(/[^\w.\- ]+/g, "_").slice(0, 100) || "photo.jpg",
+        content: Buffer.from(base64, "base64"),
+      };
     });
 
   try {
     const resend = getResend();
 
-    // 1. Email to Grace (with attachments)
+    // 1. Email to Grace (with attachments). This is the one that matters.
     const { error: graceError } = await resend.emails.send({
       from: FROM_EMAIL,
       to: CONTACT_EMAIL,
-      replyTo: body.email,
-      subject: body.isWaitlist
-        ? `Waitlist: ${body.name} — ${serviceLabel}`
-        : `New Request: ${body.name} — ${serviceLabel}`,
+      replyTo: email,
+      subject: isWaitlist
+        ? `Waitlist: ${name}, ${serviceLabel}`
+        : `New request: ${name}, ${serviceLabel}`,
       html: graceEmail,
       ...(emailAttachments.length > 0 && { attachments: emailAttachments }),
     });
@@ -430,16 +361,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Failed to send email." }, { status: 500 });
     }
 
-    // 2. Confirmation email to client (no attachments)
-    await resend.emails.send({
+    // 2. Confirmation email to client (no attachments). Grace already has the
+    // request, so a failure here is logged rather than shown as an error.
+    const { error: clientError } = await resend.emails.send({
       from: FROM_EMAIL,
-      to: body.email,
+      to: email,
       replyTo: CONTACT_EMAIL,
-      subject: body.isWaitlist
-        ? `You're on my waitlist — Grace Mae Alterations`
-        : `Your request was received — Grace Mae Alterations`,
+      subject: isWaitlist
+        ? "You're on my waitlist · Grace Mae Alterations"
+        : "Your request was received · Grace Mae Alterations",
       html: confirmationEmail,
     });
+    if (clientError) console.error("Resend error (client confirmation):", clientError);
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
