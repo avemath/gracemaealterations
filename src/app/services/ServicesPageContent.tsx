@@ -143,7 +143,7 @@ export default function ServicesPageContent({ services, page, availability }: Pr
                     </p>
                     <Link
                       href={`/contact?service=${service.id}`}
-                      className="mt-4 inline-flex items-center gap-2 font-jost text-xs text-gold tracking-[0.18em] uppercase hover:text-gold_dark transition-colors duration-300"
+                      className="mt-4 inline-flex items-center gap-2 font-jost text-xs text-gold_ink tracking-[0.18em] uppercase hover:text-gold_dark transition-colors duration-300"
                     >
                       Join the {service.title.split(" ")[0]} Waitlist
                     </Link>
