@@ -8,6 +8,8 @@ import { motion, AnimatePresence } from "framer-motion";
 // Pages where the sticky CTA is not useful
 const EXCLUDED = ["/contact", "/studio"];
 
+import { ctas } from "@/lib/cta";
+
 interface Props {
   /** Limited availability: some services are waitlisted, the rest book normally. */
   limitedMode?: boolean;
@@ -15,6 +17,7 @@ interface Props {
 }
 
 export default function StickyMobileCTA({ limitedMode = false, reopensLabel = "" }: Props) {
+  const { primary } = ctas({ limitedMode, reopensLabel });
   const [visible, setVisible] = useState(false);
   const pathname = usePathname();
 
@@ -46,7 +49,6 @@ export default function StickyMobileCTA({ limitedMode = false, reopensLabel = ""
           exit={{ y: 96, opacity: 0 }}
           transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
           className="fixed bottom-0 left-0 right-0 z-40 lg:hidden"
-          aria-label="Book a consultation"
         >
           {/* bg-ivory/97 and pb-safe are not real Tailwind classes, so this bar
               rendered transparent and ignored the iPhone home indicator. */}
@@ -59,12 +61,8 @@ export default function StickyMobileCTA({ limitedMode = false, reopensLabel = ""
                 Bridal booking reopens {reopensLabel}
               </p>
             )}
-            <Link
-              href="/contact"
-              className="btn-gold block w-full text-center"
-              aria-label="Book a consultation with Grace Mae"
-            >
-              Book a Consultation
+            <Link href={primary.href} className="btn-gold w-full text-center">
+              {primary.label}
             </Link>
           </div>
         </motion.div>

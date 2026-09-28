@@ -18,7 +18,7 @@ export const SITE = {
   instagram: "@gracemaealterations",
   instagramUrl: "https://instagram.com/gracemaealterations",
   availability: "Available by Appointment",
-  responseTime: "I respond to all inquiries within 24 hours.",
+  responseTime: "I reply to every message within 2 business days, usually sooner.",
   bookingNote: "Now scheduling Spring & Summer 2026 consultations",
   phone: "",                    // e.g. "(412) 555-0000" — blank hides the call/text row
   isAcceptingClients: true,     // ← Set to false to put the WHOLE contact form into Waitlist mode
@@ -30,7 +30,14 @@ export const SITE = {
   limitedMode: false,
   waitlistServices: [] as string[],   // e.g. ["bridal"]
   reopensLabel: "",                   // e.g. "early 2027"
-  limitedNote: "",                    // one line shown under the hero and on the contact page
+  limitedNote:
+    "I'm home with our new baby, so for now I'm taking everyday tailoring and small repairs only. Bridal fittings reopen in early 2027. If your wedding is in 2027, join the waitlist and you'll get first pick of fitting dates, in the order you joined. If your date is sooner, tell me anyway and I'll give you an honest answer, plus a referral if I can't take it.",
+  trustItems: [
+    "Former Lead Alterations Specialist, David's Bridal",
+    "B.S. Fashion & Apparel Design, IUP",
+    "500+ garments altered",
+    "Itemized quotes, always",
+  ],
   metaDescription:
     "Expert bridal and clothing alterations in Pittsburgh, PA. Grace Mae offers precision tailoring, wedding dress alterations, and custom work by appointment. Honest timelines. Exceptional craft.",
 };
@@ -336,7 +343,7 @@ export const HOME_TEXT = {
 };
 
 export const PROCESS_STEPS: { title: string; body: string; note?: string }[] = [
-  { title: "Reach Out",        body: "Fill out the contact form with a few details about your garment. I respond to every inquiry within 24 hours." },
+  { title: "Reach Out",        body: "Fill out the contact form with a few details about your garment. I reply to every message within 2 business days, usually sooner." },
   { title: "Free Consultation", body: "We look at the garment together. I assess what needs to be done and give you an honest, itemized quote. No commitment required." },
   { title: "First Fitting",    body: "I pin and mark every adjustment directly on you, so we both see exactly what changes before a single seam is cut." },
   { title: "The Work",         body: "I complete your alterations with full attention. For complex bridal gowns this may involve multiple stages of careful work." },
@@ -398,12 +405,12 @@ export const PORTFOLIO_TEXT = {
 export const CONTACT_TEXT = {
   heroLabel: "Get in Touch",
   heroHeading: "Let's Talk About Your Garment",
-  waitlistBannerBold: "I'm currently fully booked.",
+  waitlistBannerBold: "Bridal fittings are on a waitlist right now.",
   waitlistBannerText:
     "Fill out the form below to join my waitlist — I'll reach out as soon as a spot opens up.",
   successHeading: "Thank you.",
   successMessage:
-    "Your message has been received. Check your inbox — I've sent a confirmation with next steps. I'll follow up within 24 hours.",
+    "Your message has been received. Check your inbox: I've sent a confirmation with next steps. I reply to every message within 2 business days, usually sooner.",
   waitlistSuccessMessage: "You're on my waitlist. I'll reach out as soon as a spot opens up.",
 };
 

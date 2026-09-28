@@ -14,6 +14,8 @@ interface ProcessStepsProps {
   sectionLabel: string;
   heading: string;
   ctaText: string;
+  ctaLabel: string;
+  ctaHref: string;
   steps: ProcessStep[];
 }
 
@@ -104,6 +106,8 @@ export default function ProcessSteps({
   sectionLabel,
   heading,
   ctaText,
+  ctaLabel,
+  ctaHref,
   steps,
 }: ProcessStepsProps) {
   const [hovered, setHovered] = useState<number | null>(null);
@@ -469,8 +473,8 @@ export default function ProcessSteps({
           <p className="font-jost text-ivory/60 text-sm tracking-[0.18em] uppercase mb-6">
             {ctaText}
           </p>
-          <Link href="/contact" className="btn-outline-ivory">
-            Book a Consultation
+          <Link href={ctaHref} className="btn-outline-ivory">
+            {ctaLabel}
           </Link>
         </motion.div>
       </div>

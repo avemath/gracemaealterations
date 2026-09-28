@@ -189,6 +189,8 @@ export default async function RootLayout({
             availability: site.availability,
             instagram: site.instagram,
             instagramUrl: site.instagramUrl,
+            limitedMode: site.limitedMode,
+            reopensLabel: site.reopensLabel,
           }}
         >
           <main id="main-content">{children}</main>
