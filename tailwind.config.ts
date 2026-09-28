@@ -26,11 +26,16 @@ const config: Config = {
       },
       animation: {
         "fade-up": "fadeUp 0.7s ease forwards",
+        "scroll-hint": "scrollHint 2.2s ease-in-out infinite",
       },
       keyframes: {
         fadeUp: {
           "0%": { opacity: "0", transform: "translateY(24px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        scrollHint: {
+          "0%, 100%": { transform: "scaleY(1)", opacity: "0.4" },
+          "50%": { transform: "scaleY(0.3)", opacity: "1" },
         },
       },
     },

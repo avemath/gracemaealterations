@@ -125,9 +125,9 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
                 role="tab"
                 aria-selected={activeFilter === f.value}
                 onClick={() => setActiveFilter(f.value)}
-                className={`px-5 py-2 font-jost text-xs tracking-[0.16em] uppercase transition-all duration-300 rounded-none ${
+                className={`px-5 min-h-[44px] font-jost font-medium text-xs tracking-[0.16em] uppercase transition-all duration-300 rounded-none ${
                   activeFilter === f.value
-                    ? "bg-gold text-ivory"
+                    ? "bg-gold text-charcoal"
                     : "border border-blush text-charcoal/75 hover:border-gold/40 hover:text-charcoal"
                 }`}
               >
@@ -187,7 +187,15 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
               onClick={() => setLightboxIndex(i)}
               role="button"
               tabIndex={0}
-              onKeyDown={(e) => e.key === "Enter" && setLightboxIndex(i)}
+              onKeyDown={(e) => {
+                if (e.key !== "Enter" && e.key !== " ") return;
+                // Without this, the browser delivers the key's default
+                // activation to whatever holds focus once the dialog opens,
+                // which is the close button, so the lightbox shut itself
+                // instantly for keyboard users.
+                e.preventDefault();
+                setLightboxIndex(i);
+              }}
               aria-label={`View ${item.label}`}
             >
                   <SanityImage

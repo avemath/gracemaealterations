@@ -37,3 +37,8 @@ next-env.d.ts
 
 # prepared image derivatives (regenerate with: npm run images:prepare)
 assets/prepared/
+
+# test and audit output
+/lighthouse/
+/test-results/
+/playwright-report/

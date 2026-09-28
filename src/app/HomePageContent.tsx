@@ -214,11 +214,8 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               aria-hidden="true"
             >
           <span className="font-jost text-[0.6rem] tracking-[0.25em] uppercase text-charcoal/75">Scroll</span>
-          <motion.div
-            className="w-px h-8 bg-gold/50"
-            animate={{ scaleY: [1, 0.3, 1], opacity: [0.4, 1, 0.4] }}
-            transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
-          />
+          {/* CSS keyframes rather than a permanent Framer rAF loop. */}
+          <span className="block w-px h-8 bg-gold/50 animate-scroll-hint" />
         </div>
       </section>
 
@@ -314,14 +311,17 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                           : `Learn more about ${service.title}`
                       }
                     >
-                      <span>{isWaitlisted(service.id) ? "Join the Waitlist" : "Learn More"}</span>
-                      <motion.span
-                        className="inline-block"
-                        animate={{ x: [0, 4, 0] }}
-                        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut", repeatDelay: 1 }}
-                      >
+                      <span>
+                        {isWaitlisted(service.id) ? "Join the Waitlist" : "Learn More"}
+                        {/* Keeps the link text specific for screen readers and
+                            link-text audits without changing the card design. */}
+                        <span className="sr-only"> about {service.title}</span>
+                      </span>
+                      {/* Was an infinite Framer loop on every card: three
+                          perpetual animations competing with hydration. */}
+                      <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">
                         <ArrowRight />
-                      </motion.span>
+                      </span>
                     </Link>
                   </div>
                 </article>
