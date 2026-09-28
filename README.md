@@ -126,6 +126,7 @@ All run from `site/` and need `SANITY_API_TOKEN` in `.env.local`.
 | `node scripts/seed-sanity.mjs` | Populates a fresh dataset from `src/data/content.ts` |
 | `npm run copy:response-time` | Replaces any promised reply time in the three Studio fields that carry it with "I read every message myself and reply as soon as I can." Add `-- --dry-run` to preview |
 | `npm run copy:tidy-dashes` | Takes em dashes out of the live Sanity copy, choosing a full stop or a comma for each. Run with `-- --dry-run` first and read the list |
+| `npm run content:publish` | Puts the reviewed guides, bustle styles and landing pages live, taking out the [DRAFT] markers. The policies page only goes live with `-- --policies`, once Grace has confirmed it. `-- --unpublish` takes everything back down, and `-- --dry-run` previews |
 | `npm run copy:fixes` | Fixes four grammar slips in the live Sanity copy (service and value descriptions). Each fix only touches its exact phrase, so anything reworded since is left alone. Add `-- --dry-run` to preview |
 | `node scripts/make-icons.mjs` | Rebuilds the favicon, app icon and Apple touch icon (gold Cormorant "G" on near-black) into `src/app/` |
 

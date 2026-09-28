@@ -18,7 +18,14 @@ export const bustleStyle = defineType({
     defineField({ name: "typicalPoints", title: "Typical points", type: "string" }),
     defineField({ name: "bestFor", title: "Best for", type: "text", rows: 2 }),
     defineField({ name: "fabricNotes", title: "Fabric notes", type: "text", rows: 2 }),
-    defineField({ name: "priceFrom", title: "Price from (USD)", type: "number" }),
+    defineField({
+      name: "priceFrom",
+      title: "Price from (USD)",
+      type: "number",
+      // Not shown on the site: every garment is quoted at the fitting.
+      // Hidden rather than removed so old values don't appear as unknown fields.
+      hidden: true,
+    }),
     defineField({ name: "published", title: "Published", type: "boolean", initialValue: false }),
     defineField({ name: "order", title: "Display order", type: "number" }),
   ],
