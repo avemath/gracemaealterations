@@ -54,9 +54,9 @@ interface HomePageData {
     waitlistServices: string[];
     reopensLabel: string;
     limitedNote: string;
-    trustItems: string[];
   };
   heroImage: SanityImageType | null;
+  trustStats: { value: string; label: string }[];
   services: SanityService[];
   portfolioItems: SanityPortfolioItem[];
   bio: { paragraph1: string; paragraph2: string; pullQuote: string };
@@ -103,7 +103,7 @@ const ArrowRight = () => (
 );
 
 export default function HomePageContent({ data }: { data: HomePageData }) {
-  const { site, heroImage, services, instagram, portfolioItems, bio, aboutSecondaryImage, testimonials, text } = data;
+  const { site, heroImage, trustStats, services, instagram, portfolioItems, bio, aboutSecondaryImage, testimonials, text } = data;
 
   // While limited availability is on, some services take waitlist requests
   // instead of bookings.
@@ -223,24 +223,23 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
         </div>
       </section>
 
-      {/* ── TRUST STRIP ───────────────────────────────────────── */}
-      <section className="bg-ivory border-y border-blush py-10 lg:py-12" aria-label="Experience and credentials">
+      {/* ── STATS BAR ─────────────────────────────────────────── */}
+      {/* Big gold figures, with the garment count ticking up as it scrolls
+          in. gold_dark is 3.2:1 on ivory, which passes for text this large. */}
+      <section className="bg-ivory border-y border-blush py-10 lg:py-14" aria-label="Experience and credentials">
         <div className="max-w-5xl mx-auto px-6">
-          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 text-center">
-            {site.trustItems.map((item, i) => (
-              <li key={i} className="flex flex-col items-center gap-2">
-                <span className="w-6 h-px bg-gold" aria-hidden="true" />
-                <p className="font-jost text-charcoal/75 text-xs lg:text-sm tracking-[0.06em] leading-snug max-w-[22ch]">
-                  {/* The one number in the strip still counts up. */}
-                  {/^\d/.test(item) ? (
-                    <>
-                      <CountUp value={item.split(" ")[0]} />{" "}
-                      {item.split(" ").slice(1).join(" ")}
-                    </>
-                  ) : (
-                    item
-                  )}
-                </p>
+          <ul className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-0">
+            {trustStats.map((stat, i) => (
+              <li key={i} className="flex items-center">
+                {i > 0 && (
+                  <span className="hidden sm:block w-px h-12 bg-gold/40 mx-10 lg:mx-16" aria-hidden="true" />
+                )}
+                <div className="text-center">
+                  <p className="font-cormorant text-gold_dark text-3xl lg:text-4xl font-light leading-tight">
+                    <CountUp value={stat.value} />
+                  </p>
+                  <p className="font-jost text-charcoal/75 text-xs tracking-[0.18em] uppercase mt-2">{stat.label}</p>
+                </div>
               </li>
             ))}
           </ul>

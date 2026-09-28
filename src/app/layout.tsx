@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Jost } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import "@/styles/globals.css";
 import SiteChrome from "@/components/layout/SiteChrome";
@@ -20,22 +19,6 @@ function minPrice(range?: string): number | null {
   const match = range?.match(/\$\s?([\d,]+)/);
   return match ? Number(match[1].replace(/,/g, "")) : null;
 }
-
-// ── FONTS ─────────────────────────────────────────────────────
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-cormorant",
-  display: "swap",
-});
-
-const jost = Jost({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  variable: "--font-jost",
-  display: "swap",
-});
 
 // ── METADATA ──────────────────────────────────────────────────
 export async function generateMetadata(): Promise<Metadata> {
@@ -159,10 +142,7 @@ export default async function RootLayout({
   };
 
   return (
-    <html
-      lang="en"
-      className={`${cormorant.variable} ${jost.variable}`}
-    >
+    <html lang="en">
       <head>
         <script
           dangerouslySetInnerHTML={{
