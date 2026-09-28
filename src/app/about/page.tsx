@@ -23,5 +23,11 @@ export default async function AboutPage() {
     getMergedValues(),
   ]);
 
-  return <AboutPageContent site={site} about={about} values={values} />;
+  return (
+    <AboutPageContent
+      site={{ name: site.name, limitedMode: site.limitedMode, reopensLabel: site.reopensLabel }}
+      about={about}
+      values={values}
+    />
+  );
 }

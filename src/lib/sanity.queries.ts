@@ -51,6 +51,7 @@ export interface SanitySiteSettings {
   waitlistServices?: string[];
   reopensLabel?: string;
   limitedNote?: string;
+  trustItems?: string[];
 }
 
 export interface SanityProcessStep {
@@ -315,6 +316,7 @@ export async function getMergedSite() {
     waitlistServices: s?.waitlistServices ?? SITE.waitlistServices,
     reopensLabel: s?.reopensLabel ?? SITE.reopensLabel,
     limitedNote: s?.limitedNote ?? SITE.limitedNote,
+    trustItems: s?.trustItems?.length ? s.trustItems : SITE.trustItems,
   };
 }
 

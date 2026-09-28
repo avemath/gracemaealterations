@@ -11,6 +11,8 @@ interface SiteData {
   availability: string;
   instagram: string;
   instagramUrl: string;
+  limitedMode?: boolean;
+  reopensLabel?: string;
 }
 
 interface Props {
@@ -26,7 +28,12 @@ export default function SiteChrome({ children, site }: Props) {
 
   return (
     <>
-      <Navbar siteName={site.siteName} businessName={site.businessName} />
+      <Navbar
+        siteName={site.siteName}
+        businessName={site.businessName}
+        limitedMode={site.limitedMode}
+        reopensLabel={site.reopensLabel}
+      />
       {children}
       <Footer
         siteName={site.siteName}

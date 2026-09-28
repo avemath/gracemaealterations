@@ -37,9 +37,9 @@ export default async function HomePage() {
           waitlistServices: site.waitlistServices,
           reopensLabel: site.reopensLabel,
           limitedNote: site.limitedNote,
+          trustItems: site.trustItems,
         },
         heroImage: home.heroImage,
-        trustStats: home.trustStats,
         services,
         portfolioItems,
         bio: {

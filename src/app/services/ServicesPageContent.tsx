@@ -237,7 +237,8 @@ export default function ServicesPageContent({ services, page, availability }: Pr
         headline={page.ctaHeadline}
         subhead={page.ctaSubhead}
         buttonLabel={page.ctaButton}
-        note={limitedMode ? availability.limitedNote : undefined}
+        limitedMode={limitedMode}
+        reopensLabel={reopensLabel}
       />
     </>
   );

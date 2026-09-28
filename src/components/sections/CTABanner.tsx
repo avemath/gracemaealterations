@@ -2,14 +2,16 @@
 
 import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
+import { reopenYear } from "@/lib/cta";
 
 interface CTABannerProps {
   headline?: string;
   subhead?: string;
   buttonLabel?: string;
   buttonHref?: string;
-  /** Optional availability line shown under the button (limited mode). */
-  note?: string;
+  /** In limited mode the banner speaks to next year's brides instead. */
+  limitedMode?: boolean;
+  reopensLabel?: string;
 }
 
 export default function CTABanner({
@@ -17,11 +19,23 @@ export default function CTABanner({
   subhead = "Book a consultation in Pittsburgh today.",
   buttonLabel = "Get in Touch",
   buttonHref = "/contact",
-  note,
+  limitedMode = false,
+  reopensLabel = "",
 }: CTABannerProps) {
+  const year = reopenYear(reopensLabel);
+
+  const copy = limitedMode
+    ? {
+        headline: year ? `Getting married in ${year}?` : "Getting married after bridal reopens?",
+        subhead: `Bridal fittings reopen ${reopensLabel}. Waitlist brides get first choice of fitting dates, in the order they joined.`,
+        buttonLabel: "Save my place",
+        buttonHref: "/contact?service=bridal",
+      }
+    : { headline, subhead, buttonLabel, buttonHref };
+
   return (
     <section className="relative bg-near_black py-20 lg:py-28 px-6 overflow-hidden" aria-labelledby="cta-heading">
-      {/* Subtle decorative element — two large quotation marks */}
+      {/* Subtle decorative element */}
       <div
         className="absolute inset-0 flex items-center justify-center select-none pointer-events-none opacity-[0.03]"
         aria-hidden="true"
@@ -45,32 +59,24 @@ export default function CTABanner({
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.75 }}
         >
-          {/* Gold rule */}
           <div className="flex justify-center mb-8">
             <div className="w-16 h-px bg-gold" aria-hidden="true" />
           </div>
 
           <h2
             id="cta-heading"
-            className="font-cormorant italic text-ivory leading-tight mb-5"
-            style={{ fontSize: "clamp(2.25rem, 5vw, 4rem)" }}
+            className="font-cormorant italic text-ivory text-[clamp(2rem,3.5vw,3.25rem)] leading-[1.1] mb-5"
           >
-            {headline}
+            {copy.headline}
           </h2>
 
-          <p className="font-jost text-ivory/65 text-sm tracking-[0.16em] uppercase mb-10">
-            {subhead}
+          <p className="font-jost text-ivory/75 text-sm lg:text-base leading-[1.65] max-w-[52ch] mx-auto mb-10">
+            {copy.subhead}
           </p>
 
-          <Button variant="outline-ivory" href={buttonHref}>
-            {buttonLabel}
+          <Button variant="outline-ivory" href={copy.buttonHref}>
+            {copy.buttonLabel}
           </Button>
-
-          {note && (
-            <p className="font-jost text-ivory/45 text-xs leading-relaxed max-w-md mx-auto mt-8">
-              {note}
-            </p>
-          )}
         </motion.div>
       </div>
     </section>

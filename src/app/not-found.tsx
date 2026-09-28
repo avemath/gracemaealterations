@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { ctas } from "@/lib/cta";
+import { getMergedSite } from "@/lib/sanity.queries";
 
 export const metadata: Metadata = {
   title: "Page Not Found",
@@ -14,7 +16,9 @@ const NAV_LINKS = [
   { label: "Contact",   href: "/contact" },
 ];
 
-export default function NotFound() {
+export default async function NotFound() {
+  const site = await getMergedSite();
+  const { primary } = ctas(site);
   return (
     <section
       className="bg-ivory min-h-[80vh] flex flex-col items-center justify-center px-6 py-24 text-center"
@@ -57,8 +61,8 @@ export default function NotFound() {
         ))}
       </nav>
 
-      <Link href="/contact" className="btn-gold">
-        Book a Consultation
+      <Link href={primary.href} className="btn-gold">
+        {primary.label}
       </Link>
     </section>
   );

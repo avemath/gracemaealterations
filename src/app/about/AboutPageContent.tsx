@@ -30,7 +30,7 @@ interface AboutData {
 }
 
 interface Props {
-  site: { name: string };
+  site: { name: string; limitedMode: boolean; reopensLabel: string };
   about: AboutData;
   values: SanityValue[];
 }
@@ -262,6 +262,8 @@ export default function AboutPageContent({ site, about, values }: Props) {
         headline={about.ctaHeadline}
         subhead={about.ctaSubhead}
         buttonLabel={about.ctaButton}
+        limitedMode={site.limitedMode}
+        reopensLabel={site.reopensLabel}
       />
     </>
   );

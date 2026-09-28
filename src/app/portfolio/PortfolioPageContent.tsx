@@ -53,9 +53,10 @@ const ChevronRight = () => (
 interface Props {
   items: SanityPortfolioItem[];
   portfolioPageData: PortfolioPageDataProps;
+  availability: { limitedMode: boolean; reopensLabel: string };
 }
 
-export default function PortfolioPageContent({ items, portfolioPageData }: Props) {
+export default function PortfolioPageContent({ items, portfolioPageData, availability }: Props) {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const filteredRef = useRef<SanityPortfolioItem[]>(items);
@@ -323,6 +324,8 @@ export default function PortfolioPageContent({ items, portfolioPageData }: Props
         headline={portfolioPageData.ctaHeadline}
         subhead={portfolioPageData.ctaSubhead}
         buttonLabel={portfolioPageData.ctaButton}
+        limitedMode={availability.limitedMode}
+        reopensLabel={availability.reopensLabel}
       />
     </>
   );

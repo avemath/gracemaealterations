@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { ctas } from "@/lib/cta";
 
 const EXCLUDED = ["/contact", "/studio"];
 
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export default function StickyDesktopCTA({ limitedMode = false, reopensLabel = "" }: Props) {
+  const { primary, secondary } = ctas({ limitedMode, reopensLabel });
   const [visible, setVisible] = useState(false);
   const pathname = usePathname();
   const excluded = EXCLUDED.includes(pathname) || pathname.startsWith("/studio");
@@ -44,17 +46,19 @@ export default function StickyDesktopCTA({ limitedMode = false, reopensLabel = "
           transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
           className="fixed right-6 bottom-8 z-40 hidden lg:flex flex-col items-end gap-2"
         >
-          {limitedMode && reopensLabel && (
-            <p className="font-jost text-[10px] tracking-[0.16em] uppercase text-charcoal/75 bg-ivory/90 backdrop-blur-sm px-3 py-1.5 border border-blush">
-              Bridal booking reopens {reopensLabel}
-            </p>
+          {limitedMode && (
+            <Link
+              href={secondary.href}
+              className="font-jost text-[10px] tracking-[0.16em] uppercase text-charcoal bg-ivory/95 backdrop-blur-sm px-3 py-2 border border-blush hover:border-gold transition-colors"
+            >
+              {secondary.label}
+            </Link>
           )}
           <Link
-            href="/contact"
+            href={primary.href}
             className="btn-gold shadow-[0_4px_24px_rgba(201,168,76,0.32)] whitespace-nowrap"
-            aria-label="Book a consultation with Grace Mae"
           >
-            Book a Consultation
+            {primary.label}
           </Link>
         </motion.div>
       )}

@@ -30,10 +30,10 @@ export const contactPage = defineType({
     defineField({
       name: "waitlistBannerBold",
       title: "Waitlist Banner — Bold Opening",
-      description: "Shown at top of page when fully booked. Bold portion of the banner text.",
+      description: "Shown at the top of the page when the whole site is on a waitlist. Bold portion of the banner text.",
       group: "messages",
       type: "string",
-      initialValue: "I'm currently fully booked.",
+      initialValue: "Bridal fittings are on a waitlist right now.",
     }),
     defineField({
       name: "waitlistBannerText",
@@ -60,7 +60,7 @@ export const contactPage = defineType({
       type: "text",
       rows: 3,
       initialValue:
-        "Your message has been received. Check your inbox — I've sent a confirmation with next steps. I'll follow up within 24 hours.",
+        "Your message has been received. Check your inbox: I've sent a confirmation with next steps. I reply to every message within 2 business days, usually sooner.",
     }),
     defineField({
       name: "waitlistSuccessMessage",

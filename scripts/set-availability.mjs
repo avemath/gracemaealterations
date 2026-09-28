@@ -23,6 +23,14 @@ import { fileURLToPath } from "url";
 const BRIDAL_REOPENS = "early 2027";
 const WAITLIST_SERVICES = ["bridal"];
 const LEAVE_NOTE_PUBLIC = true; // mention the new baby in the hero pill
+const REOPEN_YEAR = (BRIDAL_REOPENS.match(/\b(\d{4})\b/) ?? [])[1] ?? BRIDAL_REOPENS;
+
+const TRUST_ITEMS = [
+  "Former Lead Alterations Specialist, David's Bridal",
+  "B.S. Fashion & Apparel Design, IUP",
+  "500+ garments altered",
+  "Itemized quotes, always",
+];
 
 // ── Load .env.local ───────────────────────────────────────────────────────────
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -74,10 +82,10 @@ const LIMITED = {
   bookingNote: LEAVE_NOTE_PUBLIC
     ? `Home with our new baby and taking on smaller projects. Bridal reopens ${BRIDAL_REOPENS}.`
     : `Now taking on everyday tailoring and repairs. Bridal reopens ${BRIDAL_REOPENS}.`,
-  limitedNote: `Currently accepting everyday tailoring and small repairs. Bridal and larger custom projects are booking for ${BRIDAL_REOPENS}; join the waitlist to hold your place.`,
+  limitedNote: `I'm home with our new baby, so for now I'm taking everyday tailoring and small repairs only. Bridal fittings reopen in ${BRIDAL_REOPENS}. If your wedding is in ${REOPEN_YEAR}, join the waitlist and you'll get first pick of fitting dates, in the order you joined. If your date is sooner, tell me anyway and I'll give you an honest answer, plus a referral if I can't take it.`,
   availability: `By Appointment. Bridal reopens ${BRIDAL_REOPENS}`,
-  responseTime:
-    "I'm working reduced hours right now and still reply to every message, usually within a few days.",
+  trustItems: TRUST_ITEMS,
+  responseTime: "I reply to every message within 2 business days, usually sooner.",
 };
 
 const OPEN = {
@@ -87,7 +95,8 @@ const OPEN = {
   bookingNote: "Now scheduling consultations",
   limitedNote: "",
   availability: "Available by Appointment",
-  responseTime: "I respond to all inquiries within 24 hours.",
+  trustItems: TRUST_ITEMS,
+  responseTime: "I reply to every message within 2 business days, usually sooner.",
 };
 
 const settings = mode === "limited" ? LIMITED : OPEN;

@@ -15,7 +15,7 @@ export const siteSettings = defineType({
     defineField({ name: "instagramUrl", title: "Instagram Full URL", type: "url", initialValue: "https://instagram.com/gracemaealterations" }),
     defineField({ name: "location", title: "Location (e.g. Pittsburgh, PA)", type: "string", initialValue: "Pittsburgh, PA" }),
     defineField({ name: "availability", title: "Availability Note", type: "string", initialValue: "Available by Appointment" }),
-    defineField({ name: "responseTime", title: "Response Time Note", type: "string", initialValue: "I respond to all inquiries within 24 hours." }),
+    defineField({ name: "responseTime", title: "Response Time Note", type: "string", initialValue: "I reply to every message within 2 business days, usually sooner." }),
     defineField({
       name: "bookingNote",
       title: "Hero Booking Note",
@@ -34,9 +34,16 @@ export const siteSettings = defineType({
     defineField({
       name: "isAcceptingClients",
       title: "Currently Accepting New Clients?",
-      description: "Turn off when fully booked — the contact form switches to 'Waitlist' mode automatically.",
+      description: "Turn off only to put every service on a waitlist. For per service availability use Limited availability mode below.",
       type: "boolean",
       initialValue: true,
+    }),
+    defineField({
+      name: "trustItems",
+      title: "Trust strip (home page)",
+      description: "Short credential lines shown under the hero.",
+      type: "array",
+      of: [{ type: "string" }],
     }),
     // ── Limited availability (per service) ──────────────────────────────────
     defineField({
