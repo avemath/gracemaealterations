@@ -12,10 +12,14 @@ const FOCUSABLE =
  * Usage:
  *   const ref = useFocusTrap<HTMLDivElement>(isOpen, onClose);
  *   <div ref={ref} role="dialog" aria-modal="true">…</div>
+ *
+ * `alsoInclude` is a control outside the container that belongs in the loop,
+ * such as the menu's own close button in the header.
  */
 export function useFocusTrap<T extends HTMLElement>(
   active: boolean,
-  onClose: () => void
+  onClose: () => void,
+  alsoInclude?: React.RefObject<HTMLElement>
 ) {
   const containerRef = useRef<T>(null);
   const returnFocusTo = useRef<HTMLElement | null>(null);
@@ -26,13 +30,17 @@ export function useFocusTrap<T extends HTMLElement>(
     returnFocusTo.current = document.activeElement as HTMLElement | null;
 
     const container = containerRef.current;
-    const focusables = () =>
+    const inside = () =>
       Array.from(container?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []).filter(
         (el) => el.offsetParent !== null || el === document.activeElement
       );
+    const focusables = () => {
+      const extra = alsoInclude?.current;
+      return extra ? [extra, ...inside()] : inside();
+    };
 
     // Move focus in so the next Tab lands inside the dialog.
-    focusables()[0]?.focus();
+    inside()[0]?.focus();
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -65,7 +73,7 @@ export function useFocusTrap<T extends HTMLElement>(
       document.body.style.overflow = previousOverflow;
       returnFocusTo.current?.focus();
     };
-  }, [active, onClose]);
+  }, [active, onClose, alsoInclude]);
 
   return containerRef;
 }

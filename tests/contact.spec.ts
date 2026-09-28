@@ -198,4 +198,28 @@ test.describe("/api/contact", () => {
     });
     expect(bot.status()).toBe(200);
   });
+
+  test("a body that isn't an object is a 400, not a crash", async ({ request }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "one width is enough");
+    for (const data of ["null", "[]", "42"]) {
+      const res = await request.post("/api/contact", {
+        data,
+        headers: { "content-type": "application/json" },
+      });
+      expect(res.status(), data).toBe(400);
+    }
+  });
+});
+
+test("structured data parses, and can't be broken out of", async ({ page }) => {
+  for (const path of ["/", "/guides/what-to-bring-to-your-wedding-dress-fitting"]) {
+    const res = await page.goto(path);
+    if (res?.status() !== 200) continue;
+    const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+    expect(blocks.length, path).toBeGreaterThan(0);
+    for (const text of blocks) {
+      expect(() => JSON.parse(text), path).not.toThrow();
+      expect(text, path).not.toContain("</");
+    }
+  }
 });

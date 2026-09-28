@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCaseStudy, getCaseStudies } from "@/lib/sanity.queries";
-import { pageMetadata, SITE_URL, FALLBACK_OG_IMAGE } from "@/lib/metadata";
+import { pageMetadata, SITE_URL, FALLBACK_OG_IMAGE, jsonLdHtml } from "@/lib/metadata";
 import SanityImage from "@/components/ui/SanityImage";
 import BeforeAfterSlider from "@/components/ui/BeforeAfterSlider";
 
@@ -58,7 +58,7 @@ export default async function CaseStudyPage({ params }: { params: { slug: string
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }} />
 
       <article>
         <section className="bg-near_black" aria-label="Case study hero">

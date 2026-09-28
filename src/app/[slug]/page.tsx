@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getLandingPage, getPublishedLandingPages } from "@/lib/sanity.queries";
-import { pageMetadata, FALLBACK_OG_IMAGE } from "@/lib/metadata";
+import { pageMetadata, FALLBACK_OG_IMAGE, LANDING_SLUGS as ALLOWED, shortDescription } from "@/lib/metadata";
 
 export const revalidate = 60;
-// Only the landing pages below exist at the root. Anything else 404s rather
-// than becoming a catch-all.
-export const dynamicParams = false;
-
-const ALLOWED = ["david-s-bridal-dress-alterations", "bridal-party-alterations"];
+// Only the landing pages in LANDING_SLUGS exist at the root; anything else
+// 404s below rather than becoming a catch-all. Params stay dynamic so a page
+// published after a deploy (or missed by a build that couldn't reach Sanity)
+// still appears.
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const pages = (await getPublishedLandingPages()) ?? [];
@@ -21,12 +21,13 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
+  if (!ALLOWED.includes(params.slug)) return {};
   const page = await getLandingPage(params.slug);
   if (!page) return {};
   return pageMetadata({
     path: `/${page.slug}`,
     title: page.seo?.title ?? `${page.title} | Grace Mae`,
-    description: page.seo?.description ?? page.intro?.slice(0, 155) ?? "",
+    description: page.seo?.description ?? shortDescription(page.intro),
     image: FALLBACK_OG_IMAGE,
   });
 }

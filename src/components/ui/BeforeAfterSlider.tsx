@@ -71,7 +71,10 @@ export default function BeforeAfterSlider({ beforeImage, afterImage, label, desc
 
       <div
         ref={containerRef}
-        className="relative overflow-hidden select-none"
+        // touch-pan-y: the page still scrolls up and down, and sideways drags
+        // move the slider (React touch handlers are passive, so preventDefault
+        // can't stop the scroll).
+        className="relative overflow-hidden select-none touch-pan-y"
         style={{ paddingBottom: "133.33%", cursor: active ? "grabbing" : "ew-resize" }}
         onMouseDown={(e) => {
           e.preventDefault();
@@ -80,7 +83,7 @@ export default function BeforeAfterSlider({ beforeImage, afterImage, label, desc
           updatePos(e.clientX);
         }}
         onTouchStart={(e) => updatePos(e.touches[0].clientX)}
-        onTouchMove={(e) => { e.preventDefault(); updatePos(e.touches[0].clientX); }}
+        onTouchMove={(e) => updatePos(e.touches[0].clientX)}
       >
         {/* ── AFTER layer (full width, underneath) ─────────────── */}
         <div className="absolute inset-0 pointer-events-none">

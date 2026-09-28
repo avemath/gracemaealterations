@@ -274,29 +274,27 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
               <CloseIcon />
             </button>
 
-            {/* Prev */}
-            {lightboxIndex > 0 && (
-              <button
-                type="button"
-                className="absolute left-4 lg:left-6 w-11 h-11 flex items-center justify-center text-ivory hover:text-gold transition-colors z-10"
-                onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex - 1); }}
-                aria-label="Previous image"
-              >
-                <ChevronLeft />
-              </button>
-            )}
+            {/* Prev / Next stay mounted at either end (aria-disabled, not
+                removed or disabled), so focus never falls out of the dialog. */}
+            <button
+              type="button"
+              className="absolute left-4 lg:left-6 w-11 h-11 flex items-center justify-center text-ivory hover:text-gold transition-colors z-10 aria-disabled:opacity-25 aria-disabled:hover:text-ivory aria-disabled:cursor-default"
+              onClick={(e) => { e.stopPropagation(); if (lightboxIndex > 0) setLightboxIndex(lightboxIndex - 1); }}
+              aria-label="Previous image"
+              aria-disabled={lightboxIndex === 0}
+            >
+              <ChevronLeft />
+            </button>
 
-            {/* Next */}
-            {lightboxIndex < filtered.length - 1 && (
-              <button
-                type="button"
-                className="absolute right-4 lg:right-6 w-11 h-11 flex items-center justify-center text-ivory hover:text-gold transition-colors z-10"
-                onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex + 1); }}
-                aria-label="Next image"
-              >
-                <ChevronRight />
-              </button>
-            )}
+            <button
+              type="button"
+              className="absolute right-4 lg:right-6 w-11 h-11 flex items-center justify-center text-ivory hover:text-gold transition-colors z-10 aria-disabled:opacity-25 aria-disabled:hover:text-ivory aria-disabled:cursor-default"
+              onClick={(e) => { e.stopPropagation(); if (lightboxIndex < filtered.length - 1) setLightboxIndex(lightboxIndex + 1); }}
+              aria-label="Next image"
+              aria-disabled={lightboxIndex === filtered.length - 1}
+            >
+              <ChevronRight />
+            </button>
 
             {/* Image */}
             <motion.div
