@@ -20,6 +20,7 @@ export default async function ContactPage() {
       faq={faq}
       contactImage={page.image ?? null}
       hasPolicies={!!policies}
+      photoCheckEnabled={!!process.env.ANTHROPIC_API_KEY}
       availability={{
         limitedMode: site.limitedMode,
         waitlistServices: site.waitlistServices,

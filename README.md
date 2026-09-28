@@ -30,6 +30,7 @@ Marketing website for Grace Mae Alterations - a bridal and clothing alterations 
 ## Features
 
 - **Inquiry form** - three branches (tailoring, bridal, bridal party) with a short optional bridal intake; up to five photos, resized in the browser so the request stays under Vercel's 4.5 MB body limit; honeypot and per-instance rate limiting; waitlist mode per service
+- **Photo check** - optional, after photos are attached: an AI read of what the photos show (garment, likely fabric with confidence and visual cues, visible details, train, neutral fit observations, and what photos can't show). It never suggests work, prices or dates, never comments on the person, and on bridal requests only points at checklist items the customer then taps. The customer chooses whether it goes with the request; Grace's email shows it under "Photo Check". Off unless `ANTHROPIC_API_KEY` is set
 - **Email notifications** - Resend sends a formatted notification to Grace and a confirmation email to the client on every submission
 - **Sanity CMS** - all page content and images are editable via the embedded Studio; the app falls back to static `src/data/content.ts` values when Sanity is not configured
 - **Portfolio lightbox** - click any portfolio image to open a full-screen lightbox
@@ -95,12 +96,17 @@ SANITY_API_TOKEN=your_sanity_api_token
 # Resend (required for contact form emails)
 RESEND_API_KEY=your_resend_api_key
 
+# Anthropic (optional - turns on the photo check on the contact form)
+ANTHROPIC_API_KEY=your_anthropic_api_key
+
 # Email addresses (defaults shown below)
 CONTACT_EMAIL=inquiries@gracemaealterations.com
 FROM_EMAIL=hello@gracemaealterations.com
 ```
 
 `NEXT_PUBLIC_*` variables are exposed to the browser. All others are server-side only.
+
+**The photo check** only appears when `ANTHROPIC_API_KEY` is set in Vercel (Production and Preview), followed by a redeploy. Without it, the contact form looks exactly as before. Each check reads up to three already-resized photos and costs a few cents. Six checks per connection per hour are allowed, from this site's own pages only. Set a monthly spend limit on the key in the Anthropic console as a backstop.
 
 ## Content Scripts
 
