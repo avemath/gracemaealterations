@@ -320,13 +320,14 @@ export default function ContactPageContent({
       <section className="relative flex items-end overflow-hidden bg-near_black" style={{ minHeight: "40vh" }} aria-label="Contact hero">
         <div className="absolute inset-0 bg-gradient-to-br from-near_black via-near_black to-charcoal/60 pointer-events-none" aria-hidden="true" />
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-14 pt-36 lg:pt-44">
-          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+          <div
+            >
             <p className="section-label text-gold mb-4">{text.heroLabel}</p>
             <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-ivory mb-5">
               {text.heroHeading}
             </h1>
             <div className="w-12 h-px bg-gold" aria-hidden="true" />
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -345,7 +346,8 @@ export default function ContactPageContent({
           <div className="grid grid-cols-1 lg:grid-cols-[5fr_7fr] gap-16 lg:gap-24">
 
             {/* ── Left: info. Email only, by design. ───────────── */}
-            <motion.div initial={false} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
+            <div data-reveal
+            >
               <h2 className="font-cormorant italic text-charcoal text-3xl mb-8">Contact information</h2>
               <ul className="space-y-7 mb-10" role="list">
                 <li className="flex items-start gap-4">
@@ -390,10 +392,12 @@ export default function ContactPageContent({
                   sizes="(min-width:1024px) 40vw, 100vw"
                 />
               </div>
-            </motion.div>
+            </div>
 
             {/* ── Right: branching form ────────────────────────── */}
-            <motion.div ref={formRef} initial={false} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.15 }}>
+            <div data-reveal
+              ref={formRef}
+            >
               {status === "success" ? (
                 <div className="text-center py-20">
                   <div className="w-12 h-px bg-gold mx-auto mb-8" aria-hidden="true" />
@@ -639,7 +643,7 @@ export default function ContactPageContent({
                   </AnimatePresence>
                 </>
               )}
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
