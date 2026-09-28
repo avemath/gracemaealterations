@@ -3,18 +3,26 @@ import type { Metadata } from "next";
 export const SITE_URL = "https://gracemaealterations.com";
 export const SITE_NAME = "Grace Mae Alterations";
 
+/** The home share card, for routes with no opengraph-image of their own. */
+export const FALLBACK_OG_IMAGE = "/opengraph-image";
+
 interface PageMeta {
   title: string;
   description: string;
   /** Route path, e.g. "/services". Use "/" for the home page. */
   path: string;
+  /**
+   * Share image for routes without their own opengraph-image file. Leave it
+   * out on routes that have one: an image set here overrides the file.
+   */
+  image?: string;
 }
 
 /**
- * Per-page metadata that inherits the root openGraph block (images come from
- * each route's own opengraph-image.tsx) and sets a self canonical.
+ * Per-page metadata with a self canonical. Share images come from each
+ * route's own opengraph-image file; routes without one pass FALLBACK_OG_IMAGE.
  */
-export function pageMetadata({ title, description, path }: PageMeta): Metadata {
+export function pageMetadata({ title, description, path, image }: PageMeta): Metadata {
   const url = path === "/" ? SITE_URL : `${SITE_URL}${path}`;
   return {
     title: { absolute: title },
@@ -27,16 +35,13 @@ export function pageMetadata({ title, description, path }: PageMeta): Metadata {
       title,
       description,
       url,
-      // Setting openGraph here replaces the root block, images included. A
-      // route with its own opengraph-image file overrides this; the rest
-      // (guides, landing pages) fall back to the home share image.
-      images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
+      ...(image && { images: [{ url: image, width: 1200, height: 630 }] }),
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: ["/opengraph-image"],
+      ...(image && { images: [image] }),
     },
   };
 }

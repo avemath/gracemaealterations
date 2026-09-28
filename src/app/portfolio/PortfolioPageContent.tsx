@@ -176,58 +176,66 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
               className="columns-1 sm:columns-2 lg:columns-3 gap-3 lg:gap-4"
             >
               {filtered.map((item, i) => (
-                <div data-reveal
-              key={item._id}
-              ref={(el) => { thumbRefs.current[i] = el; }}
-              style={{ "--reveal-delay": `${Math.min(i, 8) * 60}ms` } as React.CSSProperties}
-              className="group relative overflow-hidden cursor-pointer break-inside-avoid mb-3 lg:mb-4"
-              onClick={() => setLightboxIndex(i)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key !== "Enter" && e.key !== " ") return;
-                // Without this, the browser delivers the key's default
-                // activation to whatever holds focus once the dialog opens,
-                // which is the close button, so the lightbox shut itself
-                // instantly for keyboard users.
-                e.preventDefault();
-                setLightboxIndex(i);
-              }}
-              aria-label={`View ${item.label}`}
-            >
-                  <SanityImage
-                    image={item.image}
-                    placeholderLabel={`PORTFOLIO_IMAGE_${i + 1}`}
-                    placeholderRatio={i % 3 === 1 ? "landscape" : "portrait"}
-                    alt={item.image?.alt ?? item.label}
-                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  />
-                  {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/50 transition-all duration-500" aria-hidden="true" />
-                  {/* Label — slides up */}
-                  <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-400 ease-out">
-                    <p className="font-cormorant italic text-ivory text-lg leading-tight">{item.label}</p>
-                    {item.caption && (
-                      <p className="font-jost text-ivory/75 text-xs leading-snug mt-1">{item.caption}</p>
-                    )}
-                    <div className="w-5 h-px bg-gold mt-1.5" aria-hidden="true" />
+                // The case study link sits beside the photo button, not inside
+                // it: a link nested in a role="button" is an interactive
+                // element inside another, which screen readers mangle.
+                <div
+                  data-reveal
+                  key={item._id}
+                  style={{ "--reveal-delay": `${Math.min(i, 8) * 60}ms` } as React.CSSProperties}
+                  className="group relative break-inside-avoid mb-3 lg:mb-4"
+                >
+                  <div
+                    ref={(el) => { thumbRefs.current[i] = el; }}
+                    className="relative overflow-hidden cursor-pointer"
+                    onClick={() => setLightboxIndex(i)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key !== "Enter" && e.key !== " ") return;
+                      // Without this, the browser delivers the key's default
+                      // activation to whatever holds focus once the dialog opens,
+                      // which is the close button, so the lightbox shut itself
+                      // instantly for keyboard users.
+                      e.preventDefault();
+                      setLightboxIndex(i);
+                    }}
+                    aria-label={`View ${item.label}`}
+                  >
+                    <SanityImage
+                      image={item.image}
+                      placeholderLabel={`PORTFOLIO_IMAGE_${i + 1}`}
+                      placeholderRatio={i % 3 === 1 ? "landscape" : "portrait"}
+                      alt={item.image?.alt ?? item.label}
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    />
+                    {/* Hover and keyboard-focus overlay */}
+                    <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/50 group-focus-within:bg-charcoal/50 transition-all duration-500" aria-hidden="true" />
+                    {/* Label, slides up */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 group-focus-within:translate-y-0 transition-transform duration-400 ease-out">
+                      <p className="font-cormorant italic text-ivory text-lg leading-tight">{item.label}</p>
+                      {item.caption && (
+                        <p className="font-jost text-ivory/75 text-xs leading-snug mt-1">{item.caption}</p>
+                      )}
+                      <div className="w-5 h-px bg-gold mt-1.5" aria-hidden="true" />
+                    </div>
+                    {/* Expand icon */}
+                    <div className="absolute top-3 right-3 w-7 h-7 bg-ivory/0 group-hover:bg-ivory/20 flex items-center justify-center opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-all duration-400">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                        <line x1="7" y1="0" x2="7" y2="14" stroke="white" strokeWidth="1.25" />
+                        <line x1="0" y1="7" x2="14" y2="7" stroke="white" strokeWidth="1.25" />
+                      </svg>
+                    </div>
                   </div>
                   {item.slug && (
                     <Link
                       href={`/portfolio/${item.slug}`}
-                      onClick={(e) => e.stopPropagation()}
-                      className="absolute bottom-3 right-3 z-10 font-jost text-[10px] tracking-[0.16em] uppercase text-ivory bg-near_black/70 px-2.5 py-1.5 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity duration-300"
+                      className="absolute bottom-3 right-3 z-10 font-jost text-[10px] tracking-[0.16em] uppercase text-ivory bg-near_black/70 px-2.5 py-1.5 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100 transition-opacity duration-300"
                     >
                       Read the case study
+                      <span className="sr-only">: {item.label}</span>
                     </Link>
                   )}
-                  {/* Expand icon */}
-                  <div className="absolute top-3 right-3 w-7 h-7 bg-ivory/0 group-hover:bg-ivory/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-400">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                      <line x1="7" y1="0" x2="7" y2="14" stroke="white" strokeWidth="1.25" />
-                      <line x1="0" y1="7" x2="14" y2="7" stroke="white" strokeWidth="1.25" />
-                    </svg>
-                  </div>
                 </div>
               ))}
             </div>

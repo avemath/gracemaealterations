@@ -46,7 +46,7 @@ test.describe("scroll reveals", () => {
 
     // The grid swaps out through AnimatePresence, so retry until the new
     // tiles have settled.
-    const tile = page.locator('[role="button"][aria-label^="View "]').first();
+    const tile = page.locator('[data-reveal]:has(> [role="button"][aria-label^="View "])').first();
     await expect(async () => {
       await tile.scrollIntoViewIfNeeded({ timeout: 1000 });
       await expect(tile).toHaveClass(/is-visible/, { timeout: 1000 });

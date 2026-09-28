@@ -76,6 +76,62 @@ function clean(value: unknown): string {
   return typeof value === "string" ? value.trim().slice(0, MAX_TEXT) : "";
 }
 
+// ── Dates ──────────────────────────────────────────────────
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** "2027-06-12" from a date input, as a UTC midnight Date. */
+function parseDate(value: string): Date | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!m) return null;
+  const d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+function formatDate(d: Date): string {
+  return d.toLocaleDateString("en-US", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+/** A date input as "Sat, Jun 12, 2027", or the raw text if it is not a date. */
+function readableDate(value: string): string {
+  const d = parseDate(value);
+  return d ? formatDate(d) : value;
+}
+
+/**
+ * One line so Grace can triage without date maths. Bridal fittings ideally
+ * start 3 to 6 months before the wedding; anything under 8 weeks is a rush.
+ */
+function timingNote(value: string, serviceType: string, now = new Date()): { text: string; rush: boolean } | null {
+  const date = parseDate(value);
+  if (!date) return null;
+  const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  const days = Math.round((date.getTime() - today) / DAY_MS);
+  if (days < 0) return { text: "This date has already passed. Worth checking with them.", rush: false };
+
+  const weeks = Math.floor(days / 7);
+  const away = weeks === 0 ? `${days} day${days === 1 ? "" : "s"} away` : `${weeks} week${weeks === 1 ? "" : "s"} away`;
+
+  if (serviceType === "bridal") {
+    if (weeks > 26) {
+      const from = formatDate(new Date(date.getTime() - 26 * 7 * DAY_MS));
+      const to = formatDate(new Date(date.getTime() - 13 * 7 * DAY_MS));
+      return { text: `${away}. Early: first fitting ideally between ${from} and ${to}.`, rush: false };
+    }
+    if (weeks >= 13) return { text: `${away}. In the ideal window for a first fitting.`, rush: false };
+    if (weeks >= 8) return { text: `${away}. Tight: fittings need to start now.`, rush: false };
+    return { text: `${away}. Rush timeline.`, rush: true };
+  }
+  if (weeks < 3) return { text: `${away}. Rush timeline.`, rush: true };
+  return { text: `${away}.`, rush: false };
+}
+
 function row(label: string, value: string) {
   return `
     <tr>
@@ -170,6 +226,7 @@ export async function POST(req: NextRequest) {
   const currentStreetSize = clean(raw.currentStreetSize).slice(0, 50);
   const shoesUndergarments = clean(raw.shoesUndergarments);
   const garmentCount = clean(raw.garmentCount).slice(0, 20);
+  const timing = eventDate ? timingNote(eventDate, serviceType) : null;
   const alterationsNeeded = Array.isArray(raw.alterationsNeeded)
     ? raw.alterationsNeeded.map(clean).filter(Boolean).slice(0, 20)
     : [];
@@ -187,7 +244,7 @@ export async function POST(req: NextRequest) {
           "The Dress",
           `<table style="width:100%;border-collapse:collapse;">
             ${dressDesigner ? row("Designer / Shop", escapeHtml(dressDesigner)) : ""}
-            ${dressArrival ? row("Dress Arrives", escapeHtml(dressArrival)) : ""}
+            ${dressArrival ? row("Dress Arrives", escapeHtml(readableDate(dressArrival))) : ""}
             ${venue ? row("Venue", escapeHtml(venue)) : ""}
             ${dressSizeOrdered ? row("Size Ordered", escapeHtml(dressSizeOrdered)) : ""}
             ${currentStreetSize ? row("Street Size", escapeHtml(currentStreetSize)) : ""}
@@ -246,7 +303,8 @@ export async function POST(req: NextRequest) {
           ${row("Name", escapeHtml(name))}
           ${row("Email", `<a href="mailto:${escapeHtml(email)}" style="color:${GOLD_INK};">${escapeHtml(email)}</a>`)}
           ${row("Service", escapeHtml(serviceLabel))}
-          ${eventDate ? row(serviceType === "bridal" ? "Wedding Date" : "Event Date", escapeHtml(eventDate)) : ""}
+          ${eventDate ? row(serviceType === "bridal" ? "Wedding Date" : "Event Date", escapeHtml(readableDate(eventDate))) : ""}
+          ${timing ? row("Timing", `<span style="color:${timing.rush ? "#9B1C1C" : "#1C1C1C"};">${escapeHtml(timing.text)}</span>`) : ""}
           ${row("Found Me Via", escapeHtml(referral || "Not specified"))}
         </table>
       </div>
@@ -349,9 +407,9 @@ export async function POST(req: NextRequest) {
       from: FROM_EMAIL,
       to: CONTACT_EMAIL,
       replyTo: email,
-      subject: isWaitlist
-        ? `Waitlist: ${name}, ${serviceLabel}`
-        : `New request: ${name}, ${serviceLabel}`,
+      subject: `${timing?.rush ? "RUSH · " : ""}${isWaitlist ? "Waitlist" : "New request"}: ${name}, ${serviceLabel}${
+        eventDate ? `, ${readableDate(eventDate)}` : ""
+      }`,
       html: graceEmail,
       ...(emailAttachments.length > 0 && { attachments: emailAttachments }),
     });

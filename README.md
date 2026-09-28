@@ -117,6 +117,7 @@ All run from `site/` and need `SANITY_API_TOKEN` in `.env.local`.
 | `npm run portfolio:apply` | Patches Sanity from that file |
 | `node scripts/portfolio-captions.mjs --fetch` | Downloads every portfolio photo to `/tmp/portfolio/` so captions can be matched to the right image |
 | `node scripts/seed-sanity.mjs` | Populates a fresh dataset from `src/data/content.ts` |
+| `node scripts/make-icons.mjs` | Rebuilds the favicon, app icon and Apple touch icon (gold Cormorant "G" on near-black) into `src/app/` |
 
 **Replacing a photo that is already in Sanity:** uploads dedupe on the original
 filename, so drop the new file in, then bump that file's entry in the `VERSIONS`
