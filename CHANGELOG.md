@@ -2,6 +2,14 @@
 
 Newest first. Grace facing notes live in `site/content/FOR-GRACE.md`.
 
+## Photo check, September 2026
+
+- `feat: optional photo check on the contact form`:
+  - After attaching photos, a customer can press "Check my photos" for a quick, factual read of what they show: the garment, the likely fabric with how sure it is and why (sheen, drape, texture), layers, visible details and closures, train length, and neutral observations of how the garment sits. It also lists what photos can't show, such as fiber content.
+  - It describes, never advises: no suggested work, prices or dates, no opinions on style, and nothing about the person wearing it. On bridal requests it can point at checklist items that relate to something visible; the customer taps the ones that match.
+  - The customer chooses whether it goes with the request. Grace sees it in her email under "Photo Check", labelled as automated.
+  - Uses the Anthropic API with structured output, so the answer always has the same shape, and server-side refusal fallback. Six checks per connection per hour, same-site requests only, up to three photos. Hidden entirely until `ANTHROPIC_API_KEY` is set.
+
 ## Bustle explorer and the sewn timeline, September 2026
 
 - `feat: interactive bustle explorer; the phone timeline is sewn`:
