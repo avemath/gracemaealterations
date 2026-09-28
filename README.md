@@ -31,6 +31,7 @@ Marketing website for Grace Mae Alterations - a bridal and clothing alterations 
 
 - **Inquiry form** - three branches (tailoring, bridal, bridal party) with a short optional bridal intake; up to five photos, resized in the browser so the request stays under Vercel's 4.5 MB body limit; honeypot and per-instance rate limiting; waitlist mode per service
 - **Care cards** - one per finished garment, made in the Studio (Care Cards). "Draft care notes" writes a first version from the garment, fabric and work (Anthropic API, needs `ANTHROPIC_API_KEY`); "Print the card" opens a business-card-size card with a QR code. The code opens `/care/<code>`: care notes, the before and after, and a Google review button once the review link is set. Private by link, noindex, never in the sitemap
+- **Photo check** - optional, after photos are attached: an AI read of what the photos show (garment, likely fabric with confidence and visual cues, visible details, train, neutral fit observations, and what photos can't show). It never suggests work, prices or dates, never comments on the person, and on bridal requests only points at checklist items the customer then taps. The customer chooses whether it goes with the request; Grace's email shows it under "Photo Check". Off unless `ANTHROPIC_API_KEY` is set
 - **Email notifications** - Resend sends a formatted notification to Grace and a confirmation email to the client on every submission
 - **Sanity CMS** - all page content and images are editable via the embedded Studio; the app falls back to static `src/data/content.ts` values when Sanity is not configured
 - **Portfolio lightbox** - click any portfolio image to open a full-screen lightbox
@@ -96,12 +97,17 @@ SANITY_API_TOKEN=your_sanity_api_token
 # Resend (required for contact form emails)
 RESEND_API_KEY=your_resend_api_key
 
+# Anthropic (optional - turns on the photo check on the contact form)
+ANTHROPIC_API_KEY=your_anthropic_api_key
+
 # Email addresses (defaults shown below)
 CONTACT_EMAIL=inquiries@gracemaealterations.com
 FROM_EMAIL=hello@gracemaealterations.com
 ```
 
 `NEXT_PUBLIC_*` variables are exposed to the browser. All others are server-side only.
+
+**The photo check** only appears when `ANTHROPIC_API_KEY` is set in Vercel (Production and Preview), followed by a redeploy. Without it, the contact form looks exactly as before. Each check reads up to three already-resized photos and costs a few cents. Six checks per connection per hour are allowed, from this site's own pages only. Set a monthly spend limit on the key in the Anthropic console as a backstop.
 
 ## Content Scripts
 
@@ -121,6 +127,7 @@ All run from `site/` and need `SANITY_API_TOKEN` in `.env.local`.
 | `node scripts/seed-sanity.mjs` | Populates a fresh dataset from `src/data/content.ts` |
 | `npm run copy:response-time` | Replaces any promised reply time in the three Studio fields that carry it with "I read every message myself and reply as soon as I can." Add `-- --dry-run` to preview |
 | `npm run copy:tidy-dashes` | Takes em dashes out of the live Sanity copy, choosing a full stop or a comma for each. Run with `-- --dry-run` first and read the list |
+| `npm run content:publish` | Puts the reviewed guides, bustle styles and landing pages live, taking out the [DRAFT] markers. The policies page only goes live with `-- --policies`, once Grace has confirmed it. `-- --unpublish` takes everything back down, and `-- --dry-run` previews |
 | `npm run copy:fixes` | Fixes four grammar slips in the live Sanity copy (service and value descriptions). Each fix only touches its exact phrase, so anything reworded since is left alone. Add `-- --dry-run` to preview |
 | `node scripts/make-icons.mjs` | Rebuilds the favicon, app icon and Apple touch icon (gold Cormorant "G" on near-black) into `src/app/` |
 

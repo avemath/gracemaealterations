@@ -11,7 +11,7 @@ Everything below is in the Studio at **gracemaealterations.com/studio**. Nothing
 3. Your availability is written once, in one place, and appears everywhere it is needed. If you change that sentence, it changes across the whole site.
 4. The contact form asks three questions first: tailoring, bridal waitlist, or bridal party. Then it only shows the fields that matter for that answer. People can attach up to five photos instead of two.
 5. Every page now loads with the words already on it. Before, the text was invisible until the page finished loading, which was bad for phones and for Google.
-6. The services page shows a price range and a typical timeline for each service. There is no itemised price list: every garment is quoted at the fitting, so the site never promises a number you would have to honour.
+6. The services page shows a price range and a typical timeline for each service. There is no itemized price list: every garment is quoted at the fitting, so the site never promises a number you would have to honor.
 7. The portfolio now has a caption under every photo saying what was actually done, instead of the same word repeated.
 8. Text and buttons are darker where they need to be, so they pass accessibility standards and are readable in sunlight.
 9. There are draft guides, bustle explanations and two extra pages written and waiting. None of them are on the site until you switch them on.
@@ -19,38 +19,35 @@ Everything below is in the Studio at **gracemaealterations.com/studio**. Nothing
 11. The contact form was broken for a while: typing in any box kept only the first letter. That is fixed. If anyone mentioned they could not get through, this is why.
 12. Bridal requests ask a few optional questions again: dress size ordered, usual street size, what they think the dress needs, and whether they have shoes and undergarments yet. The answers appear in your email under "The Dress".
 13. Photos people attach are shrunk on their phone before sending, so five photos always go through. They are still plenty sharp to judge a hem.
+14. The services page has an interactive bustle drawing: brides pick American, French, Austrian, ballroom or a detachable train and watch the train lift into it. It ends by saying you choose the bustle at the first fitting, so it never commits you to a style.
+15. Once it is switched on, people who attach photos can press **Check my photos**. It tells them what the photos show: the kind of garment, the likely fabric (and how sure it is), visible details like buttons or lace, and the train length. It never suggests work, prices or dates, and it never comments on the person. If they choose to send it along, it appears in your email under **Photo Check**, clearly marked as automated. Treat it as their description of the dress, not a diagnosis.
 
 ---
 
-## Numbers you need to fill in
+## Only you can do these
 
-Nothing below shows a made up number today. Each one is blank, and the site quietly hides or rewords itself until you fill it in.
+In rough order of how much they help.
 
-### Three real gowns, three real quotes, 3 rows
+### 1. Set up your Google Business Profile
 
-At: **Content, then Services Page, then Three real gowns three real quotes**. Each row needs a Gown, the Work done, and a Total. This whole block stays hidden until at least one row has a total, so partial filling is safe.
+This is what puts you on Google Maps and in "seamstress near me" searches, and it is where reviews live. Go to **business.google.com**, choose a service-area business (so your home address is never shown), set the area to Pittsburgh, and verify it. Then, in Studio, at **Content, then Site Settings**:
 
-- Row 1: Gown, Work done, Total
-- Row 2: Gown, Work done, Total
-- Row 3: Gown, Work done, Total
+- **Google Business Profile link**: on your profile, Share, then Copy link.
+- **Google review link**: on your profile, Ask for reviews, then copy the link. The "Leave a Google review" link appears in the footer as soon as this is filled in.
 
-### Bustle prices, 5 values
+### 2. Read the policies and confirm them
 
-Each is at: **Content, then Bustle Styles, then the style, then Price from**.
+At **Content, then Policies**. The deposit, the 48 hour cancellation window, rush fees, the pickup window and the "if something I sewed doesn't hold, I fix it at no charge" guarantee are all written as a starting point, not as your rules. Change anything that isn't how you work, then either switch **Published** on or ask Avery to run `npm run content:publish -- --policies`.
 
-- American, then Price from
-- French, then Price from
-- Austrian, then Price from
-- Ballroom, then Price from
-- Detachable train, then Price from
+### 3. Photos that are really you
 
-### Testimonial details, 3 clients
+The About page shows your portrait, but the home and contact pages show a different woman with dark hair. Anyone who meets you at a fitting will notice. Swap those two for photos of you, your hands at work, or the studio, at **Content, then Home Page** and **Content, then Contact Page**.
 
-Each is at: **Content, then Testimonials, then the client**. All five boxes are optional, and the line on the site simply skips anything left empty.
+### 4. Testimonials
 
-- Testimonial 1: Dress designer, Alterations done, Venue, Month married, Photo
-- Testimonial 2: Dress designer, Alterations done, Venue, Month married, Photo
-- Testimonial 3: Dress designer, Alterations done, Venue, Month married, Photo
+Check each one is from your own clients, and that the dates make sense for when you started on your own. The optional details make them far more believable. Each is at **Content, then Testimonials, then the client**, and anything left empty is simply skipped:
+
+- Dress designer, Alterations done, Venue, Month married, Photo
 
 ---
 
@@ -65,28 +62,17 @@ Already sorted, no action needed: the reply-time promise, the "calling ahead" FA
 
 ---
 
-## Drafts waiting for your review
+## Guides, bustle styles and two extra pages
 
-None of these are on the site. Read the copy, change anything that does not sound like you, then switch **Published** on.
+These were written and waiting. They have been read through for anything that promises a price, a reply time or something you can't do, and tidied. Avery puts them live with `npm run content:publish`, which also takes out the **[DRAFT]** markers. Once they are live:
 
-| What | Where in Studio | Switch to flip |
-|---|---|---|
-| Policies page | Content, then Policies | Published |
-| Guide: When to start wedding dress alterations | Content, then Guides | Published |
-| Guide: Wedding dress bustle types, explained | Content, then Guides | Published |
-| Guide: What to bring to your wedding dress fitting | Content, then Guides | Published |
-| Bustle style: American | Content, then Bustle Styles | Published |
-| Bustle style: French | Content, then Bustle Styles | Published |
-| Bustle style: Austrian | Content, then Bustle Styles | Published |
-| Bustle style: Ballroom | Content, then Bustle Styles | Published |
-| Bustle style: Detachable train | Content, then Bustle Styles | Published |
-| Page: David's Bridal dress alterations in Pittsburgh | Content, then Landing Pages | Published |
-| Page: Bridal party alterations | Content, then Landing Pages | Published |
+- A **Guides** column appears in the footer, with the three guides.
+- The bustle guide shows the five bustle styles.
+- Two new pages go live: **David's Bridal dress alterations in Pittsburgh** and **Bridal party alterations**. They are for Google more than for the menu.
 
-Two notes on these:
+Read them when you have a quiet minute. If anything doesn't sound like you, change it in Studio, or switch **Published** off to take it down. `npm run content:publish -- --unpublish` takes them all down at once.
 
-- Draft paragraphs are marked **[DRAFT]** so you can see what has not been reviewed. Those markers never appear on the site, even if you publish with them still in place. Please still take them out as you go.
-- The "Guides" link only appears in the menu once at least one guide is published. The Policies link in the footer works the same way.
+The policies page is the one exception: it stays off until you have confirmed it (see above).
 
 ---
 
