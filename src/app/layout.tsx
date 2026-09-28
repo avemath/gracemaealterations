@@ -173,6 +173,8 @@ export default async function RootLayout({
             availability: site.availability,
             instagram: site.instagram,
             instagramUrl: site.instagramUrl,
+            email: site.email,
+            googleReviewUrl: GBP_URL || undefined,
             limitedMode: site.limitedMode,
             reopensLabel: site.reopensLabel,
           }}

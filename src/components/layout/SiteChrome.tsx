@@ -11,8 +11,11 @@ interface SiteData {
   availability: string;
   instagram: string;
   instagramUrl: string;
+  email: string;
   limitedMode?: boolean;
   reopensLabel?: string;
+  googleReviewUrl?: string;
+  guides?: { title: string; slug: string }[];
 }
 
 interface Props {
@@ -40,8 +43,11 @@ export default function SiteChrome({ children, site }: Props) {
         businessName={site.businessName}
         location={site.location}
         availability={site.availability}
+        email={site.email}
         instagram={site.instagram}
         instagramUrl={site.instagramUrl}
+        googleReviewUrl={site.googleReviewUrl}
+        guides={site.guides}
       />
     </>
   );

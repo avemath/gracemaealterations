@@ -6,7 +6,15 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import SanityImage from "@/components/ui/SanityImage";
 import RevealText from "@/components/ui/RevealText";
 import CTABanner from "@/components/sections/CTABanner";
-import type { SanityService, SanityImage as SanityImageType, SanityPricingCard } from "@/lib/sanity.queries";
+import PriceTable from "@/components/ui/PriceTable";
+import ExampleQuotes from "@/components/sections/ExampleQuotes";
+import { ctas } from "@/lib/cta";
+import type {
+  SanityService,
+  SanityImage as SanityImageType,
+  SanityPricingCard,
+  SanityExampleQuote,
+} from "@/lib/sanity.queries";
 
 const CHECK_ICON = (
   <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="flex-shrink-0 mt-0.5">
@@ -21,6 +29,8 @@ interface ServicesPageData {
   pricingLabel: string;
   pricingHeading: string;
   pricingCards: SanityPricingCard[];
+  exampleQuotes: SanityExampleQuote[];
+  exampleQuotesCaption: string;
   ctaHeadline: string;
   ctaSubhead: string;
   ctaButton: string;
@@ -43,6 +53,7 @@ export default function ServicesPageContent({ services, page, availability }: Pr
   const { limitedMode, waitlistServices, reopensLabel } = availability;
   const isWaitlisted = (serviceId: string) =>
     limitedMode && waitlistServices.includes(serviceId);
+  const { primary, secondary } = ctas({ limitedMode, reopensLabel });
   // ── Hero parallax ───────────────────────────────────────────
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress: heroScroll } = useScroll({
@@ -93,7 +104,9 @@ export default function ServicesPageContent({ services, page, availability }: Pr
           <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <p className="section-label text-gold_dark mb-4">{page.heroLabel}</p>
             <RevealText onMount delay={0.2}>
-              <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-charcoal mb-5">{page.heroHeading}</h1>
+              <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-charcoal mb-5">
+              Bridal alterations &amp; tailoring in Pittsburgh
+            </h1>
             </RevealText>
             <div className="w-12 h-px bg-gold" aria-hidden="true" />
           </motion.div>
@@ -162,7 +175,7 @@ export default function ServicesPageContent({ services, page, availability }: Pr
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
                   <div>
                     <h3 className="font-jost font-medium text-charcoal text-xs tracking-[0.22em] uppercase mb-5">
-                      Includes
+                      What&rsquo;s included in every {service.title.toLowerCase()} fitting
                     </h3>
                     <ul className="space-y-3" role="list">
                       {service.services.map((item, j) => (
@@ -181,16 +194,60 @@ export default function ServicesPageContent({ services, page, availability }: Pr
                     <p className="font-cormorant font-medium text-charcoal leading-none mb-2 lining-nums text-[1.5rem]">
                       {service.priceRange}
                     </p>
-                    <p className="font-jost text-charcoal/75 text-xs mb-8">{service.priceNote}</p>
+                    <p className="font-jost text-charcoal/75 text-xs mb-6">{service.priceNote}</p>
+
+                    <PriceTable rows={service.priceTable ?? []} />
+
+                    {service.typicalTimeline && (
+                      <p className="mt-6 font-jost text-charcoal/75 text-sm leading-[1.65]">
+                        <span className="font-medium text-charcoal">Typical timeline: </span>
+                        {service.typicalTimeline}
+                      </p>
+                    )}
+
                     {service.freeConsult && (
-                      <div className="border border-gold/25 bg-gold/5 p-5">
-                        <p className="font-jost text-charcoal/70 text-xs leading-relaxed">
+                      <div className="border border-gold/25 bg-gold/5 p-5 mt-6">
+                        <p className="font-jost text-charcoal/75 text-xs leading-relaxed">
                           ✦&nbsp;&nbsp;{service.freeConsult}
                         </p>
                       </div>
                     )}
                   </div>
                 </div>
+
+                {/* Section CTA: the waitlist lane for anything closed. */}
+                <div className="mt-10">
+                  {isWaitlisted(service.id) ? (
+                    <Link href={secondary.href} className="btn-outline">
+                      {secondary.label}
+                    </Link>
+                  ) : (
+                    <Link href={primary.href} className="btn-outline">
+                      {primary.label}
+                    </Link>
+                  )}
+                </div>
+
+                {service.id === "bridal" && (
+                  <>
+                    <ExampleQuotes
+                      quotes={page.exampleQuotes}
+                      caption={page.exampleQuotesCaption}
+                    />
+
+                    <div className="mt-12 border-t border-blush pt-8">
+                      <h3 className="font-cormorant italic text-charcoal text-2xl mb-3">
+                        Bridal party &amp; mother of the bride
+                      </h3>
+                      <p className="font-jost text-charcoal/75 text-sm leading-[1.65] max-w-[65ch] mb-5">
+                        Bridesmaids, mothers, flower girls: one point of contact, one pickup day.
+                      </p>
+                      <Link href={primary.href} className="btn-outline">
+                        {primary.label}
+                      </Link>
+                    </div>
+                  </>
+                )}
               </motion.div>
             </div>
           </section>

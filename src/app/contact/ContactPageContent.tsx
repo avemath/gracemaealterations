@@ -1,41 +1,51 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import SanityImage from "@/components/ui/SanityImage";
 import Accordion from "@/components/ui/Accordion";
 import { analytics } from "@/lib/analytics";
 import type { SanityFaqItem, SanityImage as SanityImageType } from "@/lib/sanity.queries";
 
-// ── Constants ──────────────────────────────────────────────────
+// ── Branches ───────────────────────────────────────────────────────────────
 
-const BRIDAL_ALTERATIONS = [
-  { value: "hem", label: "Hem (standard, cathedral, horsehair)" },
-  { value: "bustle", label: "Bustle addition" },
-  { value: "bodice_waist", label: "Bodice / Waist adjustment" },
-  { value: "corset_conversion", label: "Corset back conversion" },
-  { value: "straps_sleeves", label: "Straps / Sleeves" },
-  { value: "neckline", label: "Neckline modification" },
-  { value: "cups_boning", label: "Cups / Boning" },
-  { value: "lace_beading", label: "Lace / Beading work" },
-  { value: "other", label: "Other (describe in notes)" },
+type Branch = "tailoring" | "bridal" | "party";
+
+const BRANCH_IDS: Branch[] = ["tailoring", "bridal", "party"];
+
+/** Older links used ?service=custom for special occasion work. */
+function branchFromParam(value: string | null): Branch | null {
+  if (!value) return null;
+  if (value === "custom") return "party";
+  return BRANCH_IDS.includes(value as Branch) ? (value as Branch) : null;
+}
+
+const REFERRALS = [
+  "Google",
+  "Instagram",
+  "Bridal shop",
+  "Wedding planner",
+  "The Knot / WeddingWire",
+  "A friend who was a client",
+  "Other",
 ];
 
-const TAILORING_ALTERATIONS = [
-  { value: "hem", label: "Hem" },
-  { value: "take_in", label: "Take in" },
-  { value: "let_out", label: "Let out" },
-  { value: "sleeve", label: "Sleeve length / taper" },
-  { value: "waist", label: "Waist / Seat adjustment" },
-  { value: "zipper", label: "Zipper repair / replacement" },
-  { value: "other", label: "Other" },
-];
+const MAX_PHOTOS = 5;
+const MAX_BYTES = 5 * 1024 * 1024;
 
 const INITIAL_FORM = {
-  name: "", email: "", phone: "", serviceType: "", eventDate: "",
-  garmentDetails: "", referralSource: "",
-  fabricNotes: "", dressSizeOrdered: "", currentStreetSize: "",
-  shoesUndergarments: "", garmentType: "", currentSize: "",
+  name: "",
+  email: "",
+  garmentDetails: "",
+  referralSource: "",
+  eventDate: "",
+  dressDesigner: "",
+  dressArrival: "",
+  venue: "",
+  garmentCount: "",
+  // Honeypot: real people never fill this in.
+  company: "",
 };
 
 type FormData = typeof INITIAL_FORM;
@@ -44,39 +54,14 @@ type AttachmentState = { filename: string; content: string; preview: string };
 
 function validate(data: FormData): FormErrors {
   const errors: FormErrors = {};
-  if (!data.name.trim()) errors.name = "Full name is required.";
-  if (!data.email.trim()) errors.email = "Email address is required.";
+  if (!data.name.trim()) errors.name = "Please add your name.";
+  if (!data.email.trim()) errors.email = "Please add an email address so I can reply.";
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
-    errors.email = "Please enter a valid email address.";
+    errors.email = "That email address does not look right.";
   return errors;
 }
 
-// ── Sub-components ─────────────────────────────────────────────
-
-const CheckboxItem = ({
-  label, value, checked, onChange,
-}: {
-  label: string; value: string; checked: boolean; onChange: () => void;
-}) => (
-  <label className="flex items-start gap-2.5 cursor-pointer group select-none">
-    <div
-      className={`mt-0.5 w-4 h-4 flex-shrink-0 border flex items-center justify-center transition-colors duration-200 ${
-        checked ? "bg-gold border-gold" : "border-blush group-hover:border-gold/50"
-      }`}
-      aria-hidden="true"
-    >
-      {checked && (
-        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-          <path d="M1 4L3.5 6.5L9 1" stroke="#FAF7F2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      )}
-    </div>
-    <input type="checkbox" className="sr-only" checked={checked} onChange={onChange} value={value} />
-    <span className="font-jost text-sm text-charcoal/75 leading-tight">{label}</span>
-  </label>
-);
-
-// ── Icons ──────────────────────────────────────────────────────
+// ── Icons ──────────────────────────────────────────────────────────────────
 
 const InstagramIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -97,11 +82,6 @@ const PinIcon = () => (
     <circle cx="12" cy="10" r="3" />
   </svg>
 );
-const PhoneIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.49 2 2 0 0 1 3.6 2.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l.95-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-  </svg>
-);
 const UploadIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -110,7 +90,7 @@ const UploadIcon = () => (
   </svg>
 );
 
-// ── Props ──────────────────────────────────────────────────────
+// ── Props ──────────────────────────────────────────────────────────────────
 
 interface ContactText {
   heroLabel: string;
@@ -129,23 +109,15 @@ interface Availability {
   limitedNote: string;
 }
 
-const SERVICE_TITLES: Record<string, string> = {
-  bridal: "Bridal",
-  tailoring: "Tailoring",
-  custom: "Custom",
-};
-
-/** First four-digit year in a label like "early 2027", or null. */
-function reopenYear(label: string): number | null {
-  const match = label.match(/\b(\d{4})\b/);
-  return match ? parseInt(match[1], 10) : null;
-}
-
 interface Props {
   site: {
-    email: string; instagram: string; instagramUrl: string;
-    location: string; availability: string; responseTime: string;
-    phone?: string; isAcceptingClients: boolean;
+    email: string;
+    instagram: string;
+    instagramUrl: string;
+    location: string;
+    availability: string;
+    responseTime: string;
+    isAcceptingClients: boolean;
   };
   faq: SanityFaqItem[];
   contactImage: SanityImageType | null;
@@ -153,100 +125,90 @@ interface Props {
   text: ContactText;
 }
 
-// ── Main component ─────────────────────────────────────────────
+// ── Component ──────────────────────────────────────────────────────────────
 
-export default function ContactPageContent({ site, faq, contactImage, availability, text }: Props) {
+export default function ContactPageContent({
+  site,
+  faq,
+  contactImage,
+  availability,
+  text,
+}: Props) {
+  const { limitedMode, waitlistServices, reopensLabel, limitedNote } = availability;
+
+  const [branch, setBranch] = useState<Branch | null>(null);
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM);
   const [errors, setErrors] = useState<FormErrors>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
-  const [charCount, setCharCount] = useState(0);
   const [attachments, setAttachments] = useState<AttachmentState[]>([]);
-  const [bridalAlterations, setBridalAlterations] = useState<string[]>([]);
-  const [tailoringAlterations, setTailoringAlterations] = useState<string[]>([]);
+  const startedRef = useRef(false);
+  const formRef = useRef<HTMLDivElement>(null);
 
-  const { limitedMode, waitlistServices, reopensLabel, limitedNote } = availability;
-  const svc = formData.serviceType;
-
-  // Preselect the service from /contact?service=bridal. Read on mount rather
-  // than with useSearchParams so the page stays statically rendered.
+  // /contact?service=bridal preselects a card. Read on mount so the page stays
+  // statically rendered.
   useEffect(() => {
-    const requested = new URLSearchParams(window.location.search).get("service");
-    if (requested && ["bridal", "tailoring", "custom", "unsure"].includes(requested)) {
-      setFormData((prev) => (prev.serviceType ? prev : { ...prev, serviceType: requested }));
-    }
+    const requested = branchFromParam(new URLSearchParams(window.location.search).get("service"));
+    if (requested) setBranch(requested);
   }, []);
 
-  // Site-wide waitlist (everything is closed) vs. this one service being
-  // waitlisted while the rest of the site books normally.
   const siteWideWaitlist = !site.isAcceptingClients;
-  const serviceWaitlisted = limitedMode && waitlistServices.includes(svc);
-  const isWaitlist = siteWideWaitlist || serviceWaitlisted;
+  const branchWaitlisted = branch === "bridal" && limitedMode && waitlistServices.includes("bridal");
+  const isWaitlist = siteWideWaitlist || branchWaitlisted;
 
-  const waitlistServiceTitle = SERVICE_TITLES[svc] ?? "";
-  const formHeading = serviceWaitlisted
-    ? `Join the ${waitlistServiceTitle} Waitlist`
+  const CARDS: { id: Branch; title: string; blurb: string }[] = [
+    {
+      id: "tailoring",
+      title: "Tailoring or a repair",
+      blurb: "Hems, waists, sleeves, zips. Open now, usually done within two weeks.",
+    },
+    {
+      id: "bridal",
+      title: limitedMode ? `Bridal (${reopensLabel} waitlist)` : "Bridal",
+      blurb: limitedMode
+        ? "Join the waitlist and you'll get first pick of fitting dates, in the order you joined."
+        : "Hems, bustles, bodice work and fittings for your gown.",
+    },
+    {
+      id: "party",
+      title: "Bridal party or special occasion",
+      blurb: "Bridesmaids, mothers, flower girls: one point of contact, one pickup day.",
+    },
+  ];
+
+  const heading = branchWaitlisted
+    ? "Join the bridal waitlist"
     : siteWideWaitlist
-    ? "Join the Waitlist"
-    : "Send a Request";
+    ? "Join the waitlist"
+    : "Send a request";
 
-  // Not a blocker — just an honest heads-up when the date falls before I reopen.
-  const reopensIn = reopenYear(reopensLabel);
-  const eventDateBeforeReopen =
-    serviceWaitlisted &&
-    !!formData.eventDate &&
-    reopensIn !== null &&
-    new Date(formData.eventDate) < new Date(`${reopensIn}-01-01T00:00:00`);
+  // ── Handlers ─────────────────────────────────────────────────────────────
 
-  const maxPhotos = svc === "bridal" ? 6 : svc === "tailoring" ? 3 : svc === "custom" ? 4 : 2;
-  const photoHint =
-    svc === "bridal"
-      ? "Front of dress, back of dress, bodice close-up, train close-up, size label, any areas of concern (up to 6)"
-      : svc === "tailoring"
-      ? "Full garment front, full garment back, close-up of area to alter (up to 3)"
-      : svc === "custom"
-      ? "Full garment, close-ups of repair areas, any reference photos (up to 4)"
-      : "Any helpful photos of your garment (up to 2)";
+  const chooseBranch = (id: Branch) => {
+    setBranch(id);
+    setStatus("idle");
+    window.setTimeout(() => formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+  };
 
-  const garmentLabel =
-    svc === "bridal" ? "Additional Notes" :
-    svc === "tailoring" ? "Additional Notes / Special Instructions" :
-    svc === "custom" ? "Describe Your Project" :
-    "Tell Me About Your Garment";
-
-  const garmentPlaceholder =
-    svc === "bridal" ? "Any additional context, concerns, or special requests for your dress..." :
-    svc === "tailoring" ? "Anything else I should know about the garment or the alteration..." :
-    svc === "custom" ? "Describe the project — what needs to be done, materials involved, any deadlines..." :
-    "Describe the garment, what alterations you need, and anything else I should know...";
-
-  // ── Handlers ──────────────────────────────────────────────
-
-  const startedRef = useRef(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     if (!startedRef.current) {
       startedRef.current = true;
-      analytics.formStart(formData.serviceType || "unspecified");
+      analytics.formStart(branch ?? "unspecified");
     }
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (name === "garmentDetails") setCharCount(value.length);
     if (errors[name as keyof FormData]) setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
-  const toggleAlt = (
-    setter: React.Dispatch<React.SetStateAction<string[]>>,
-    value: string
-  ) => setter((prev) => prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]);
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    const remaining = maxPhotos - attachments.length;
+    const remaining = MAX_PHOTOS - attachments.length;
     if (remaining <= 0) return;
     let hasError = false;
     files.slice(0, remaining).forEach((file) => {
-      if (file.size > 5 * 1024 * 1024) {
-        setErrors((prev) => ({ ...prev, files: `"${file.name}" exceeds 5 MB.` }));
+      if (file.size > MAX_BYTES) {
+        setErrors((prev) => ({ ...prev, files: `"${file.name}" is over 5 MB.` }));
         hasError = true;
         return;
       }
@@ -269,7 +231,10 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors = validate(formData);
-    if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return; }
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
     setStatus("submitting");
     try {
       const res = await fetch("/api/contact", {
@@ -277,34 +242,77 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
+          serviceType: branch ?? "unsure",
           isWaitlist,
           reopensLabel,
-          alterationsNeeded: bridalAlterations,
-          tailoringAlterations,
           attachments: attachments.map(({ filename, content }) => ({ filename, content })),
         }),
       });
       setStatus(res.ok ? "success" : "error");
       if (res.ok) {
-        analytics.formSubmit(svc || "unspecified");
-        if (isWaitlist) analytics.waitlistJoin(svc || "bridal");
+        analytics.formSubmit(branch ?? "unspecified");
+        if (isWaitlist) analytics.waitlistJoin(branch ?? "bridal");
         setFormData(INITIAL_FORM);
-        setCharCount(0);
         setAttachments([]);
-        setBridalAlterations([]);
-        setTailoringAlterations([]);
       }
-    } catch { setStatus("error"); }
+    } catch {
+      setStatus("error");
+    }
   };
 
+  // ── Field helpers ────────────────────────────────────────────────────────
+
   const fieldClass = (field: keyof FormData) =>
-    `w-full bg-transparent border-b py-3 font-jost text-sm text-charcoal placeholder:text-charcoal/75 outline-none transition-all duration-300 ${
-      errors[field] ? "border-red-400 focus:border-red-400" : "border-blush focus:border-gold"
+    `w-full bg-transparent border-b py-3 min-h-[44px] font-jost text-sm text-charcoal placeholder:text-charcoal/40 outline-none transition-all duration-300 ${
+      errors[field] ? "border-red-700 focus:border-red-700" : "border-blush focus:border-gold"
     }`;
 
-  const sectionLabel = "font-jost text-[0.65rem] tracking-[0.2em] uppercase text-gold_ink mb-5 block";
+  const labelClass =
+    "block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/75 mb-2 group-focus-within:text-gold_ink transition-colors duration-300";
 
-  // ── Render ─────────────────────────────────────────────────
+  const Field = ({
+    name,
+    label,
+    type = "text",
+    placeholder,
+    optional,
+  }: {
+    name: keyof FormData;
+    label: string;
+    type?: string;
+    placeholder?: string;
+    optional?: boolean;
+  }) => (
+    <div className="group">
+      <label htmlFor={name} className={labelClass}>
+        {label}{" "}
+        {optional && <span className="text-charcoal/75 normal-case tracking-normal">(optional)</span>}
+      </label>
+      <input
+        id={name}
+        name={name}
+        type={type}
+        value={formData[name]}
+        onChange={handleChange}
+        className={`${fieldClass(name)} ${type === "date" ? "bg-ivory" : ""}`}
+        placeholder={placeholder}
+        aria-invalid={!!errors[name]}
+        aria-describedby={errors[name] ? `${name}-error` : undefined}
+      />
+      {errors[name] && (
+        <p id={`${name}-error`} className="mt-1.5 font-jost text-xs text-red-700" role="alert">
+          Error: {errors[name]}
+        </p>
+      )}
+    </div>
+  );
+
+  const notesLabel =
+    branch === "tailoring"
+      ? "The garment, and what you'd like done"
+      : branch === "bridal"
+      ? "Anything else I should know"
+      : "Notes";
 
   return (
     <>
@@ -313,7 +321,7 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
         <div className="absolute inset-0 bg-gradient-to-br from-near_black via-near_black to-charcoal/60 pointer-events-none" aria-hidden="true" />
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-14 pt-36 lg:pt-44">
           <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <p className="section-label text-gold/70 mb-4">{text.heroLabel}</p>
+            <p className="section-label text-gold mb-4">{text.heroLabel}</p>
             <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-ivory mb-5">
               {text.heroHeading}
             </h1>
@@ -322,30 +330,23 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
         </div>
       </section>
 
-      {/* ── WAITLIST BANNER ────────────────────────────────────── */}
-      <AnimatePresence>
-        {siteWideWaitlist && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="bg-gold/10 border-y border-gold/25 px-6 py-4" role="status"
-          >
-            <p className="max-w-7xl mx-auto font-jost text-sm text-charcoal/70 text-center leading-relaxed">
-              <span className="font-medium text-charcoal">{text.waitlistBannerBold}</span>{" "}
-              {text.waitlistBannerText}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* ── AVAILABILITY BANNER ────────────────────────────────── */}
+      {(limitedMode || siteWideWaitlist) && (
+        <div className="bg-gold/10 border-y border-gold/25 px-6 py-5" role="status">
+          <p className="max-w-3xl mx-auto font-jost text-sm text-charcoal/75 leading-[1.65]">
+            {limitedMode ? limitedNote : `${text.waitlistBannerBold} ${text.waitlistBannerText}`}
+          </p>
+        </div>
+      )}
 
       {/* ── CONTACT LAYOUT ─────────────────────────────────────── */}
       <section className="bg-ivory py-14 lg:py-20 px-6" aria-label="Contact information and form">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[5fr_7fr] gap-16 lg:gap-24">
 
-            {/* ── Left: Info ────────────────────────────────────── */}
+            {/* ── Left: info. Email only, by design. ───────────── */}
             <motion.div initial={false} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
-              <h2 className="font-cormorant italic text-charcoal text-3xl mb-8">Contact Information</h2>
+              <h2 className="font-cormorant italic text-charcoal text-3xl mb-8">Contact information</h2>
               <ul className="space-y-7 mb-10" role="list">
                 <li className="flex items-start gap-4">
                   <span className="text-gold_ink mt-0.5 flex-shrink-0"><PinIcon /></span>
@@ -364,20 +365,6 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
                     </a>
                   </div>
                 </li>
-                {site.phone && (
-                  <li className="flex items-start gap-4">
-                    <span className="text-gold_ink mt-0.5 flex-shrink-0"><PhoneIcon /></span>
-                    <div>
-                      <p className="font-jost text-charcoal text-xs tracking-widest uppercase mb-1">Call or Text</p>
-                      <a href={`tel:${site.phone.replace(/\D/g, "")}`} className="font-jost text-charcoal/75 text-sm hover:text-gold_ink transition-colors duration-300 block">
-                        {site.phone}
-                      </a>
-                      <a href={`sms:${site.phone.replace(/\D/g, "")}`} className="font-jost text-charcoal/75 text-xs hover:text-gold_ink transition-colors duration-300 mt-0.5 block">
-                        Tap to send a text →
-                      </a>
-                    </div>
-                  </li>
-                )}
                 <li className="flex items-start gap-4">
                   <span className="text-gold_ink mt-0.5 flex-shrink-0"><InstagramIcon /></span>
                   <div>
@@ -388,317 +375,269 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
                   </div>
                 </li>
               </ul>
-              <div className="border border-gold/20 bg-gold/5 p-5 mb-10 space-y-3">
-                {limitedMode && limitedNote && (
-                  <p className="font-jost text-charcoal/70 text-sm leading-relaxed">{limitedNote}</p>
-                )}
-                <p className="font-cormorant italic text-charcoal text-lg leading-snug">&ldquo;{site.responseTime}&rdquo;</p>
+
+              <div className="border border-gold/20 bg-gold/5 p-5 mb-10">
+                <p className="font-cormorant italic text-charcoal text-lg leading-snug">
+                  &ldquo;{site.responseTime}&rdquo;
+                </p>
               </div>
+
               <div className="overflow-hidden max-h-96">
-                <SanityImage image={contactImage} placeholderLabel="CONTACT_IMAGE" placeholderRatio="landscape" />
+                <SanityImage
+                  image={contactImage}
+                  placeholderLabel="CONTACT_IMAGE"
+                  placeholderRatio="square"
+                  sizes="(min-width:1024px) 40vw, 100vw"
+                />
               </div>
             </motion.div>
 
-            {/* ── Right: Form ───────────────────────────────────── */}
-            <motion.div initial={false} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.15 }}>
-              <h2 className="font-cormorant italic text-charcoal text-3xl mb-8">
-                {formHeading}
-              </h2>
-
+            {/* ── Right: branching form ────────────────────────── */}
+            <motion.div ref={formRef} initial={false} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.15 }}>
               {status === "success" ? (
-                <motion.div initial={false} animate={{ opacity: 1, y: 0 }} className="text-center py-20">
+                <div className="text-center py-20">
                   <div className="w-12 h-px bg-gold mx-auto mb-8" aria-hidden="true" />
-                  <h3 className="font-cormorant italic text-charcoal text-4xl mb-4">{text.successHeading}</h3>
-                  <p className="font-jost text-charcoal/75 text-sm leading-relaxed max-w-sm mx-auto">
+                  <h2 className="font-cormorant italic text-charcoal text-4xl mb-4">{text.successHeading}</h2>
+                  <p className="font-jost text-charcoal/75 text-sm leading-[1.65] max-w-sm mx-auto">
                     {isWaitlist ? text.waitlistSuccessMessage : text.successMessage}
                   </p>
-                </motion.div>
+                  <p className="font-jost text-charcoal/75 text-sm leading-[1.65] max-w-sm mx-auto mt-3">
+                    {site.responseTime}
+                  </p>
+                </div>
               ) : (
-                <form onSubmit={handleSubmit} noValidate aria-label="Contact request form">
-                  <div className="space-y-8">
+                <>
+                  {/* Step 1 */}
+                  <h2 className="font-cormorant italic text-charcoal text-3xl mb-2">
+                    What can I help with?
+                  </h2>
+                  <p className="font-jost text-charcoal/75 text-sm leading-[1.65] mb-6">
+                    Pick one, then tell me a little about it.
+                  </p>
 
-                    {/* Name */}
-                    <div className="group">
-                      <label htmlFor="name" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
-                        Full Name <span className="text-gold_ink" aria-label="required">*</span>
-                      </label>
-                      <input id="name" name="name" type="text" autoComplete="name" required value={formData.name} onChange={handleChange} className={fieldClass("name")} placeholder="Your full name" aria-invalid={!!errors.name} aria-describedby={errors.name ? "name-error" : undefined} />
-                      {errors.name && (
-                        <p id="name-error" className="mt-1.5 font-jost text-xs text-red-700" role="alert">
-                          Error: {errors.name}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Email */}
-                    <div className="group">
-                      <label htmlFor="email" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
-                        Email Address <span className="text-gold_ink" aria-label="required">*</span>
-                      </label>
-                      <input id="email" name="email" type="email" autoComplete="email" required value={formData.email} onChange={handleChange} className={fieldClass("email")} placeholder="your@email.com" aria-invalid={!!errors.email} aria-describedby={errors.email ? "email-error" : undefined} />
-                      {errors.email && (
-                        <p id="email-error" className="mt-1.5 font-jost text-xs text-red-700" role="alert">
-                          Error: {errors.email}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Phone + Service */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                      <div className="group">
-                        <label htmlFor="phone" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
-                          Phone <span className="text-charcoal/75 normal-case tracking-normal">(optional)</span>
-                        </label>
-                        <input id="phone" name="phone" type="tel" autoComplete="tel" value={formData.phone} onChange={handleChange} className={fieldClass("phone")} placeholder="(412) 000-0000" />
-                      </div>
-                      <div className="group">
-                        <label htmlFor="serviceType" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
-                          Service Type
-                        </label>
-                        <select id="serviceType" name="serviceType" value={formData.serviceType} onChange={handleChange} className={`${fieldClass("serviceType")} bg-ivory cursor-pointer min-h-[44px]`}>
-                          <option value="">Select...</option>
-                          <option value="bridal">Bridal Alteration</option>
-                          <option value="tailoring">Everyday Tailoring</option>
-                          <option value="custom">Custom Work / Repairs</option>
-                          <option value="unsure">Not Sure Yet</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    {/* Event Date */}
-                    <div className="group">
-                      <label htmlFor="eventDate" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
-                        Event Date <span className="text-charcoal/75 normal-case tracking-normal">(if applicable)</span>
-                      </label>
-                      <input id="eventDate" name="eventDate" type="date" value={formData.eventDate} onChange={handleChange} className={`${fieldClass("eventDate")} bg-ivory min-h-[44px]`} />
-                      {eventDateBeforeReopen && (
-                        <p className="mt-2 font-jost text-xs text-charcoal/75 leading-relaxed" role="status">
-                          That&apos;s before I reopen for bridal. Send it anyway and I&apos;ll tell
-                          you honestly whether I can fit it in.
-                        </p>
-                      )}
-                    </div>
-
-                    {/* ── Service-specific section ─────────────── */}
-                    <AnimatePresence mode="wait">
-                      {svc === "bridal" && (
-                        <motion.div
-                          key="bridal"
-                          initial={{ opacity: 0, y: -8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -8 }}
-                          transition={{ duration: 0.3, ease: "easeOut" }}
-                          className="border border-gold/20 bg-gold/[0.03] p-6 space-y-7"
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10" role="group" aria-label="Type of request">
+                    {CARDS.map((card) => {
+                      const selected = branch === card.id;
+                      return (
+                        <button
+                          key={card.id}
+                          type="button"
+                          onClick={() => chooseBranch(card.id)}
+                          aria-pressed={selected}
+                          className={`text-left p-5 min-h-[44px] border transition-colors duration-300 ${
+                            selected
+                              ? "border-gold bg-gold/10"
+                              : "border-blush hover:border-gold/50 bg-transparent"
+                          }`}
                         >
-                          <span className={sectionLabel}>Dress Details</span>
-                          <p className="font-jost text-xs text-charcoal/75 -mt-4">All fields optional — share what you know, skip what you don&apos;t.</p>
+                          <span className="block font-cormorant text-charcoal text-xl leading-tight mb-2">
+                            {card.title}
+                          </span>
+                          <span className="block font-jost text-charcoal/75 text-xs leading-[1.5]">
+                            {card.blurb}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
 
-                          {/* Fabric notes */}
-                          <div className="group">
-                            <label htmlFor="fabricNotes" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
-                              Fabric / Construction Notes
-                            </label>
-                            <input id="fabricNotes" name="fabricNotes" type="text" value={formData.fabricNotes} onChange={handleChange} className={fieldClass("fabricNotes")} placeholder="e.g. lace bodice, heavy beading, horsehair hem" />
-                          </div>
+                  {/* Step 2 */}
+                  <AnimatePresence initial={false}>
+                    {branch && (
+                      <motion.div
+                        key={branch}
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.25 }}
+                      >
+                        <h3 className="font-cormorant italic text-charcoal text-2xl mb-8">{heading}</h3>
 
-                          {/* Sizes */}
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                            <div className="group">
-                              <label htmlFor="dressSizeOrdered" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
-                                Dress Size Ordered
-                              </label>
-                              <input id="dressSizeOrdered" name="dressSizeOrdered" type="text" value={formData.dressSizeOrdered} onChange={handleChange} className={fieldClass("dressSizeOrdered")} placeholder="e.g. 12, 4W" />
-                            </div>
-                            <div className="group">
-                              <label htmlFor="currentStreetSize" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
-                                Current Street Size
-                              </label>
-                              <input id="currentStreetSize" name="currentStreetSize" type="text" value={formData.currentStreetSize} onChange={handleChange} className={fieldClass("currentStreetSize")} placeholder="e.g. 8, size 6 jeans" />
-                            </div>
-                          </div>
+                        <form onSubmit={handleSubmit} noValidate aria-label="Contact request form">
+                          <div className="space-y-8">
+                            <Field name="name" label="Full name" placeholder="Your full name" />
+                            <Field name="email" label="Email address" type="email" placeholder="your@email.com" />
 
-                          {/* Alterations needed */}
-                          <div>
-                            <p className="font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-3">
-                              Alterations Requested <span className="text-charcoal/75 normal-case tracking-normal">(check all that apply)</span>
-                            </p>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                              {BRIDAL_ALTERATIONS.map(({ value, label }) => (
-                                <CheckboxItem
-                                  key={value} label={label} value={value}
-                                  checked={bridalAlterations.includes(value)}
-                                  onChange={() => toggleAlt(setBridalAlterations, value)}
+                            {branch === "bridal" && (
+                              <>
+                                <Field name="eventDate" label="Wedding date" type="date" />
+                                <Field
+                                  name="dressDesigner"
+                                  label="Dress designer, or where you bought it"
+                                  placeholder="e.g. Allure, or David's Bridal"
                                 />
-                              ))}
-                            </div>
-                          </div>
+                                <Field
+                                  name="dressArrival"
+                                  label="When the dress arrives"
+                                  type="date"
+                                  optional
+                                />
+                                <Field name="venue" label="Venue" placeholder="Where you're getting married" optional />
+                              </>
+                            )}
 
-                          {/* Shoes / undergarments */}
-                          <div className="group">
-                            <label htmlFor="shoesUndergarments" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
-                              Shoes &amp; Undergarments Picked?
-                            </label>
-                            <select id="shoesUndergarments" name="shoesUndergarments" value={formData.shoesUndergarments} onChange={handleChange} className={`${fieldClass("shoesUndergarments")} bg-gold/[0.03] cursor-pointer`}>
-                              <option value="">Select...</option>
-                              <option value="yes">Yes — I have both</option>
-                              <option value="shoes_only">Shoes only</option>
-                              <option value="not_yet">Not yet / still deciding</option>
-                            </select>
-                          </div>
-                        </motion.div>
-                      )}
+                            {branch === "party" && (
+                              <>
+                                <Field name="eventDate" label="Event date" type="date" />
+                                <Field
+                                  name="garmentCount"
+                                  label="How many garments"
+                                  type="number"
+                                  placeholder="e.g. 4"
+                                />
+                              </>
+                            )}
 
-                      {svc === "tailoring" && (
-                        <motion.div
-                          key="tailoring"
-                          initial={{ opacity: 0, y: -8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -8 }}
-                          transition={{ duration: 0.3, ease: "easeOut" }}
-                          className="border border-gold/20 bg-gold/[0.03] p-6 space-y-7"
-                        >
-                          <span className={sectionLabel}>Garment Details</span>
-                          <p className="font-jost text-xs text-charcoal/75 -mt-4">All fields optional — share what you know.</p>
-
-                          {/* Garment type + size */}
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                             <div className="group">
-                              <label htmlFor="garmentType" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
-                                Garment Type
+                              <label htmlFor="garmentDetails" className={labelClass}>
+                                {notesLabel}
                               </label>
-                              <select id="garmentType" name="garmentType" value={formData.garmentType} onChange={handleChange} className={`${fieldClass("garmentType")} bg-gold/[0.03] cursor-pointer`}>
-                                <option value="">Select...</option>
-                                <option value="pants">Pants / Trousers</option>
-                                <option value="dress">Dress</option>
-                                <option value="skirt">Skirt</option>
-                                <option value="jacket">Jacket / Blazer</option>
-                                <option value="shirt">Shirt / Blouse</option>
-                                <option value="other">Other</option>
+                              <textarea
+                                id="garmentDetails"
+                                name="garmentDetails"
+                                rows={4}
+                                value={formData.garmentDetails}
+                                onChange={handleChange}
+                                className={`${fieldClass("garmentDetails")} resize-none`}
+                                placeholder={
+                                  branch === "tailoring"
+                                    ? "e.g. navy trousers, hem to flat shoes"
+                                    : "Anything you want me to know"
+                                }
+                              />
+                            </div>
+
+                            {/* Photos */}
+                            <div>
+                              <p className="font-jost text-xs tracking-[0.12em] uppercase text-charcoal/75 mb-1">
+                                Photos <span className="normal-case tracking-normal">(optional)</span>
+                              </p>
+                              <p id="photos-hint" className="font-jost text-charcoal/75 text-xs mb-3 leading-[1.65]">
+                                Up to {MAX_PHOTOS} photos, 5 MB each. Front, back, and a close-up of
+                                anything you are worried about.
+                              </p>
+
+                              {attachments.length < MAX_PHOTOS && (
+                                <label
+                                  htmlFor="photos"
+                                  className="flex flex-col items-center justify-center gap-2 border border-dashed border-blush hover:border-gold/50 p-7 cursor-pointer transition-colors duration-300 group"
+                                >
+                                  <span className="text-charcoal/75 group-hover:text-gold_ink transition-colors duration-300">
+                                    <UploadIcon />
+                                  </span>
+                                  <span className="font-jost text-charcoal/75 text-xs">Click to attach photos</span>
+                                  <span className="font-jost text-charcoal/75 text-xs">JPG, PNG, HEIC, WEBP</span>
+                                  <input
+                                    id="photos"
+                                    type="file"
+                                    accept="image/*"
+                                    multiple
+                                    className="sr-only"
+                                    onChange={handleFileChange}
+                                    aria-describedby="photos-hint"
+                                  />
+                                </label>
+                              )}
+                              {errors.files && (
+                                <p className="mt-2 font-jost text-xs text-red-700" role="alert">
+                                  Error: {errors.files}
+                                </p>
+                              )}
+                              {attachments.length > 0 && (
+                                <ul className="flex flex-wrap gap-3 mt-3">
+                                  {attachments.map((file, i) => (
+                                    <li key={i} className="relative group/thumb flex-shrink-0">
+                                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                                      <img src={file.preview} alt="" className="w-20 h-20 object-cover border border-blush" />
+                                      <button
+                                        type="button"
+                                        onClick={() => removeAttachment(i)}
+                                        className="absolute -top-3 -right-3 w-11 h-11 flex items-center justify-center opacity-0 focus-visible:opacity-100 group-hover/thumb:opacity-100 transition-opacity duration-200"
+                                        aria-label={`Remove ${file.filename}`}
+                                      >
+                                        <span className="w-6 h-6 bg-charcoal text-ivory text-xs flex items-center justify-center rounded-full" aria-hidden="true">
+                                          ×
+                                        </span>
+                                      </button>
+                                      <p className="font-jost text-charcoal/75 text-[10px] mt-1 truncate max-w-[5rem]">
+                                        {file.filename}
+                                      </p>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+
+                            {/* Referral */}
+                            <div className="group">
+                              <label htmlFor="referralSource" className={labelClass}>
+                                How did you find me?
+                              </label>
+                              <select
+                                id="referralSource"
+                                name="referralSource"
+                                value={formData.referralSource}
+                                onChange={handleChange}
+                                className={`${fieldClass("referralSource")} bg-ivory cursor-pointer`}
+                              >
+                                <option value="">Select one</option>
+                                {REFERRALS.map((option) => (
+                                  <option key={option} value={option}>
+                                    {option}
+                                  </option>
+                                ))}
                               </select>
                             </div>
-                            <div className="group">
-                              <label htmlFor="currentSize" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
-                                Current Size
-                              </label>
-                              <input id="currentSize" name="currentSize" type="text" value={formData.currentSize} onChange={handleChange} className={fieldClass("currentSize")} placeholder="e.g. 10, Medium, 32x30" />
+
+                            {/* Honeypot: hidden from people, tempting to bots. */}
+                            <div className="hidden" aria-hidden="true">
+                              <label htmlFor="company">Company</label>
+                              <input
+                                id="company"
+                                name="company"
+                                type="text"
+                                tabIndex={-1}
+                                autoComplete="off"
+                                value={formData.company}
+                                onChange={handleChange}
+                              />
                             </div>
-                          </div>
 
-                          {/* Tailoring alterations */}
-                          <div>
-                            <p className="font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-3">
-                              Alterations Needed <span className="text-charcoal/75 normal-case tracking-normal">(check all that apply)</span>
-                            </p>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                              {TAILORING_ALTERATIONS.map(({ value, label }) => (
-                                <CheckboxItem
-                                  key={value} label={label} value={value}
-                                  checked={tailoringAlterations.includes(value)}
-                                  onChange={() => toggleAlt(setTailoringAlterations, value)}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
-
-                      {svc === "custom" && (
-                        <motion.div
-                          key="custom"
-                          initial={{ opacity: 0, y: -8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -8 }}
-                          transition={{ duration: 0.3, ease: "easeOut" }}
-                          className="border border-gold/20 bg-gold/[0.03] p-6 space-y-7"
-                        >
-                          <span className={sectionLabel}>Project Details</span>
-                          <div className="group">
-                            <label htmlFor="currentSize" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
-                              Approximate Size
-                            </label>
-                            <input id="currentSize" name="currentSize" type="text" value={formData.currentSize} onChange={handleChange} className={fieldClass("currentSize")} placeholder="e.g. size 8, Medium, vintage 1970s 10" />
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    {/* Garment details / notes */}
-                    <div className="group">
-                      <div className="flex items-baseline justify-between mb-2">
-                        <label htmlFor="garmentDetails" className="block font-jost text-xs tracking-[0.15em] uppercase text-charcoal/70 group-focus-within:text-gold_ink transition-colors duration-300">
-                          {garmentLabel}
-                        </label>
-                        <span className="font-jost text-xs text-charcoal/75">{charCount}</span>
-                      </div>
-                      <textarea id="garmentDetails" name="garmentDetails" rows={4} value={formData.garmentDetails} onChange={handleChange} className={`${fieldClass("garmentDetails")} resize-none`} placeholder={garmentPlaceholder} />
-                    </div>
-
-                    {/* Photo upload */}
-                    <div>
-                      <p className="font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-1">
-                        Attach Photos <span className="text-charcoal/75 normal-case tracking-normal">(optional · max {maxPhotos} · 5 MB each)</span>
-                      </p>
-                      <p id="photos-hint" className="font-jost text-charcoal/75 text-xs mb-3 leading-relaxed">
-                        {photoHint} Up to {maxPhotos} photos, 5 MB each.
-                      </p>
-
-                      {attachments.length < maxPhotos && (
-                        <label htmlFor="photos" className="flex flex-col items-center justify-center gap-2 border border-dashed border-blush hover:border-gold/50 p-7 min-h-[44px] cursor-pointer transition-colors duration-300 group">
-                          <span className="text-charcoal/75 group-hover:text-gold_ink transition-colors duration-300"><UploadIcon /></span>
-                          <span className="font-jost text-charcoal/75 text-xs">Click to attach photos</span>
-                          <span className="font-jost text-charcoal/75 text-xs">JPG, PNG, HEIC, WEBP</span>
-                          <input id="photos" type="file" accept="image/*" multiple className="sr-only" onChange={handleFileChange} aria-describedby="photos-hint" />
-                        </label>
-                      )}
-                      {errors.files && (
-                        <p id="photos-error" className="mt-2 font-jost text-xs text-red-700" role="alert">
-                          Error: {errors.files}
-                        </p>
-                      )}
-                      {attachments.length > 0 && (
-                        <div className="flex flex-wrap gap-3 mt-3">
-                          {attachments.map((file, i) => (
-                            <div key={i} className="relative group/thumb flex-shrink-0">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img src={file.preview} alt={file.filename} className="w-20 h-20 object-cover border border-blush" />
-                              <button type="button" onClick={() => removeAttachment(i)} className="absolute -top-3 -right-3 w-11 h-11 flex items-center justify-center focus-visible:opacity-100 opacity-0 group-hover/thumb:opacity-100 transition-opacity duration-200" aria-label={`Remove ${file.filename}`}>
-                                <span className="w-6 h-6 bg-charcoal text-ivory text-xs flex items-center justify-center rounded-full" aria-hidden="true">×</span>
+                            <div className="pt-2">
+                              <button
+                                type="submit"
+                                disabled={status === "submitting"}
+                                className="btn-gold w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                {status === "submitting"
+                                  ? "Sending"
+                                  : isWaitlist
+                                  ? "Join the waitlist"
+                                  : "Send my request"}
                               </button>
-                              <p className="font-jost text-charcoal/75 text-[10px] mt-1 truncate max-w-[5rem]">{file.filename}</p>
+                              {status === "error" && (
+                                <p className="mt-4 font-jost text-xs text-red-700" role="alert">
+                                  Error: something went wrong. Please email me at{" "}
+                                  <a href={`mailto:${site.email}`} className="underline">
+                                    {site.email}
+                                  </a>
+                                  .
+                                </p>
+                              )}
+                              <p className="mt-6 font-jost text-charcoal/75 text-xs leading-[1.65]">
+                                {site.responseTime} By sending this you agree to my{" "}
+                                <Link href="/policies" className="text-gold_ink underline">
+                                  policies
+                                </Link>
+                                .
+                              </p>
                             </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Referral */}
-                    <div className="group">
-                      <label htmlFor="referralSource" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
-                        How Did You Hear About Me?
-                      </label>
-                      <select id="referralSource" name="referralSource" value={formData.referralSource} onChange={handleChange} className={`${fieldClass("referralSource")} bg-ivory cursor-pointer min-h-[44px]`}>
-                        <option value="">Select one...</option>
-                        <option value="google">Google Search</option>
-                        <option value="instagram">Instagram</option>
-                        <option value="wordofmouth">Word of Mouth</option>
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
-
-                    {/* Submit */}
-                    <div className="pt-2">
-                      <button type="submit" disabled={status === "submitting"} className="btn-gold w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none" aria-label={isWaitlist ? "Join the waitlist" : "Send your contact request"}>
-                        {status === "submitting" ? "Sending…" : isWaitlist ? "Join the Waitlist" : "Send My Request"}
-                      </button>
-                      {status === "error" && (
-                        <p className="mt-4 font-jost text-xs text-red-400" role="alert">
-                          Something went wrong. Please email me at{" "}
-                          <a href={`mailto:${site.email}`} className="underline hover:text-red-600 transition-colors">{site.email}</a>.
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </form>
+                          </div>
+                        </form>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </>
               )}
             </motion.div>
           </div>
@@ -708,13 +647,13 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
       {/* ── FAQ ────────────────────────────────────────────────── */}
       <section className="bg-blush py-14 lg:py-20 px-6" aria-labelledby="faq-heading">
         <div className="max-w-3xl mx-auto">
-          <motion.div initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.6 }} className="mb-10">
-            <p className="section-label mb-4">Common Questions</p>
-            <h2 id="faq-heading" className="font-cormorant italic text-charcoal text-4xl lg:text-5xl">Frequently Asked</h2>
-          </motion.div>
-          <motion.div initial={false} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }}>
-            <Accordion items={faq} />
-          </motion.div>
+          <div className="mb-10">
+            <p className="section-label mb-4">Common questions</p>
+            <h2 id="faq-heading" className="font-cormorant italic text-charcoal text-[clamp(2rem,3.5vw,3.25rem)] leading-[1.1]">
+              Frequently asked
+            </h2>
+          </div>
+          <Accordion items={faq} />
         </div>
       </section>
     </>

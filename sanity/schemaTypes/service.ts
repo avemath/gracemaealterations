@@ -33,6 +33,29 @@ export const service = defineType({
       options: { hotspot: true },
       fields: [defineField({ name: "alt", title: "Alt Text", type: "string" })],
     }),
+    defineField({
+      name: "priceTable",
+      title: "Typical prices",
+      description: "Leave 'From' empty for anything you quote at the fitting.",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          fields: [
+            { name: "item", title: "Item", type: "string" },
+            { name: "from", title: "From (USD)", type: "number" },
+            { name: "note", title: "Note", type: "string" },
+          ],
+          preview: { select: { title: "item", subtitle: "from" } },
+        },
+      ],
+    }),
+    defineField({
+      name: "typicalTimeline",
+      title: "Typical timeline",
+      description: "One line, e.g. 'Usually within two weeks.'",
+      type: "string",
+    }),
     defineField({ name: "order", title: "Display Order (1 = first)", type: "number" }),
   ],
   orderings: [{ title: "Display Order", name: "orderAsc", by: [{ field: "order", direction: "asc" }] }],

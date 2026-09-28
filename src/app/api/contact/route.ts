@@ -10,6 +10,8 @@ interface ContactPayload {
   garmentDetails?: string;
   referralSource?: string;
   isWaitlist?: boolean;
+  /** Honeypot: any value means a bot filled it in. */
+  company?: string;
   /** e.g. "early 2027" — when the waitlisted service reopens. */
   reopensLabel?: string;
   attachments?: { filename: string; content: string }[];
@@ -24,13 +26,36 @@ interface ContactPayload {
   tailoringAlterations?: string[];
   // Shared
   currentSize?: string;
+  // Bridal waitlist
+  dressDesigner?: string;
+  dressArrival?: string;
+  venue?: string;
+  // Bridal party
+  garmentCount?: string;
+}
+
+// ── Simple in-memory rate limit ──────────────────────────────────────────────
+// Five submissions per IP per hour. This is per instance, not a shared store,
+// which is enough to stop casual flooding of the inbox.
+const RATE_LIMIT = 5;
+const RATE_WINDOW_MS = 60 * 60 * 1000;
+const hits = new Map<string, number[]>();
+
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const recent = (hits.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
+  recent.push(now);
+  hits.set(ip, recent);
+  if (hits.size > 5000) hits.clear();
+  return recent.length > RATE_LIMIT;
 }
 
 const SERVICE_LABELS: Record<string, string> = {
-  bridal: "Bridal Alteration",
-  tailoring: "Everyday Tailoring",
+  bridal: "Bridal (waitlist)",
+  tailoring: "Tailoring or repair",
+  party: "Bridal party or special occasion",
   custom: "Custom Work",
-  unsure: "Not Sure Yet",
+  unsure: "Not specified",
 };
 
 const REFERRAL_LABELS: Record<string, string> = {
@@ -142,6 +167,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
+  // Bots fill the hidden field in; accept and drop so they get no signal.
+  if (body.company && body.company.trim() !== "") {
+    return NextResponse.json({ ok: true });
+  }
+
+  const ip =
+    req.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
+    req.headers.get("x-real-ip") ??
+    "unknown";
+  if (rateLimited(ip)) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429 }
+    );
+  }
+
   if (!body.name?.trim() || !body.email?.trim()) {
     return NextResponse.json({ error: "Name and email are required." }, { status: 400 });
   }
@@ -215,6 +256,28 @@ export async function POST(req: NextRequest) {
         )
       : "";
 
+  const bridalWaitlistSection =
+    body.serviceType === "bridal" && (body.dressDesigner || body.dressArrival || body.venue)
+      ? section(
+          "Dress & Venue",
+          `<table style="width:100%;border-collapse:collapse;">
+            ${body.dressDesigner ? row("Designer / Shop", escapeHtml(body.dressDesigner)) : ""}
+            ${body.dressArrival ? row("Dress Arrives", escapeHtml(body.dressArrival)) : ""}
+            ${body.venue ? row("Venue", escapeHtml(body.venue)) : ""}
+          </table>`
+        )
+      : "";
+
+  const partySection =
+    body.serviceType === "party" && body.garmentCount
+      ? section(
+          "Bridal Party",
+          `<table style="width:100%;border-collapse:collapse;">
+            ${row("Garments", escapeHtml(body.garmentCount))}
+          </table>`
+        )
+      : "";
+
   const customSection =
     body.serviceType === "custom" && body.currentSize
       ? section(
@@ -255,6 +318,8 @@ export async function POST(req: NextRequest) {
       </div>
 
       ${bridalSection}
+      ${bridalWaitlistSection}
+      ${partySection}
       ${tailoringSection}
       ${customSection}
       ${garmentNotesSection}

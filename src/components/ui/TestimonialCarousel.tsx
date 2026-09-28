@@ -15,6 +15,19 @@ const ChevronRight = () => (
   </svg>
 );
 
+/** "Sarah M. · Married August 2024 · Allure · Bustle and hem · Springwood" */
+function credentialLine(t: SanityTestimonial): string {
+  return [
+    t.name,
+    t.month ? `Married ${t.month}` : null,
+    t.dressDesigner,
+    t.alterations,
+    t.venue,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+}
+
 export default function TestimonialCarousel({ testimonials }: { testimonials: SanityTestimonial[] }) {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
@@ -106,10 +119,17 @@ export default function TestimonialCarousel({ testimonials }: { testimonials: Sa
               &ldquo;{current.quote}&rdquo;
             </blockquote>
             <div className="w-8 h-px bg-gold mb-5" aria-hidden="true" />
-            <p className="font-jost text-charcoal text-sm font-medium tracking-wide">{current.name}</p>
+            <p className="font-jost text-charcoal text-sm font-medium tracking-wide max-w-[48ch]">
+              {credentialLine(current)}
+            </p>
             {current.occasion && (
               <p className="font-jost text-charcoal/75 text-xs tracking-[0.18em] uppercase mt-1">
                 {current.occasion}
+              </p>
+            )}
+            {current.source && current.source !== "Direct" && (
+              <p className="mt-3 border border-gold/40 px-2.5 py-1 font-jost text-[10px] tracking-[0.16em] uppercase text-gold_ink">
+                via {current.source}
               </p>
             )}
           </motion.div>

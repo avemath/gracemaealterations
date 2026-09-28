@@ -4,6 +4,7 @@ import { aboutPage } from "./aboutPage";
 import { servicesPage } from "./servicesPage";
 import { contactPage } from "./contactPage";
 import { portfolioPage } from "./portfolioPage";
+import { policies } from "./policies";
 import { service } from "./service";
 import { testimonial } from "./testimonial";
 import { portfolioItem } from "./portfolioItem";
@@ -18,6 +19,7 @@ export const schemaTypes = [
   servicesPage,
   contactPage,
   portfolioPage,
+  policies,
   // Lists
   service,
   testimonial,
