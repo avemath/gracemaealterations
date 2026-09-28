@@ -135,6 +135,32 @@
   }
 }
 
+/* ── Scroll reveals ──────────────────────────────────────────────────────────
+   The hidden state is armed only when the inline head script has added .js to
+   <html>, so the server HTML and the no-JS experience are fully visible. */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 600ms ease-out, transform 600ms ease-out;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Same specificity as the rule above and declared after it, so reduced motion
+   wins without !important. */
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal],
+  .js [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 /* Linen texture overlay utility */
 .linen-overlay::after {
   content: "";

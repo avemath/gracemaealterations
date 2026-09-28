@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { TESTIMONIALS } from "@/data/content";
 
 export default function TestimonialsSection() {
@@ -11,13 +8,9 @@ export default function TestimonialsSection() {
     >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <motion.div
-          className="text-center mb-14"
-          initial={false}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6 }}
-        >
+        <div data-reveal
+              className="text-center mb-14"
+            >
           <p className="section-label mb-3">Kind Words</p>
           <h2
             id="testimonials-heading"
@@ -25,18 +18,14 @@ export default function TestimonialsSection() {
           >
             What clients say
           </h2>
-        </motion.div>
+        </div>
 
         {/* Cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {TESTIMONIALS.map((t, i) => (
-            <motion.article
+            <article data-reveal
               key={i}
               className="relative bg-blush p-8 lg:p-10 overflow-hidden"
-              initial={false}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.6, delay: i * 0.12 }}
             >
               {/* Giant background quotation mark */}
               <span
@@ -57,7 +46,7 @@ export default function TestimonialsSection() {
                   {t.occasion}
                 </p>
               </div>
-            </motion.article>
+            </article>
           ))}
         </div>
       </div>

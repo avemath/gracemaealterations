@@ -101,7 +101,8 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
         {/* Subtle texture gradient so the dark bg has depth */}
         <div className="absolute inset-0 bg-gradient-to-br from-near_black via-near_black to-charcoal/60 pointer-events-none" aria-hidden="true" />
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-14 pt-36 lg:pt-44">
-          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+          <div
+            >
             <p className="section-label text-gold/70 mb-4">{portfolioPageData.heroLabel}</p>
             <RevealText onMount delay={0.2}>
               <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-ivory mb-5">{portfolioPageData.heroHeading}</h1>
@@ -110,7 +111,7 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
             <p className="font-jost text-ivory/50 text-base max-w-lg leading-relaxed">
               {portfolioPageData.heroSubtext}
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -140,13 +141,9 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
       {/* ── FEATURED TRANSFORMATION (before/after slider) ─────── */}
       <section className="bg-ivory px-6 pt-12 pb-0" aria-label="Featured transformation">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center"
-            initial={false}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.7 }}
-          >
+          <div data-reveal
+              className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center"
+            >
             {/* Slider */}
             <BeforeAfterSlider
               beforeImage={portfolioPageData.beforeImage}
@@ -166,7 +163,7 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
                 {portfolioPageData.featuredBody}
               </p>
             </div>
-          </motion.div>
+          </div>
 
           {/* Divider */}
           <div className="mt-12 border-t border-blush" aria-hidden="true" />
@@ -177,28 +174,22 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
       <section className="bg-ivory px-6 py-8 lg:py-12" aria-label="Portfolio gallery">
         <div className="max-w-7xl mx-auto">
           <AnimatePresence mode="wait">
-            <motion.div
+            <div data-reveal
               key={activeFilter}
               className="columns-1 sm:columns-2 lg:columns-3 gap-3 lg:gap-4"
-              initial={false}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.35 }}
             >
               {filtered.map((item, i) => (
-                <motion.div
-                  key={item._id}
-                  ref={(el) => { thumbRefs.current[i] = el; }}
-                  className="group relative overflow-hidden cursor-pointer break-inside-avoid mb-3 lg:mb-4"
-                  initial={false}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.45, delay: Math.min(i * 0.04, 0.3) }}
-                  onClick={() => setLightboxIndex(i)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => e.key === "Enter" && setLightboxIndex(i)}
-                  aria-label={`View ${item.label}`}
-                >
+                <div data-reveal
+              key={item._id}
+              ref={(el) => { thumbRefs.current[i] = el; }}
+              style={{ "--reveal-delay": `${Math.min(i, 8) * 60}ms` } as React.CSSProperties}
+              className="group relative overflow-hidden cursor-pointer break-inside-avoid mb-3 lg:mb-4"
+              onClick={() => setLightboxIndex(i)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === "Enter" && setLightboxIndex(i)}
+              aria-label={`View ${item.label}`}
+            >
                   <SanityImage
                     image={item.image}
                     placeholderLabel={`PORTFOLIO_IMAGE_${i + 1}`}
@@ -231,9 +222,9 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
                       <line x1="0" y1="7" x2="14" y2="7" stroke="white" strokeWidth="1.25" />
                     </svg>
                   </div>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
+            </div>
           </AnimatePresence>
 
           {filtered.length === 0 && (
@@ -248,17 +239,17 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
       <AnimatePresence>
         {lightboxItem && lightboxIndex !== null && (
           <motion.div
-            initial={false}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            ref={lightboxRef}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-near_black/96 p-4 lg:p-8"
-            onClick={closeLightbox}
-            role="dialog"
-            aria-modal="true"
-            aria-label={`Lightbox: ${lightboxItem.label}`}
-          >
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              ref={lightboxRef}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-near_black/96 p-4 lg:p-8"
+              onClick={closeLightbox}
+              role="dialog"
+              aria-modal="true"
+              aria-label={`Lightbox: ${lightboxItem.label}`}
+            >
             {/* Close, first in tab order */}
             <button
               type="button"

@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 import { reopenYear } from "@/lib/cta";
 
@@ -53,12 +50,8 @@ export default function CTABanner({
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" aria-hidden="true" />
 
       <div className="relative z-10 max-w-3xl mx-auto text-center">
-        <motion.div
-          initial={false}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.75 }}
-        >
+        <div data-reveal
+            >
           <div className="flex justify-center mb-8">
             <div className="w-16 h-px bg-gold" aria-hidden="true" />
           </div>
@@ -77,7 +70,7 @@ export default function CTABanner({
           <Button variant="outline-ivory" href={copy.buttonHref}>
             {copy.buttonLabel}
           </Button>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
