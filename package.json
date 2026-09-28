@@ -13,7 +13,9 @@
     "availability:limited": "node scripts/set-availability.mjs --limited",
     "availability:open": "node scripts/set-availability.mjs --open",
     "portfolio:export": "node scripts/portfolio-captions.mjs --export",
-    "portfolio:apply": "node scripts/portfolio-captions.mjs --apply"
+    "portfolio:apply": "node scripts/portfolio-captions.mjs --apply",
+    "test:a11y": "playwright test",
+    "lighthouse": "node scripts/run-lighthouse.mjs"
   },
   "dependencies": {
     "@sanity/image-url": "^1.2.0",
@@ -29,6 +31,8 @@
     "styled-components": "^6.4.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
