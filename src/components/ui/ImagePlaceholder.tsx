@@ -65,13 +65,13 @@ export default function ImagePlaceholder({
         <ScissorsIcon />
         <div className="text-center px-4">
           <p
-            className="font-cormorant text-gold tracking-widest uppercase"
+            className="font-cormorant text-gold_ink tracking-widest uppercase"
             style={{ fontSize: small ? "0.6rem" : "0.65rem", letterSpacing: "0.2em" }}
           >
             {label}
           </p>
           {!small && (
-            <p className="text-charcoal/40 font-jost mt-1" style={{ fontSize: "0.6rem" }}>
+            <p className="text-charcoal/75 font-jost mt-1" style={{ fontSize: "0.6rem" }}>
               Replace with your photo
             </p>
           )}

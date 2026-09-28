@@ -45,7 +45,7 @@ export default function StickyDesktopCTA({ limitedMode = false, reopensLabel = "
           className="fixed right-6 bottom-8 z-40 hidden lg:flex flex-col items-end gap-2"
         >
           {limitedMode && reopensLabel && (
-            <p className="font-jost text-[10px] tracking-[0.16em] uppercase text-charcoal/50 bg-ivory/90 backdrop-blur-sm px-3 py-1.5 border border-blush">
+            <p className="font-jost text-[10px] tracking-[0.16em] uppercase text-charcoal/75 bg-ivory/90 backdrop-blur-sm px-3 py-1.5 border border-blush">
               Bridal booking reopens {reopensLabel}
             </p>
           )}

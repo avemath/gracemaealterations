@@ -172,10 +172,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               </motion.p>
 
               <RevealText onMount delay={0.18}>
-                <h1
-                  className="font-cormorant italic text-charcoal leading-[0.9]"
-                  style={{ fontSize: "clamp(3.5rem, 8vw, 7.5rem)" }}
-                >
+                <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-charcoal">
                   {site.tagline}
                 </h1>
               </RevealText>
@@ -187,7 +184,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               />
 
               <motion.p
-                className="font-jost text-charcoal/65 text-base lg:text-lg max-w-sm mb-10 leading-relaxed"
+                className="font-jost text-charcoal/75 text-base lg:text-lg max-w-sm mb-10 leading-relaxed"
                 custom={3} initial={false} animate="visible" variants={fadeUp}
               >
                 {site.subTagline}
@@ -223,7 +220,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                     </>
                   )}
                 </span>
-                <p className="font-jost text-xs text-charcoal/65 tracking-[0.15em] uppercase">
+                <p className="font-jost text-xs text-charcoal/75 tracking-[0.15em] uppercase">
                   {site.bookingNote}
                 </p>
               </motion.div>
@@ -240,7 +237,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
           transition={{ delay: 1.8, duration: 0.6 }}
           aria-hidden="true"
         >
-          <span className="font-jost text-[0.6rem] tracking-[0.25em] uppercase text-charcoal/35">Scroll</span>
+          <span className="font-jost text-[0.6rem] tracking-[0.25em] uppercase text-charcoal/75">Scroll</span>
           <motion.div
             className="w-px h-8 bg-gold/50"
             animate={{ scaleY: [1, 0.3, 1], opacity: [0.4, 1, 0.4] }}
@@ -267,7 +264,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                 )}
                 <div className="text-center">
                   <p className="font-cormorant text-charcoal text-3xl lg:text-4xl font-light"><CountUp value={stat.value} /></p>
-                  <p className="font-jost text-charcoal/45 text-xs tracking-[0.18em] uppercase mt-1">{stat.label}</p>
+                  <p className="font-jost text-charcoal/75 text-xs tracking-[0.18em] uppercase mt-1">{stat.label}</p>
                 </div>
               </motion.div>
             ))}
@@ -286,7 +283,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
             transition={{ duration: 0.6 }}
           >
             <p className="section-label text-gold/70 mb-3">{text.servicesLabel}</p>
-            <h2 id="services-preview-heading" className="font-cormorant italic text-ivory text-4xl lg:text-5xl">{text.servicesHeading}</h2>
+            <h2 id="services-preview-heading" className="font-cormorant italic text-[clamp(2rem,3.5vw,3.25rem)] leading-[1.1] text-ivory">{text.servicesHeading}</h2>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-ivory/10">
@@ -372,7 +369,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               transition={{ duration: 0.6 }}
             >
               <p className="section-label mb-3">{text.portfolioLabel}</p>
-              <h2 id="portfolio-preview-heading" className="font-cormorant italic text-charcoal text-4xl lg:text-5xl">{text.portfolioHeading}</h2>
+              <h2 id="portfolio-preview-heading" className="font-cormorant italic text-[clamp(2rem,3.5vw,3.25rem)] leading-[1.1] text-charcoal">{text.portfolioHeading}</h2>
             </motion.div>
             <motion.div
               initial={false}
@@ -477,8 +474,8 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               <blockquote className="font-cormorant italic text-charcoal text-2xl lg:text-3xl leading-snug mb-8 border-l-2 border-gold pl-6">
                 &ldquo;{bio.pullQuote}&rdquo;
               </blockquote>
-              <p className="font-jost text-charcoal/65 text-sm leading-relaxed mb-4">{bio.paragraph1}</p>
-              <p className="font-jost text-charcoal/65 text-sm leading-relaxed mb-10">{bio.paragraph2}</p>
+              <p className="font-jost text-charcoal/75 text-sm leading-relaxed mb-4">{bio.paragraph1}</p>
+              <p className="font-jost text-charcoal/75 text-sm leading-relaxed mb-10">{bio.paragraph2}</p>
               <Link
                 href="/about"
                 className="inline-flex items-center gap-2 font-jost text-xs text-gold tracking-[0.18em] uppercase hover:text-gold_dark transition-colors duration-300 group"
@@ -503,7 +500,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
             transition={{ duration: 0.6 }}
           >
             <p className="section-label mb-3">{text.testimonialsLabel}</p>
-            <h2 id="testimonials-heading" className="font-cormorant italic text-charcoal text-4xl lg:text-5xl">{text.testimonialsHeading}</h2>
+            <h2 id="testimonials-heading" className="font-cormorant italic text-[clamp(2rem,3.5vw,3.25rem)] leading-[1.1] text-charcoal">{text.testimonialsHeading}</h2>
           </motion.div>
           <motion.div
             initial={false}

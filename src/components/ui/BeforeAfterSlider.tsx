@@ -43,8 +43,17 @@ export default function BeforeAfterSlider({ beforeImage, afterImage, label, desc
   }, [updatePos]);
 
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowLeft") setPosition((p) => clamp(p - 5));
-    if (e.key === "ArrowRight") setPosition((p) => clamp(p + 5));
+    const keys: Record<string, () => void> = {
+      ArrowLeft: () => setPosition((p) => clamp(p - 5)),
+      ArrowRight: () => setPosition((p) => clamp(p + 5)),
+      Home: () => setPosition(clamp(0)),
+      End: () => setPosition(clamp(100)),
+    };
+    const handler = keys[e.key];
+    if (handler) {
+      e.preventDefault();
+      handler();
+    }
   };
 
   const beforeSrc = beforeImage?.asset ? getSrc(beforeImage) : null;
@@ -71,13 +80,6 @@ export default function BeforeAfterSlider({ beforeImage, afterImage, label, desc
         }}
         onTouchStart={(e) => updatePos(e.touches[0].clientX)}
         onTouchMove={(e) => { e.preventDefault(); updatePos(e.touches[0].clientX); }}
-        role="slider"
-        aria-label="Before and after comparison — drag left or right"
-        aria-valuenow={Math.round(position)}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        tabIndex={0}
-        onKeyDown={onKeyDown}
       >
         {/* ── AFTER layer (full width, underneath) ─────────────── */}
         <div className="absolute inset-0 pointer-events-none">
@@ -94,8 +96,8 @@ export default function BeforeAfterSlider({ beforeImage, afterImage, label, desc
             /* Placeholder: dark ivory panel */
             <div className="absolute inset-0 bg-charcoal/8 flex items-center justify-center">
               <div className="text-center">
-                <p className="font-cormorant italic text-charcoal/45 text-2xl">After</p>
-                <p className="font-jost text-charcoal/45 text-xs tracking-[0.15em] uppercase mt-2">Photo coming soon</p>
+                <p className="font-cormorant italic text-charcoal/75 text-2xl">After</p>
+                <p className="font-jost text-charcoal/75 text-xs tracking-[0.15em] uppercase mt-2">Photo coming soon</p>
               </div>
             </div>
           )}
@@ -119,8 +121,8 @@ export default function BeforeAfterSlider({ beforeImage, afterImage, label, desc
             /* Placeholder: blush panel */
             <div className="absolute inset-0 bg-blush flex items-center justify-center">
               <div className="text-center">
-                <p className="font-cormorant italic text-charcoal/45 text-2xl">Before</p>
-                <p className="font-jost text-charcoal/45 text-xs tracking-[0.15em] uppercase mt-2">Photo coming soon</p>
+                <p className="font-cormorant italic text-charcoal/75 text-2xl">Before</p>
+                <p className="font-jost text-charcoal/75 text-xs tracking-[0.15em] uppercase mt-2">Photo coming soon</p>
               </div>
             </div>
           )}
@@ -137,9 +139,16 @@ export default function BeforeAfterSlider({ beforeImage, afterImage, label, desc
 
         {/* ── DRAG HANDLE ──────────────────────────────────────── */}
         <div
-          className="absolute top-1/2 z-20 -translate-y-1/2 -translate-x-1/2 pointer-events-none"
+          className="absolute top-1/2 z-20 -translate-y-1/2 -translate-x-1/2"
           style={{ left: `${position}%` }}
-          aria-hidden="true"
+          role="slider"
+          aria-label="Before and after comparison"
+          aria-valuenow={Math.round(position)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuetext={`${Math.round(position)}% before, ${100 - Math.round(position)}% after`}
+          tabIndex={0}
+          onKeyDown={onKeyDown}
         >
           <div className={`w-11 h-11 rounded-full bg-ivory shadow-[0_2px_16px_rgba(0,0,0,0.28)] flex items-center justify-center transition-transform duration-150 ${active ? "scale-110" : "scale-100"}`}>
             <svg width="18" height="10" viewBox="0 0 18 10" fill="none" aria-hidden="true">
@@ -171,7 +180,7 @@ export default function BeforeAfterSlider({ beforeImage, afterImage, label, desc
         {/* Placeholder upload hint — only shown when no real photos */}
         {!hasImages && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 pointer-events-none" aria-hidden="true">
-            <p className="font-jost text-xs tracking-[0.15em] uppercase text-charcoal/45 whitespace-nowrap">
+            <p className="font-jost text-xs tracking-[0.15em] uppercase text-charcoal/75 whitespace-nowrap">
               Upload photos in Studio → Portfolio Page
             </p>
           </div>

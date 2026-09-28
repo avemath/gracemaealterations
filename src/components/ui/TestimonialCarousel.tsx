@@ -52,7 +52,7 @@ export default function TestimonialCarousel({ testimonials }: { testimonials: Sa
   };
 
   const arrowClass =
-    "hidden lg:flex items-center justify-center absolute top-1/2 -translate-y-1/2 w-11 h-11 text-gold hover:text-charcoal transition-colors duration-200";
+    "hidden lg:flex items-center justify-center absolute top-1/2 -translate-y-1/2 w-11 h-11 text-gold_ink hover:text-charcoal transition-colors duration-200";
 
   return (
     <div
@@ -79,7 +79,7 @@ export default function TestimonialCarousel({ testimonials }: { testimonials: Sa
       <div className="relative overflow-hidden" style={{ minHeight: "280px" }}>
         {/* Decorative giant quote mark */}
         <span
-          className="absolute top-0 left-1/2 -translate-x-1/2 font-cormorant text-gold/10 select-none pointer-events-none leading-none"
+          className="absolute top-0 left-1/2 -translate-x-1/2 font-cormorant text-gold_ink/10 select-none pointer-events-none leading-none"
           style={{ fontSize: "14rem", lineHeight: 1 }}
           aria-hidden="true"
         >

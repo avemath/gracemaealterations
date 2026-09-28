@@ -71,7 +71,7 @@ const CheckboxItem = ({
       )}
     </div>
     <input type="checkbox" className="sr-only" checked={checked} onChange={onChange} value={value} />
-    <span className="font-jost text-sm text-charcoal/65 leading-tight">{label}</span>
+    <span className="font-jost text-sm text-charcoal/75 leading-tight">{label}</span>
   </label>
 );
 
@@ -289,11 +289,11 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
   };
 
   const fieldClass = (field: keyof FormData) =>
-    `w-full bg-transparent border-b py-3 font-jost text-sm text-charcoal placeholder:text-charcoal/25 outline-none transition-all duration-300 ${
+    `w-full bg-transparent border-b py-3 font-jost text-sm text-charcoal placeholder:text-charcoal/75 outline-none transition-all duration-300 ${
       errors[field] ? "border-red-400 focus:border-red-400" : "border-blush focus:border-gold"
     }`;
 
-  const sectionLabel = "font-jost text-[0.65rem] tracking-[0.2em] uppercase text-gold mb-5 block";
+  const sectionLabel = "font-jost text-[0.65rem] tracking-[0.2em] uppercase text-gold_ink mb-5 block";
 
   // ── Render ─────────────────────────────────────────────────
 
@@ -305,7 +305,7 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-14 pt-36 lg:pt-44">
           <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <p className="section-label text-gold/70 mb-4">{text.heroLabel}</p>
-            <h1 className="font-cormorant italic text-ivory text-5xl lg:text-6xl mb-5">
+            <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-ivory mb-5">
               {text.heroHeading}
             </h1>
             <div className="w-12 h-px bg-gold" aria-hidden="true" />
@@ -339,41 +339,41 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
               <h2 className="font-cormorant italic text-charcoal text-3xl mb-8">Contact Information</h2>
               <ul className="space-y-7 mb-10" role="list">
                 <li className="flex items-start gap-4">
-                  <span className="text-gold mt-0.5 flex-shrink-0"><PinIcon /></span>
+                  <span className="text-gold_ink mt-0.5 flex-shrink-0"><PinIcon /></span>
                   <div>
                     <p className="font-jost text-charcoal text-xs tracking-widest uppercase mb-1">Location</p>
-                    <p className="font-jost text-charcoal/60 text-sm">{site.location}</p>
-                    <p className="font-jost text-charcoal/60 text-sm">{site.availability}</p>
+                    <p className="font-jost text-charcoal/75 text-sm">{site.location}</p>
+                    <p className="font-jost text-charcoal/75 text-sm">{site.availability}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
-                  <span className="text-gold mt-0.5 flex-shrink-0"><MailIcon /></span>
+                  <span className="text-gold_ink mt-0.5 flex-shrink-0"><MailIcon /></span>
                   <div>
                     <p className="font-jost text-charcoal text-xs tracking-widest uppercase mb-1">Email</p>
-                    <a href={`mailto:${site.email}`} className="font-jost text-charcoal/60 text-sm hover:text-gold transition-colors duration-300">
+                    <a href={`mailto:${site.email}`} className="font-jost text-charcoal/75 text-sm hover:text-gold_ink transition-colors duration-300">
                       {site.email}
                     </a>
                   </div>
                 </li>
                 {site.phone && (
                   <li className="flex items-start gap-4">
-                    <span className="text-gold mt-0.5 flex-shrink-0"><PhoneIcon /></span>
+                    <span className="text-gold_ink mt-0.5 flex-shrink-0"><PhoneIcon /></span>
                     <div>
                       <p className="font-jost text-charcoal text-xs tracking-widest uppercase mb-1">Call or Text</p>
-                      <a href={`tel:${site.phone.replace(/\D/g, "")}`} className="font-jost text-charcoal/60 text-sm hover:text-gold transition-colors duration-300 block">
+                      <a href={`tel:${site.phone.replace(/\D/g, "")}`} className="font-jost text-charcoal/75 text-sm hover:text-gold_ink transition-colors duration-300 block">
                         {site.phone}
                       </a>
-                      <a href={`sms:${site.phone.replace(/\D/g, "")}`} className="font-jost text-charcoal/40 text-xs hover:text-gold transition-colors duration-300 mt-0.5 block">
+                      <a href={`sms:${site.phone.replace(/\D/g, "")}`} className="font-jost text-charcoal/75 text-xs hover:text-gold_ink transition-colors duration-300 mt-0.5 block">
                         Tap to send a text →
                       </a>
                     </div>
                   </li>
                 )}
                 <li className="flex items-start gap-4">
-                  <span className="text-gold mt-0.5 flex-shrink-0"><InstagramIcon /></span>
+                  <span className="text-gold_ink mt-0.5 flex-shrink-0"><InstagramIcon /></span>
                   <div>
                     <p className="font-jost text-charcoal text-xs tracking-widest uppercase mb-1">Instagram</p>
-                    <a href={site.instagramUrl} target="_blank" rel="noopener noreferrer" className="font-jost text-charcoal/60 text-sm hover:text-gold transition-colors duration-300">
+                    <a href={site.instagramUrl} target="_blank" rel="noopener noreferrer" className="font-jost text-charcoal/75 text-sm hover:text-gold_ink transition-colors duration-300">
                       {site.instagram}
                     </a>
                   </div>
@@ -400,7 +400,7 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
                 <motion.div initial={false} animate={{ opacity: 1, y: 0 }} className="text-center py-20">
                   <div className="w-12 h-px bg-gold mx-auto mb-8" aria-hidden="true" />
                   <h3 className="font-cormorant italic text-charcoal text-4xl mb-4">{text.successHeading}</h3>
-                  <p className="font-jost text-charcoal/60 text-sm leading-relaxed max-w-sm mx-auto">
+                  <p className="font-jost text-charcoal/75 text-sm leading-relaxed max-w-sm mx-auto">
                     {isWaitlist ? text.waitlistSuccessMessage : text.successMessage}
                   </p>
                 </motion.div>
@@ -410,35 +410,43 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
 
                     {/* Name */}
                     <div className="group">
-                      <label htmlFor="name" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold transition-colors duration-300">
-                        Full Name <span className="text-gold" aria-label="required">*</span>
+                      <label htmlFor="name" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
+                        Full Name <span className="text-gold_ink" aria-label="required">*</span>
                       </label>
-                      <input id="name" name="name" type="text" autoComplete="name" required value={formData.name} onChange={handleChange} className={fieldClass("name")} placeholder="Your full name" aria-invalid={!!errors.name} />
-                      {errors.name && <p className="mt-1.5 font-jost text-xs text-red-400" role="alert">{errors.name}</p>}
+                      <input id="name" name="name" type="text" autoComplete="name" required value={formData.name} onChange={handleChange} className={fieldClass("name")} placeholder="Your full name" aria-invalid={!!errors.name} aria-describedby={errors.name ? "name-error" : undefined} />
+                      {errors.name && (
+                        <p id="name-error" className="mt-1.5 font-jost text-xs text-red-700" role="alert">
+                          Error: {errors.name}
+                        </p>
+                      )}
                     </div>
 
                     {/* Email */}
                     <div className="group">
-                      <label htmlFor="email" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold transition-colors duration-300">
-                        Email Address <span className="text-gold" aria-label="required">*</span>
+                      <label htmlFor="email" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
+                        Email Address <span className="text-gold_ink" aria-label="required">*</span>
                       </label>
-                      <input id="email" name="email" type="email" autoComplete="email" required value={formData.email} onChange={handleChange} className={fieldClass("email")} placeholder="your@email.com" aria-invalid={!!errors.email} />
-                      {errors.email && <p className="mt-1.5 font-jost text-xs text-red-400" role="alert">{errors.email}</p>}
+                      <input id="email" name="email" type="email" autoComplete="email" required value={formData.email} onChange={handleChange} className={fieldClass("email")} placeholder="your@email.com" aria-invalid={!!errors.email} aria-describedby={errors.email ? "email-error" : undefined} />
+                      {errors.email && (
+                        <p id="email-error" className="mt-1.5 font-jost text-xs text-red-700" role="alert">
+                          Error: {errors.email}
+                        </p>
+                      )}
                     </div>
 
                     {/* Phone + Service */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                       <div className="group">
-                        <label htmlFor="phone" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold transition-colors duration-300">
-                          Phone <span className="text-charcoal/50 normal-case tracking-normal">(optional)</span>
+                        <label htmlFor="phone" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
+                          Phone <span className="text-charcoal/75 normal-case tracking-normal">(optional)</span>
                         </label>
                         <input id="phone" name="phone" type="tel" autoComplete="tel" value={formData.phone} onChange={handleChange} className={fieldClass("phone")} placeholder="(412) 000-0000" />
                       </div>
                       <div className="group">
-                        <label htmlFor="serviceType" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold transition-colors duration-300">
+                        <label htmlFor="serviceType" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
                           Service Type
                         </label>
-                        <select id="serviceType" name="serviceType" value={formData.serviceType} onChange={handleChange} className={`${fieldClass("serviceType")} bg-ivory cursor-pointer`}>
+                        <select id="serviceType" name="serviceType" value={formData.serviceType} onChange={handleChange} className={`${fieldClass("serviceType")} bg-ivory cursor-pointer min-h-[44px]`}>
                           <option value="">Select...</option>
                           <option value="bridal">Bridal Alteration</option>
                           <option value="tailoring">Everyday Tailoring</option>
@@ -450,12 +458,12 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
 
                     {/* Event Date */}
                     <div className="group">
-                      <label htmlFor="eventDate" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold transition-colors duration-300">
-                        Event Date <span className="text-charcoal/50 normal-case tracking-normal">(if applicable)</span>
+                      <label htmlFor="eventDate" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
+                        Event Date <span className="text-charcoal/75 normal-case tracking-normal">(if applicable)</span>
                       </label>
-                      <input id="eventDate" name="eventDate" type="date" value={formData.eventDate} onChange={handleChange} className={`${fieldClass("eventDate")} bg-ivory`} />
+                      <input id="eventDate" name="eventDate" type="date" value={formData.eventDate} onChange={handleChange} className={`${fieldClass("eventDate")} bg-ivory min-h-[44px]`} />
                       {eventDateBeforeReopen && (
-                        <p className="mt-2 font-jost text-xs text-charcoal/60 leading-relaxed" role="status">
+                        <p className="mt-2 font-jost text-xs text-charcoal/75 leading-relaxed" role="status">
                           That&apos;s before I reopen for bridal. Send it anyway and I&apos;ll tell
                           you honestly whether I can fit it in.
                         </p>
@@ -474,11 +482,11 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
                           className="border border-gold/20 bg-gold/[0.03] p-6 space-y-7"
                         >
                           <span className={sectionLabel}>Dress Details</span>
-                          <p className="font-jost text-xs text-charcoal/45 -mt-4">All fields optional — share what you know, skip what you don&apos;t.</p>
+                          <p className="font-jost text-xs text-charcoal/75 -mt-4">All fields optional — share what you know, skip what you don&apos;t.</p>
 
                           {/* Fabric notes */}
                           <div className="group">
-                            <label htmlFor="fabricNotes" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold transition-colors duration-300">
+                            <label htmlFor="fabricNotes" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
                               Fabric / Construction Notes
                             </label>
                             <input id="fabricNotes" name="fabricNotes" type="text" value={formData.fabricNotes} onChange={handleChange} className={fieldClass("fabricNotes")} placeholder="e.g. lace bodice, heavy beading, horsehair hem" />
@@ -487,13 +495,13 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
                           {/* Sizes */}
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                             <div className="group">
-                              <label htmlFor="dressSizeOrdered" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold transition-colors duration-300">
+                              <label htmlFor="dressSizeOrdered" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
                                 Dress Size Ordered
                               </label>
                               <input id="dressSizeOrdered" name="dressSizeOrdered" type="text" value={formData.dressSizeOrdered} onChange={handleChange} className={fieldClass("dressSizeOrdered")} placeholder="e.g. 12, 4W" />
                             </div>
                             <div className="group">
-                              <label htmlFor="currentStreetSize" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold transition-colors duration-300">
+                              <label htmlFor="currentStreetSize" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
                                 Current Street Size
                               </label>
                               <input id="currentStreetSize" name="currentStreetSize" type="text" value={formData.currentStreetSize} onChange={handleChange} className={fieldClass("currentStreetSize")} placeholder="e.g. 8, size 6 jeans" />
@@ -503,7 +511,7 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
                           {/* Alterations needed */}
                           <div>
                             <p className="font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-3">
-                              Alterations Requested <span className="text-charcoal/40 normal-case tracking-normal">(check all that apply)</span>
+                              Alterations Requested <span className="text-charcoal/75 normal-case tracking-normal">(check all that apply)</span>
                             </p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                               {BRIDAL_ALTERATIONS.map(({ value, label }) => (
@@ -518,7 +526,7 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
 
                           {/* Shoes / undergarments */}
                           <div className="group">
-                            <label htmlFor="shoesUndergarments" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold transition-colors duration-300">
+                            <label htmlFor="shoesUndergarments" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
                               Shoes &amp; Undergarments Picked?
                             </label>
                             <select id="shoesUndergarments" name="shoesUndergarments" value={formData.shoesUndergarments} onChange={handleChange} className={`${fieldClass("shoesUndergarments")} bg-gold/[0.03] cursor-pointer`}>
@@ -541,12 +549,12 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
                           className="border border-gold/20 bg-gold/[0.03] p-6 space-y-7"
                         >
                           <span className={sectionLabel}>Garment Details</span>
-                          <p className="font-jost text-xs text-charcoal/45 -mt-4">All fields optional — share what you know.</p>
+                          <p className="font-jost text-xs text-charcoal/75 -mt-4">All fields optional — share what you know.</p>
 
                           {/* Garment type + size */}
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                             <div className="group">
-                              <label htmlFor="garmentType" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold transition-colors duration-300">
+                              <label htmlFor="garmentType" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
                                 Garment Type
                               </label>
                               <select id="garmentType" name="garmentType" value={formData.garmentType} onChange={handleChange} className={`${fieldClass("garmentType")} bg-gold/[0.03] cursor-pointer`}>
@@ -560,7 +568,7 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
                               </select>
                             </div>
                             <div className="group">
-                              <label htmlFor="currentSize" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold transition-colors duration-300">
+                              <label htmlFor="currentSize" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
                                 Current Size
                               </label>
                               <input id="currentSize" name="currentSize" type="text" value={formData.currentSize} onChange={handleChange} className={fieldClass("currentSize")} placeholder="e.g. 10, Medium, 32x30" />
@@ -570,7 +578,7 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
                           {/* Tailoring alterations */}
                           <div>
                             <p className="font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-3">
-                              Alterations Needed <span className="text-charcoal/40 normal-case tracking-normal">(check all that apply)</span>
+                              Alterations Needed <span className="text-charcoal/75 normal-case tracking-normal">(check all that apply)</span>
                             </p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                               {TAILORING_ALTERATIONS.map(({ value, label }) => (
@@ -596,7 +604,7 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
                         >
                           <span className={sectionLabel}>Project Details</span>
                           <div className="group">
-                            <label htmlFor="currentSize" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold transition-colors duration-300">
+                            <label htmlFor="currentSize" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
                               Approximate Size
                             </label>
                             <input id="currentSize" name="currentSize" type="text" value={formData.currentSize} onChange={handleChange} className={fieldClass("currentSize")} placeholder="e.g. size 8, Medium, vintage 1970s 10" />
@@ -608,10 +616,10 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
                     {/* Garment details / notes */}
                     <div className="group">
                       <div className="flex items-baseline justify-between mb-2">
-                        <label htmlFor="garmentDetails" className="block font-jost text-xs tracking-[0.15em] uppercase text-charcoal/70 group-focus-within:text-gold transition-colors duration-300">
+                        <label htmlFor="garmentDetails" className="block font-jost text-xs tracking-[0.15em] uppercase text-charcoal/70 group-focus-within:text-gold_ink transition-colors duration-300">
                           {garmentLabel}
                         </label>
-                        <span className="font-jost text-xs text-charcoal/40">{charCount}</span>
+                        <span className="font-jost text-xs text-charcoal/75">{charCount}</span>
                       </div>
                       <textarea id="garmentDetails" name="garmentDetails" rows={4} value={formData.garmentDetails} onChange={handleChange} className={`${fieldClass("garmentDetails")} resize-none`} placeholder={garmentPlaceholder} />
                     </div>
@@ -619,27 +627,35 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
                     {/* Photo upload */}
                     <div>
                       <p className="font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-1">
-                        Attach Photos <span className="text-charcoal/45 normal-case tracking-normal">(optional · max {maxPhotos} · 5 MB each)</span>
+                        Attach Photos <span className="text-charcoal/75 normal-case tracking-normal">(optional · max {maxPhotos} · 5 MB each)</span>
                       </p>
-                      <p className="font-jost text-charcoal/35 text-xs mb-3 leading-relaxed">{photoHint}</p>
+                      <p id="photos-hint" className="font-jost text-charcoal/75 text-xs mb-3 leading-relaxed">
+                        {photoHint} Up to {maxPhotos} photos, 5 MB each.
+                      </p>
 
                       {attachments.length < maxPhotos && (
-                        <label htmlFor="photos" className="flex flex-col items-center justify-center gap-2 border border-dashed border-blush hover:border-gold/50 p-7 cursor-pointer transition-colors duration-300 group">
-                          <span className="text-charcoal/30 group-hover:text-gold transition-colors duration-300"><UploadIcon /></span>
-                          <span className="font-jost text-charcoal/40 text-xs">Click to attach photos</span>
-                          <span className="font-jost text-charcoal/25 text-xs">JPG, PNG, HEIC, WEBP</span>
-                          <input id="photos" type="file" accept="image/*" multiple className="hidden" onChange={handleFileChange} />
+                        <label htmlFor="photos" className="flex flex-col items-center justify-center gap-2 border border-dashed border-blush hover:border-gold/50 p-7 min-h-[44px] cursor-pointer transition-colors duration-300 group">
+                          <span className="text-charcoal/75 group-hover:text-gold_ink transition-colors duration-300"><UploadIcon /></span>
+                          <span className="font-jost text-charcoal/75 text-xs">Click to attach photos</span>
+                          <span className="font-jost text-charcoal/75 text-xs">JPG, PNG, HEIC, WEBP</span>
+                          <input id="photos" type="file" accept="image/*" multiple className="sr-only" onChange={handleFileChange} aria-describedby="photos-hint" />
                         </label>
                       )}
-                      {errors.files && <p className="mt-2 font-jost text-xs text-red-400" role="alert">{errors.files}</p>}
+                      {errors.files && (
+                        <p id="photos-error" className="mt-2 font-jost text-xs text-red-700" role="alert">
+                          Error: {errors.files}
+                        </p>
+                      )}
                       {attachments.length > 0 && (
                         <div className="flex flex-wrap gap-3 mt-3">
                           {attachments.map((file, i) => (
                             <div key={i} className="relative group/thumb flex-shrink-0">
                               {/* eslint-disable-next-line @next/next/no-img-element */}
                               <img src={file.preview} alt={file.filename} className="w-20 h-20 object-cover border border-blush" />
-                              <button type="button" onClick={() => removeAttachment(i)} className="absolute -top-2 -right-2 w-5 h-5 bg-charcoal text-ivory text-xs flex items-center justify-center rounded-full opacity-0 group-hover/thumb:opacity-100 transition-opacity duration-200" aria-label={`Remove ${file.filename}`}>×</button>
-                              <p className="font-jost text-charcoal/30 text-[10px] mt-1 truncate max-w-[5rem]">{file.filename}</p>
+                              <button type="button" onClick={() => removeAttachment(i)} className="absolute -top-3 -right-3 w-11 h-11 flex items-center justify-center focus-visible:opacity-100 opacity-0 group-hover/thumb:opacity-100 transition-opacity duration-200" aria-label={`Remove ${file.filename}`}>
+                                <span className="w-6 h-6 bg-charcoal text-ivory text-xs flex items-center justify-center rounded-full" aria-hidden="true">×</span>
+                              </button>
+                              <p className="font-jost text-charcoal/75 text-[10px] mt-1 truncate max-w-[5rem]">{file.filename}</p>
                             </div>
                           ))}
                         </div>
@@ -648,10 +664,10 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
 
                     {/* Referral */}
                     <div className="group">
-                      <label htmlFor="referralSource" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold transition-colors duration-300">
+                      <label htmlFor="referralSource" className="block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/70 mb-2 group-focus-within:text-gold_ink transition-colors duration-300">
                         How Did You Hear About Me?
                       </label>
-                      <select id="referralSource" name="referralSource" value={formData.referralSource} onChange={handleChange} className={`${fieldClass("referralSource")} bg-ivory cursor-pointer`}>
+                      <select id="referralSource" name="referralSource" value={formData.referralSource} onChange={handleChange} className={`${fieldClass("referralSource")} bg-ivory cursor-pointer min-h-[44px]`}>
                         <option value="">Select one...</option>
                         <option value="google">Google Search</option>
                         <option value="instagram">Instagram</option>

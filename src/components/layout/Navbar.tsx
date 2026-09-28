@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { useFocusTrap } from "@/lib/useFocusTrap";
 
 const NAV_LINKS = [
   { label: "Services", href: "/services" },
@@ -21,6 +22,12 @@ export default function Navbar({ siteName, businessName }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  // Escape closes, Tab stays inside, body scroll locks, focus returns to the
+  // toggle on close.
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+  const menuRef = useFocusTrap<HTMLDivElement>(menuOpen, closeMenu);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -30,12 +37,6 @@ export default function Navbar({ siteName, businessName }: NavbarProps) {
 
   // Close menu on route change
   useEffect(() => { setMenuOpen(false); }, [pathname]);
-
-  // Prevent body scroll when menu open
-  useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [menuOpen]);
 
   const showBg = scrolled || menuOpen;
 
@@ -81,6 +82,7 @@ export default function Navbar({ siteName, businessName }: NavbarProps) {
               <Link
                 key={link.href}
                 href={link.href}
+                aria-current={pathname === link.href ? "page" : undefined}
                 className={`relative font-jost font-medium text-xs tracking-[0.18em] uppercase transition-colors duration-300 group ${
                   showBg
                     ? pathname === link.href ? "text-gold_dark" : "text-gold hover:text-gold_dark"
@@ -102,10 +104,13 @@ export default function Navbar({ siteName, businessName }: NavbarProps) {
 
           {/* Mobile hamburger */}
           <button
-            className="lg:hidden relative w-10 h-10 flex flex-col items-center justify-center gap-[5px]"
+            ref={toggleRef}
+            type="button"
+            className="lg:hidden relative w-11 h-11 flex flex-col items-center justify-center gap-[5px]"
             onClick={() => setMenuOpen((p) => !p)}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
           >
             {(["origin-center", "", "origin-center"] as const).map((origin, idx) => (
               <motion.span
@@ -133,6 +138,8 @@ export default function Navbar({ siteName, businessName }: NavbarProps) {
             animate={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
             exit={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            ref={menuRef}
+            id="mobile-menu"
             className="fixed inset-0 z-40 bg-ivory flex flex-col items-center justify-center"
             role="dialog"
             aria-modal="true"
@@ -151,8 +158,9 @@ export default function Navbar({ siteName, businessName }: NavbarProps) {
                 >
                   <Link
                     href={link.href}
-                    className={`block font-cormorant italic text-5xl py-2 transition-colors duration-300 ${
-                      pathname === link.href ? "text-gold" : "text-charcoal hover:text-gold"
+                    aria-current={pathname === link.href ? "page" : undefined}
+                    className={`block font-cormorant italic text-5xl py-2 min-h-[44px] transition-colors duration-300 ${
+                      pathname === link.href ? "text-gold_ink" : "text-charcoal hover:text-gold_ink"
                     }`}
                   >
                     {link.label}
@@ -177,7 +185,7 @@ export default function Navbar({ siteName, businessName }: NavbarProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.55, duration: 0.4 }}
-              className="absolute bottom-10 font-jost text-xs text-charcoal/30 tracking-widest uppercase"
+              className="absolute bottom-10 font-jost text-xs text-charcoal/75 tracking-widest uppercase"
             >
               Pittsburgh, PA &nbsp;·&nbsp; By Appointment
             </motion.p>
