@@ -72,6 +72,13 @@
   }
 }
 
+/* The faint "01, 02, 03" ordinals beside step headings. They are ornaments
+   (the headings carry the meaning), so they are drawn as generated content:
+   screen readers and contrast checkers read only the real text around them. */
+[data-numeral]::before {
+  content: attr(data-numeral);
+}
+
 @layer components {
   .gold-rule {
     @apply w-16 h-px bg-gold;

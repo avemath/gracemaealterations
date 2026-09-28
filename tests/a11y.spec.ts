@@ -21,9 +21,6 @@ for (const route of ROUTES) {
 
     const results = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag22aa"])
-      // The faint "01, 02, 03" ordinals are aria-hidden ornaments (the headings
-      // beside them carry the meaning), which WCAG 1.4.3 exempts as decoration.
-      .exclude("[data-decorative]")
       .analyze();
 
     const blocking = results.violations.filter(
