@@ -135,20 +135,28 @@ export default function ProcessSteps({
       if (len <= 0) { requestAnimationFrame(init); return; }
       threadLenRef.current = len;
 
-      // Walk the path at 800 steps and find the v value where the thread tip
-      // is closest to each pierce point's (cx, cy). This gives exact thresholds
-      // that automatically account for the actual path length.
-      const computed: number[] = [];
-      for (const { cx, cy } of PIERCE_POINTS) {
-        let bestV = 0, bestDist = Infinity;
-        for (let i = 0; i <= 800; i++) {
-          const frac = i / 800;
-          const p = path.getPointAtLength(frac * len);
-          const d = Math.hypot(p.x - cx, p.y - cy);
-          if (d < bestDist) { bestDist = d; bestV = frac; }
-        }
-        computed.push(bestV);
+      // Sample the path ONCE into a table, then measure every pierce point
+      // against that table. The previous version walked the path per pierce
+      // point: 12 x 801 = 9,612 getPointAtLength calls in a single task, which
+      // measured as a 9.5 second long task on throttled mobile. This is 400
+      // calls total, and the extra precision was never visible anyway.
+      const SAMPLES = 400;
+      const points: { x: number; y: number }[] = new Array(SAMPLES + 1);
+      for (let i = 0; i <= SAMPLES; i++) {
+        const p = path.getPointAtLength((i / SAMPLES) * len);
+        points[i] = { x: p.x, y: p.y };
       }
+
+      const computed = PIERCE_POINTS.map(({ cx, cy }) => {
+        let bestV = 0, bestDist = Infinity;
+        for (let i = 0; i <= SAMPLES; i++) {
+          const p = points[i];
+          // Squared distance: the comparison is all we need, so skip the sqrt.
+          const d = (p.x - cx) ** 2 + (p.y - cy) ** 2;
+          if (d < bestDist) { bestDist = d; bestV = i / SAMPLES; }
+        }
+        return bestV;
+      });
       pierceThresholdsRef.current = computed;
 
       // Apply current scroll immediately so a mid-scroll page load looks right
@@ -161,7 +169,15 @@ export default function ProcessSteps({
         if (el) el.style.opacity = v >= computed[i] ? "1" : "0";
       });
     };
-    requestAnimationFrame(init);
+    // Run in idle time so path measurement never competes with hydration.
+    // Until it lands, the hardcoded thresholds in PIERCE_POINTS are used, so
+    // the animation is correct either way.
+    const schedule =
+      typeof window.requestIdleCallback === "function"
+        ? (cb: () => void) => window.requestIdleCallback(() => cb(), { timeout: 2000 })
+        : (cb: () => void) => window.setTimeout(cb, 200);
+
+    schedule(() => requestAnimationFrame(init));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
