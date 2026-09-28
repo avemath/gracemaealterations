@@ -2,6 +2,13 @@
 
 Newest first. Grace facing notes live in `site/content/FOR-GRACE.md`.
 
+## Bustle explorer and the sewn timeline, September 2026
+
+- `feat: interactive bustle explorer; the phone timeline is sewn`:
+  - A drawing of a gown from the back, on the services page (right after bridal) and at the top of the bustle guide. Pick American, French, Austrian, ballroom or a detachable train, and a sweep, chapel or cathedral train, then bustle it: the train lifts into that style. A slider moves it by hand. Gold dots are hooks on top, dashed rings are ties underneath. It plays once when it comes into view, never under reduced motion, and the drawing's accessible name always says which style and whether it is bustled.
+  - The copy for each style comes from the Studio's Bustle Styles once they are published, and falls back to the same wording until then.
+  - On phones, the process timeline is now sewn: a running stitch follows the scroll, a needle leads it, and each step's dot fills in as the thread passes it.
+
 ## Price list removed, September 2026
 
 - `feat: drop the itemised price list from services`: the "See typical prices" list under each service had no prices in it, so every row read "quoted at fitting". Every garment is priced at the fitting, so the list is gone and each service shows only its price range, note and typical timeline. The Studio field is hidden, not deleted, so nothing is lost.
