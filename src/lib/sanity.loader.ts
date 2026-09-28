@@ -14,3 +14,7 @@ export function sanityLoader({ src, width, quality }: ImageLoaderProps): string 
   url.searchParams.set("fit", "max");
   return url.toString();
 }
+
+// Also the site-wide default (next.config.mjs), so no image ever goes through
+// Next's own /_next/image optimizer.
+export default sanityLoader;

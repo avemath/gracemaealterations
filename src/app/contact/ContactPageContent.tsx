@@ -339,6 +339,16 @@ export default function ContactPageContent({
     const newErrors = validate(formData);
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      // On a phone the fields are far above the button: take them there.
+      const first = (["name", "email"] as const).find((k) => newErrors[k]);
+      const field = first ? document.getElementById(first) : null;
+      if (field) {
+        field.focus({ preventScroll: true });
+        field.scrollIntoView({
+          block: "center",
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+        });
+      }
       return;
     }
     setStatus("submitting");
@@ -352,7 +362,6 @@ export default function ContactPageContent({
           alterationsNeeded: branch === "bridal" ? alterationsNeeded : [],
           serviceType: branch ?? "unsure",
           isWaitlist,
-          reopensLabel,
           attachments: attachments.map(({ filename, content }) => ({ filename, content })),
           photoCheck: photoCheck && photoCheckIncluded ? photoCheck : null,
         }),

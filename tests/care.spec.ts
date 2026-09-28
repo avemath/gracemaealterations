@@ -19,12 +19,18 @@ test.describe("care cards", () => {
     expect(sitemap).not.toContain("/care/");
   });
 
-  test("the care notes route refuses requests from other sites", async ({ request }) => {
-    const res = await request.post("/api/care-notes", {
-      data: { garment: "wedding gown" },
-      headers: { origin: "https://example.com" },
-    });
-    // 503 without a key; 403 with one. Either way, nothing is drafted.
-    expect([403, 503]).toContain(res.status());
+  test("the care notes route refuses anyone not signed in to the Studio", async ({ request }) => {
+    const attempts: Record<string, string>[] = [
+      { origin: "https://example.com" },
+      // A spoofed Origin is not enough...
+      { origin: "https://gracemaealterations.com" },
+      // ...and neither is a made-up token.
+      { origin: "https://gracemaealterations.com", authorization: "Bearer skNotARealTokenAtAll1234567890" },
+    ];
+    for (const headers of attempts) {
+      const res = await request.post("/api/care-notes", { data: { garment: "wedding gown" }, headers });
+      // 503 without an Anthropic key; 401 with one. Either way, nothing is drafted.
+      expect([401, 503], JSON.stringify(headers)).toContain(res.status());
+    }
   });
 });

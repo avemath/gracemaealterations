@@ -147,7 +147,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               placeholderLabel="HERO_PORTRAIT_IMAGE"
               placeholderRatio="portrait"
               alt={heroImage?.alt ?? `${site.name}, Pittsburgh bridal seamstress`}
-              sizes="(min-width:1024px) 48vw, 100vw"
+              sizes="(min-width:1024px) 72vw, 100vw"
             />
           </motion.div>
           {/* Blends the image's left edge into the ivory column. The default

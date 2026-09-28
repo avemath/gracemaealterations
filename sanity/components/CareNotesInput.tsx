@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { set, useFormValue, type ArrayOfObjectsInputProps } from "sanity";
+import { set, useClient, useFormValue, type ArrayOfObjectsInputProps } from "sanity";
 import { Button, Card, Flex, Stack, Text } from "@sanity/ui";
 
 const key = () => Math.random().toString(36).slice(2, 10);
@@ -13,6 +13,8 @@ export function CareNotesInput(props: ArrayOfObjectsInputProps) {
   const garment = useFormValue(["garment"]) as string | undefined;
   const fabric = useFormValue(["fabric"]) as string | undefined;
   const workDone = useFormValue(["workDone"]) as string | undefined;
+  // The editor's own sign-in token; the route checks it with Sanity before drafting.
+  const token = useClient({ apiVersion: "2024-01-01" }).config().token;
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const hasNotes = Array.isArray(props.value) && props.value.length > 0;
@@ -24,7 +26,10 @@ export function CareNotesInput(props: ArrayOfObjectsInputProps) {
     try {
       const res = await fetch("/api/care-notes", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({ garment, fabric, workDone }),
       });
       const data = await res.json().catch(() => ({}));

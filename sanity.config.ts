@@ -13,6 +13,11 @@ export default defineConfig({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
 
+  // Keep the sign-in as a token in this browser rather than a sanity.io cookie,
+  // so the Studio can prove who is asking when it calls this site's own
+  // routes (the care notes drafting checks it).
+  auth: { loginMethod: "token" },
+
   plugins: [
     deskTool({
       structure: (S) =>
