@@ -20,7 +20,7 @@ export const SITE = {
   instagram: "@gracemaealterations",
   instagramUrl: "https://instagram.com/gracemaealterations",
   availability: "By Appointment. Bridal reopens early 2027",
-  responseTime: "I reply to every message within 2 business days, usually sooner.",
+  responseTime: "I read every message myself and reply as soon as I can.",
   bookingNote: "Home with our new baby and taking on smaller projects. Bridal reopens early 2027.",
   phone: "",                    // keep blank: the site does not list a phone number
   isAcceptingClients: true,     // Set to false to put the WHOLE contact form into Waitlist mode
@@ -345,7 +345,7 @@ export const HOME_TEXT = {
 };
 
 export const PROCESS_STEPS: { title: string; body: string; note?: string }[] = [
-  { title: "Reach Out",        body: "Fill out the contact form with a few details about your garment. I reply to every message within 2 business days, usually sooner." },
+  { title: "Reach Out",        body: "Fill out the contact form with a few details about your garment. I read every message myself and reply as soon as I can." },
   { title: "Free Consultation", body: "We look at the garment together. I assess what needs to be done and give you an honest, itemized quote. No commitment required." },
   { title: "First Fitting",    body: "I pin and mark every adjustment directly on you, so we both see exactly what changes before a single seam is cut." },
   { title: "The Work",         body: "I complete your alterations with full attention. For complex bridal gowns this may involve multiple stages of careful work." },
@@ -412,7 +412,7 @@ export const CONTACT_TEXT = {
     "Fill out the form below to join my waitlist. I'll reach out as soon as a spot opens up.",
   successHeading: "Thank you.",
   successMessage:
-    "Your message has been received. Check your inbox: I've sent a confirmation with next steps. I reply to every message within 2 business days, usually sooner.",
+    "Your message has been received. Check your inbox: I've sent a confirmation with next steps. I read every message myself and reply as soon as I can.",
   waitlistSuccessMessage: "You're on my waitlist. I'll reach out as soon as a spot opens up.",
 };
 

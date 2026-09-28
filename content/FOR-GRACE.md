@@ -81,7 +81,10 @@ Each is at: **Content, then Testimonials, then the client**. All five boxes are 
 
 These are live on the site now and disagree with each other or with the house style.
 
-- **Response time.** The Contact information panel says you reply within 2 business days, but two other places say "within 24 hours": **Content, then Home Page, then Process steps, then the first step**, and **Content, then Contact Page, then Success message**. Pick one and use it in all three.
+- **Response time. Please do this one first.** The site no longer promises a reply time anywhere in its own wording, but three boxes in Studio still do. One says "2 business days" and two say "within 24 hours". Replace the promise in each with "I read every message myself and reply as soon as I can.":
+  - **Content, then Site Settings, then Response Time Note**
+  - **Content, then Home Page, then Process steps, then the first step**
+  - **Content, then Contact Page, then Success message**
 - **"Calling ahead".** The FAQ "How far in advance should I book?" suggests calling ahead, but there is no phone number, and it tells brides to book as soon as they have their dress while bridal is a waitlist. At **Content, then FAQ**.
 - **Long dashes.** Several paragraphs use a long dash (the About story, some service descriptions, several FAQ answers, the process steps). A comma, colon or full stop reads cleaner and matches the rest of the site.
 - **"I'm currently fully booked."** At **Content, then Contact Page, then Waitlist banner bold**. It only shows if the whole site is ever switched to waitlist, but tailoring is open, so it would say the wrong thing today.
