@@ -15,7 +15,7 @@ export const siteSettings = defineType({
     defineField({ name: "instagramUrl", title: "Instagram Full URL", type: "url", initialValue: "https://instagram.com/gracemaealterations" }),
     defineField({ name: "location", title: "Location (e.g. Pittsburgh, PA)", type: "string", initialValue: "Pittsburgh, PA" }),
     defineField({ name: "availability", title: "Availability Note", type: "string", initialValue: "Available by Appointment" }),
-    defineField({ name: "responseTime", title: "Response Time Note", type: "string", initialValue: "I reply to every message within 2 business days, usually sooner." }),
+    defineField({ name: "responseTime", title: "Response Time Note", type: "string", initialValue: "I read every message myself and reply as soon as I can." }),
     defineField({
       name: "bookingNote",
       title: "Hero Booking Note",
