@@ -3,8 +3,6 @@
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import ScrollProgress from "./ScrollProgress";
-import CustomCursor from "./CustomCursor";
 
 interface SiteData {
   siteName: string;
@@ -28,8 +26,6 @@ export default function SiteChrome({ children, site }: Props) {
 
   return (
     <>
-      <ScrollProgress />
-      <CustomCursor />
       <Navbar siteName={site.siteName} businessName={site.businessName} />
       {children}
       <Footer

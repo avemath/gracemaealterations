@@ -131,12 +131,11 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
       {/* ── HERO ──────────────────────────────────────────────── */}
       <section ref={heroRef} className="relative min-h-screen overflow-hidden bg-ivory linen-overlay" aria-label="Hero section">
 
-        {/* Desktop: portrait image covers right half of viewport */}
-        <motion.div
-          className="hidden lg:block absolute inset-y-0 right-0 w-[48%] z-[2] overflow-hidden"
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1.1, delay: 0.3, ease: "easeOut" }}
+        {/* One portrait for both layouts: full width under the copy on mobile,
+            a full-height column on the right from lg up. Rendering it twice
+            shipped two <img> elements and two priority preloads. */}
+        <div
+          className="relative z-[2] w-full aspect-[1024/1210] -mt-4 overflow-hidden lg:mt-0 lg:absolute lg:inset-y-0 lg:right-0 lg:w-[48%] lg:aspect-auto"
           aria-hidden="true"
         >
           {/* Parallax inner — taller than container so there's room to translate */}
@@ -148,27 +147,27 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               placeholderLabel="HERO_PORTRAIT_IMAGE"
               placeholderRatio="portrait"
               alt={heroImage?.alt ?? `${site.name} — Pittsburgh bridal seamstress`}
-              sizes="48vw"
+              sizes="(min-width:1024px) 48vw, 100vw"
             />
           </motion.div>
           {/* Blends the image's left edge into the ivory column. The default
               via-25% stop still laid ~20% ivory over her face at 60% across,
               which read as a white sheen — these stops clear it by 52%. */}
           <div
-            className="absolute inset-0 pointer-events-none"
+            className="hidden lg:block absolute inset-0 pointer-events-none"
             style={{
               background:
                 "linear-gradient(to right, #FAF7F2 0%, rgba(250,247,242,0.85) 12%, rgba(250,247,242,0.35) 28%, rgba(250,247,242,0.06) 42%, rgba(250,247,242,0) 52%)",
             }}
           />
-        </motion.div>
+        </div>
 
         {/* Content layer */}
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 w-full">
           <div className="min-h-screen flex items-center">
             <div className="w-full lg:max-w-[520px] py-32 lg:py-0">
 
-              <motion.p className="section-label mb-6" custom={0} initial="hidden" animate="visible" variants={fadeUp}>
+              <motion.p className="section-label mb-6" custom={0} initial={false} animate="visible" variants={fadeUp}>
                 {text.heroSectionLabel}
               </motion.p>
 
@@ -183,25 +182,25 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
 
               <motion.div
                 className="w-12 h-px bg-gold my-8"
-                custom={2} initial="hidden" animate="visible" variants={fadeUp}
+                custom={2} initial={false} animate="visible" variants={fadeUp}
                 aria-hidden="true"
               />
 
               <motion.p
                 className="font-jost text-charcoal/65 text-base lg:text-lg max-w-sm mb-10 leading-relaxed"
-                custom={3} initial="hidden" animate="visible" variants={fadeUp}
+                custom={3} initial={false} animate="visible" variants={fadeUp}
               >
                 {site.subTagline}
               </motion.p>
 
               <motion.p
                 className="font-jost text-sm text-charcoal/55 tracking-[0.03em] italic max-w-sm mb-8 leading-relaxed"
-                custom={4} initial="hidden" animate="visible" variants={fadeUp}
+                custom={4} initial={false} animate="visible" variants={fadeUp}
               >
                 {text.heroCredentialText}
               </motion.p>
 
-              <motion.div className="flex flex-wrap gap-4" custom={5} initial="hidden" animate="visible" variants={fadeUp}>
+              <motion.div className="flex flex-wrap gap-4" custom={5} initial={false} animate="visible" variants={fadeUp}>
                 <Button variant="gold" href="/services">View Services</Button>
                 <Button variant="outline" href="/contact">Book a Consultation</Button>
               </motion.div>
@@ -210,7 +209,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               <motion.div
                 className="flex items-center gap-2.5 mt-8"
                 custom={6}
-                initial="hidden"
+                initial={false}
                 animate="visible"
                 variants={fadeUp}
               >
@@ -232,27 +231,11 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
           </div>
         </div>
 
-        {/* Mobile: portrait image below the text, edge-to-edge */}
-        <motion.div
-          className="lg:hidden relative z-[2] -mt-4 overflow-hidden"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.5 }}
-          aria-hidden="true"
-        >
-          <SanityImage
-            image={heroImage}
-            placeholderLabel="HERO_PORTRAIT_IMAGE"
-            placeholderRatio="portrait"
-            alt={heroImage?.alt ?? `${site.name} — Pittsburgh bridal seamstress`}
-            priority
-          />
-        </motion.div>
 
         {/* Scroll indicator — desktop only */}
         <motion.div
           className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden lg:flex flex-col items-center gap-2"
-          initial={{ opacity: 0 }}
+          initial={false}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.8, duration: 0.6 }}
           aria-hidden="true"
@@ -274,7 +257,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               <motion.div
                 key={i}
                 className="flex items-center"
-                initial={{ opacity: 0, y: 12 }}
+                initial={false}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
@@ -297,7 +280,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
         <div className="max-w-7xl mx-auto">
           <motion.div
             className="text-center mb-14"
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6 }}
@@ -313,7 +296,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                 <motion.article
                   key={service._id}
                   className="group relative bg-near_black p-8 lg:p-10 flex flex-col overflow-hidden transition-all duration-400 min-h-[22rem]"
-                  initial={{ opacity: 0, y: 24 }}
+                  initial={false}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.6, delay: i * 0.12 }}
@@ -383,7 +366,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
         <div className="max-w-7xl mx-auto">
           <div className="flex items-end justify-between mb-10">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6 }}
@@ -392,7 +375,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               <h2 id="portfolio-preview-heading" className="font-cormorant italic text-charcoal text-4xl lg:text-5xl">{text.portfolioHeading}</h2>
             </motion.div>
             <motion.div
-              initial={{ opacity: 0 }}
+              initial={false}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
@@ -413,7 +396,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                 key={item._id}
                 className="group relative overflow-hidden cursor-pointer"
                 style={{ paddingBottom: "133.33%" }}
-                initial={{ opacity: 0, y: 20 }}
+                initial={false}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
@@ -442,7 +425,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
 
           <motion.div
             className="text-center mt-8 sm:hidden"
-            initial={{ opacity: 0 }}
+            initial={false}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
@@ -475,7 +458,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               </RevealImage>
               <motion.div
                 className="absolute -bottom-3 -right-3 w-full h-full border border-gold/30 pointer-events-none"
-                initial={{ opacity: 0 }}
+                initial={false}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.75, duration: 0.5 }}
@@ -484,7 +467,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
             </div>
 
             <motion.div
-              initial={{ opacity: 0, y: 24 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.7, delay: 0.2 }}
@@ -514,7 +497,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
         <div className="max-w-4xl mx-auto">
           <motion.div
             className="text-center mb-14"
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6 }}
@@ -523,7 +506,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
             <h2 id="testimonials-heading" className="font-cormorant italic text-charcoal text-4xl lg:text-5xl">{text.testimonialsHeading}</h2>
           </motion.div>
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.7, delay: 0.1 }}

@@ -13,7 +13,7 @@ export default function TestimonialsSection() {
         {/* Header */}
         <motion.div
           className="text-center mb-14"
-          initial={{ opacity: 0, y: 20 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
@@ -33,7 +33,7 @@ export default function TestimonialsSection() {
             <motion.article
               key={i}
               className="relative bg-blush p-8 lg:p-10 overflow-hidden"
-              initial={{ opacity: 0, y: 24 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.6, delay: i * 0.12 }}

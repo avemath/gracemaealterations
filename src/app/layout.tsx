@@ -5,7 +5,7 @@ import "@/styles/globals.css";
 import SiteChrome from "@/components/layout/SiteChrome";
 import StickyMobileCTA from "@/components/layout/StickyMobileCTA";
 import StickyDesktopCTA from "@/components/layout/StickyDesktopCTA";
-import PageTransition from "@/components/layout/PageTransition";
+import MotionProvider from "@/components/layout/MotionProvider";
 import { getMergedSite } from "@/lib/sanity.queries";
 
 // ── FONTS ─────────────────────────────────────────────────────
@@ -181,6 +181,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="bg-ivory text-charcoal antialiased">
+        <MotionProvider>
         <SiteChrome
           site={{
             siteName: site.name,
@@ -191,10 +192,9 @@ export default async function RootLayout({
             instagramUrl: site.instagramUrl,
           }}
         >
-          <main id="main-content">
-            <PageTransition>{children}</PageTransition>
-          </main>
+          <main id="main-content">{children}</main>
         </SiteChrome>
+        </MotionProvider>
         <StickyMobileCTA limitedMode={site.limitedMode} reopensLabel={site.reopensLabel} />
         <StickyDesktopCTA limitedMode={site.limitedMode} reopensLabel={site.reopensLabel} />
         <Analytics />

@@ -95,7 +95,7 @@ export default function PortfolioPageContent({ items, portfolioPageData }: Props
         {/* Subtle texture gradient so the dark bg has depth */}
         <div className="absolute inset-0 bg-gradient-to-br from-near_black via-near_black to-charcoal/60 pointer-events-none" aria-hidden="true" />
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-14 pt-36 lg:pt-44">
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <p className="section-label text-gold/70 mb-4">{portfolioPageData.heroLabel}</p>
             <RevealText onMount delay={0.2}>
               <h1 className="font-cormorant italic text-ivory text-5xl lg:text-7xl mb-5">{portfolioPageData.heroHeading}</h1>
@@ -136,7 +136,7 @@ export default function PortfolioPageContent({ items, portfolioPageData }: Props
         <div className="max-w-7xl mx-auto">
           <motion.div
             className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center"
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.7 }}
@@ -174,7 +174,7 @@ export default function PortfolioPageContent({ items, portfolioPageData }: Props
             <motion.div
               key={activeFilter}
               className="columns-1 sm:columns-2 lg:columns-3 gap-3 lg:gap-4"
-              initial={{ opacity: 0 }}
+              initial={false}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.35 }}
@@ -183,7 +183,7 @@ export default function PortfolioPageContent({ items, portfolioPageData }: Props
                 <motion.div
                   key={item._id}
                   className="group relative overflow-hidden cursor-pointer break-inside-avoid mb-3 lg:mb-4"
-                  initial={{ opacity: 0, y: 16 }}
+                  initial={false}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.45, delay: Math.min(i * 0.04, 0.3) }}
                   onClick={() => setLightboxIndex(i)}
@@ -232,7 +232,7 @@ export default function PortfolioPageContent({ items, portfolioPageData }: Props
       <AnimatePresence>
         {lightboxItem && lightboxIndex !== null && (
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={false}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
