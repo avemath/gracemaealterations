@@ -6,6 +6,7 @@ import SiteChrome from "@/components/layout/SiteChrome";
 import StickyMobileCTA from "@/components/layout/StickyMobileCTA";
 import StickyDesktopCTA from "@/components/layout/StickyDesktopCTA";
 import MotionProvider from "@/components/layout/MotionProvider";
+import RevealObserver from "@/components/layout/RevealObserver";
 import { getMergedSite, getMergedServices, getPublishedGuides } from "@/lib/sanity.queries";
 import { SITE_URL } from "@/lib/metadata";
 
@@ -158,6 +159,11 @@ export default async function RootLayout({
     >
       <head>
         <script
+          dangerouslySetInnerHTML={{
+            __html: "document.documentElement.classList.add('js')",
+          }}
+        />
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
@@ -169,6 +175,7 @@ export default async function RootLayout({
         >
           Skip to main content
         </a>
+        <RevealObserver />
         <MotionProvider>
         <SiteChrome
           site={{

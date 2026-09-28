@@ -35,13 +35,6 @@ interface Props {
   values: SanityValue[];
 }
 
-// Values block — staggered children so each element animates in sequence
-const valBlock = {
-  hidden: {},
-  visible: (i: number) => ({
-    transition: { staggerChildren: 0.1, delayChildren: i * 0.15 },
-  }),
-};
 const valNum = {
   hidden: { opacity: 0, x: -16 },
   visible: { opacity: 1, x: 0, transition: { duration: 0.45, ease: "easeOut" as const } },
@@ -107,14 +100,12 @@ export default function AboutPageContent({ site, about, values }: Props) {
         />
 
         <div className="relative z-20 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-40 pt-32">
-          <motion.p
-            className="section-label text-gold_light mb-4"
-            style={{ textShadow: "0 1px 4px rgba(0,0,0,0.5)" }}
-            initial={false} animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
+          <p
+              className="section-label text-gold_light mb-4"
+              style={{ textShadow: "0 1px 4px rgba(0,0,0,0.5)" }}
+            >
             {about.heroLabel}
-          </motion.p>
+          </p>
           <RevealText onMount delay={0.35}>
             <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-ivory">
               {site.name}
@@ -128,11 +119,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
 
-            <motion.div
-              initial={false}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.7 }}
+            <div data-reveal
             >
               <p className="section-label mb-4">{about.storyLabel}</p>
               <RevealText delay={0.1}>
@@ -144,7 +131,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
               <p className="font-jost text-charcoal/75 text-sm leading-relaxed mb-6">{about.paragraph1}</p>
               <p className="font-jost text-charcoal/75 text-sm leading-relaxed mb-6">{about.paragraph2}</p>
               <p className="font-jost text-charcoal/75 text-sm leading-relaxed">{about.paragraph3}</p>
-            </motion.div>
+            </div>
 
             <div className="relative lg:sticky lg:top-28">
               <div className="relative">
@@ -162,14 +149,10 @@ export default function AboutPageContent({ site, about, values }: Props) {
                     />
                   </div>
                 </RevealImage>
-                <motion.div
-                  className="absolute -bottom-3 -right-3 w-full h-full border border-gold/25 pointer-events-none"
-                  initial={false}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.95, duration: 0.5 }}
-                  aria-hidden="true"
-                />
+                <div data-reveal
+              className="absolute -bottom-3 -right-3 w-full h-full border border-gold/25 pointer-events-none"
+              aria-hidden="true"
+            />
               </div>
               <blockquote className="mt-10 border-l-2 border-gold pl-6">
                 <p className="font-cormorant italic text-charcoal text-xl lg:text-2xl leading-snug">
@@ -184,27 +167,17 @@ export default function AboutPageContent({ site, about, values }: Props) {
       {/* ── VALUES ────────────────────────────────────────────── */}
       <section className="bg-blush py-14 lg:py-20 px-6" aria-labelledby="values-heading">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            className="mb-8"
-            initial={false}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6 }}
-          >
+          <div data-reveal
+              className="mb-8"
+            >
             <h2 id="values-heading" className="section-label text-base">{about.valuesLabel}</h2>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14">
             {values.map((value, i) => (
-              <motion.div
-                key={value._id}
-                custom={i}
-                initial={false}
-                whileInView="visible"
-                variants={valBlock}
-                viewport={{ once: true, margin: "-60px" }}
-                whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}
-              >
+              <div data-reveal
+              key={value._id}
+            >
                 <motion.p
                   variants={valNum}
                   className="font-cormorant text-gold_ink/40 text-5xl font-light mb-2 leading-none"
@@ -224,7 +197,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
                 <motion.p variants={valText} className="font-jost text-charcoal/75 text-sm leading-relaxed">
                   {value.description}
                 </motion.p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -233,12 +206,8 @@ export default function AboutPageContent({ site, about, values }: Props) {
       {/* ── WHY INDEPENDENT ───────────────────────────────────── */}
       <section className="bg-near_black py-16 lg:py-24 px-6" aria-labelledby="independent-heading">
         <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={false}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.7 }}
-          >
+          <div data-reveal
+            >
             <p className="section-label text-gold/70 mb-6">{about.independenceLabel}</p>
             <div className="w-12 h-px bg-gold mx-auto mb-10" aria-hidden="true" />
             <RevealText delay={0.15}>
@@ -253,7 +222,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
               &ldquo;{about.independenceQuote}&rdquo;
             </blockquote>
             <p className="font-jost font-medium text-gold text-xs tracking-[0.22em] uppercase mt-10">— {site.name}</p>
-          </motion.div>
+          </div>
         </div>
       </section>
 

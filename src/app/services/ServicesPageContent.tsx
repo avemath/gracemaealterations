@@ -101,7 +101,8 @@ export default function ServicesPageContent({ services, page, availability }: Pr
         />
 
         <div className="relative z-20 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-14 pt-36 lg:pt-44">
-          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+          <div
+            >
             <p className="section-label text-gold_dark mb-4">{page.heroLabel}</p>
             <RevealText onMount delay={0.2}>
               <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-charcoal mb-5">
@@ -109,7 +110,7 @@ export default function ServicesPageContent({ services, page, availability }: Pr
             </h1>
             </RevealText>
             <div className="w-12 h-px bg-gold" aria-hidden="true" />
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -123,12 +124,8 @@ export default function ServicesPageContent({ services, page, availability }: Pr
             aria-labelledby={`${service.id}-heading`}
           >
             <div className="max-w-5xl mx-auto">
-              <motion.div
-                initial={false}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.6 }}
-              >
+              <div data-reveal
+            >
                 <p
                   className="font-cormorant text-gold_ink/25 font-light leading-none mb-3"
                   style={{ fontSize: "5rem" }}
@@ -248,7 +245,7 @@ export default function ServicesPageContent({ services, page, availability }: Pr
                     </div>
                   </>
                 )}
-              </motion.div>
+              </div>
             </div>
           </section>
         ))}
@@ -257,12 +254,8 @@ export default function ServicesPageContent({ services, page, availability }: Pr
       {/* ── HOW PRICING WORKS ─────────────────────────────────── */}
       <section className="bg-near_black py-14 lg:py-20 px-6" aria-labelledby="pricing-heading">
         <div className="max-w-5xl mx-auto">
-          <motion.div
-            initial={false}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6 }}
-          >
+          <div data-reveal
+            >
             <p className="section-label text-gold/70 mb-4">{page.pricingLabel}</p>
             <h2 id="pricing-heading" className="font-cormorant italic text-[clamp(2rem,3.5vw,3.25rem)] leading-[1.1] text-ivory mb-4">
               {page.pricingHeading}
@@ -271,21 +264,17 @@ export default function ServicesPageContent({ services, page, availability }: Pr
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-px bg-ivory/10">
               {page.pricingCards.map((card, i) => (
-                <motion.div
-                  key={i}
-                  className="bg-near_black p-8 lg:p-10 border-t border-ivory/10 md:border-t-0"
-                  initial={false}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-60px" }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
-                >
+                <div data-reveal
+              key={i}
+              className="bg-near_black p-8 lg:p-10 border-t border-ivory/10 md:border-t-0"
+            >
                   <div className="w-6 h-px bg-gold mb-5" aria-hidden="true" />
                   <h3 className="font-cormorant text-ivory text-xl mb-3">{card.title}</h3>
                   <p className="font-jost text-ivory/50 text-sm leading-relaxed">{card.body}</p>
-                </motion.div>
+                </div>
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 

@@ -99,15 +99,6 @@ const ArrowRight = () => (
   </svg>
 );
 
-// ── Animation variants ────────────────────────────────────────
-const fadeUp = {
-  hidden: { opacity: 0, y: 28 },
-  visible: (i: number) => ({
-    opacity: 1, y: 0,
-    transition: { duration: 0.7, delay: i * 0.13, ease: "easeOut" as const },
-  }),
-};
-
 export default function HomePageContent({ data }: { data: HomePageData }) {
   const { site, heroImage, services, instagram, portfolioItems, bio, aboutSecondaryImage, testimonials, text } = data;
 
@@ -173,9 +164,11 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
           <div className="min-h-screen flex items-center">
             <div className="w-full lg:max-w-[520px] py-32 lg:py-0">
 
-              <motion.p className="section-label mb-5" custom={0} initial={false} animate="visible" variants={fadeUp}>
+              <p data-reveal
+              className="section-label mb-5"
+            >
                 Pittsburgh bridal alterations &amp; tailoring
-              </motion.p>
+              </p>
 
               <AvailabilityPill
                 limitedMode={site.limitedMode}
@@ -191,24 +184,24 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                 </h1>
               </RevealText>
 
-              <motion.div
-                className="w-12 h-px bg-gold my-8"
-                custom={2} initial={false} animate="visible" variants={fadeUp}
-                aria-hidden="true"
-              />
+              <div data-reveal
+              className="w-12 h-px bg-gold my-8"
+              aria-hidden="true"
+            />
 
-              <motion.p
-                className="font-jost text-charcoal/75 text-base lg:text-lg max-w-sm mb-10 leading-relaxed"
-                custom={3} initial={false} animate="visible" variants={fadeUp}
-              >
+              <p data-reveal
+              className="font-jost text-charcoal/75 text-base lg:text-lg max-w-sm mb-10 leading-relaxed"
+            >
                 A formally trained designer and former Lead Alterations Specialist at
                 David&rsquo;s Bridal, fitting one client at a time.
-              </motion.p>
+              </p>
 
-              <motion.div className="flex flex-wrap gap-4" custom={5} initial={false} animate="visible" variants={fadeUp}>
+              <div data-reveal
+              className="flex flex-wrap gap-4"
+            >
                 <Button variant="gold" href={primary.href}>{primary.label}</Button>
                 <Button variant="outline" href={secondary.href}>{secondary.label}</Button>
-              </motion.div>
+              </div>
 
             </div>
           </div>
@@ -216,20 +209,17 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
 
 
         {/* Scroll indicator — desktop only */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden lg:flex flex-col items-center gap-2"
-          initial={false}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.8, duration: 0.6 }}
-          aria-hidden="true"
-        >
+        <div data-reveal
+              className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden lg:flex flex-col items-center gap-2"
+              aria-hidden="true"
+            >
           <span className="font-jost text-[0.6rem] tracking-[0.25em] uppercase text-charcoal/75">Scroll</span>
           <motion.div
             className="w-px h-8 bg-gold/50"
             animate={{ scaleY: [1, 0.3, 1], opacity: [0.4, 1, 0.4] }}
             transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
           />
-        </motion.div>
+        </div>
       </section>
 
       {/* ── TRUST STRIP ───────────────────────────────────────── */}
@@ -259,30 +249,22 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
       {/* ── SERVICES PREVIEW ──────────────────────────────────── */}
       <section className="bg-near_black py-16 lg:py-24 px-6" aria-labelledby="services-preview-heading">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            className="text-center mb-14"
-            initial={false}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6 }}
-          >
+          <div data-reveal
+              className="text-center mb-14"
+            >
             <p className="section-label text-gold/70 mb-3">{text.servicesLabel}</p>
             <h2 id="services-preview-heading" className="font-cormorant italic text-[clamp(2rem,3.5vw,3.25rem)] leading-[1.1] text-ivory">{text.servicesHeading}</h2>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-ivory/10">
             {services.map((service, i) => {
               const Icon = SERVICE_ICONS[i] ?? BridalIcon;
               return (
-                <motion.article
-                  key={service._id}
-                  className="group relative bg-near_black p-8 lg:p-10 flex flex-col overflow-hidden transition-all duration-400 min-h-[22rem]"
-                  initial={false}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-60px" }}
-                  transition={{ duration: 0.6, delay: i * 0.12 }}
-                  whileHover={{ y: -6, transition: { duration: 0.3 } }}
-                >
+                <article data-reveal
+              key={service._id}
+              style={{ "--reveal-delay": `${i * 60}ms` } as React.CSSProperties}
+              className="group relative bg-near_black p-8 lg:p-10 flex flex-col overflow-hidden transition-all duration-400 min-h-[22rem]"
+            >
                   {service.cardImage && (
                     <div className="absolute inset-0" aria-hidden="true">
                       <SanityImage
@@ -342,7 +324,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                       </motion.span>
                     </Link>
                   </div>
-                </motion.article>
+                </article>
               );
             })}
           </div>
@@ -353,20 +335,12 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
       <section className="bg-ivory py-16 lg:py-24 px-6" aria-labelledby="portfolio-preview-heading">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-end justify-between mb-10">
-            <motion.div
-              initial={false}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.6 }}
+            <div data-reveal
             >
               <p className="section-label mb-3">{text.portfolioLabel}</p>
               <h2 id="portfolio-preview-heading" className="font-cormorant italic text-[clamp(2rem,3.5vw,3.25rem)] leading-[1.1] text-charcoal">{text.portfolioHeading}</h2>
-            </motion.div>
-            <motion.div
-              initial={false}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+            </div>
+            <div data-reveal
               className="hidden sm:block"
             >
               <Link
@@ -375,20 +349,16 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               >
                 View All <ArrowRight />
               </Link>
-            </motion.div>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-3">
             {previewItems.map((item, i) => (
-              <motion.div
-                key={item._id}
-                className="group relative overflow-hidden cursor-pointer"
-                style={{ paddingBottom: "133.33%" }}
-                initial={false}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-              >
+              <div data-reveal
+              key={item._id}
+              className="group relative overflow-hidden cursor-pointer"
+              style={{ paddingBottom: "133.33%", "--reveal-delay": `${i * 60}ms` } as React.CSSProperties}
+            >
                 <div className="absolute inset-0">
                   <SanityImage
                     image={item.image}
@@ -407,19 +377,15 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                   )}
                   <div className="w-6 h-px bg-gold mt-2" aria-hidden="true" />
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
 
-          <motion.div
-            className="text-center mt-8 sm:hidden"
-            initial={false}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
+          <div data-reveal
+              className="text-center mt-8 sm:hidden"
+            >
             <Button variant="outline" href="/portfolio">View Full Portfolio</Button>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -446,21 +412,13 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                   placeholderRatio="tall"
                 />
               </RevealImage>
-              <motion.div
-                className="absolute -bottom-3 -right-3 w-full h-full border border-gold/30 pointer-events-none"
-                initial={false}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.75, duration: 0.5 }}
-                aria-hidden="true"
-              />
+              <div data-reveal
+              className="absolute -bottom-3 -right-3 w-full h-full border border-gold/30 pointer-events-none"
+              aria-hidden="true"
+            />
             </div>
 
-            <motion.div
-              initial={false}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.7, delay: 0.2 }}
+            <div data-reveal
             >
               <p className="section-label mb-6">{text.aboutTeaserLabel}</p>
               <div className="w-12 h-px bg-gold mb-8" aria-hidden="true" />
@@ -480,7 +438,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                 Read Grace&rsquo;s story
                 <span className="transition-transform duration-300 group-hover:translate-x-1"><ArrowRight /></span>
               </Link>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -488,24 +446,16 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
       {/* ── TESTIMONIALS ──────────────────────────────────────── */}
       <section className="bg-ivory py-16 lg:py-24 px-6 overflow-hidden" aria-labelledby="testimonials-heading">
         <div className="max-w-4xl mx-auto">
-          <motion.div
-            className="text-center mb-14"
-            initial={false}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6 }}
-          >
+          <div data-reveal
+              className="text-center mb-14"
+            >
             <p className="section-label mb-3">{text.testimonialsLabel}</p>
             <h2 id="testimonials-heading" className="font-cormorant italic text-[clamp(2rem,3.5vw,3.25rem)] leading-[1.1] text-charcoal">{text.testimonialsHeading}</h2>
-          </motion.div>
-          <motion.div
-            initial={false}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-          >
+          </div>
+          <div data-reveal
+            >
             <TestimonialCarousel testimonials={testimonials} />
-          </motion.div>
+          </div>
         </div>
       </section>
 

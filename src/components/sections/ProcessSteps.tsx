@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { motion, useScroll, useMotionValueEvent } from "framer-motion";
+import { useScroll, useMotionValueEvent } from "framer-motion";
 import Link from "next/link";
 
 export interface ProcessStep {
@@ -18,15 +18,6 @@ interface ProcessStepsProps {
   ctaHref: string;
   steps: ProcessStep[];
 }
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.55, delay: i * 0.08, ease: "easeOut" as const },
-  }),
-};
 
 // ── Thread path ────────────────────────────────────────────────────────────
 //
@@ -225,13 +216,9 @@ export default function ProcessSteps({
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
-        <motion.div
-          className="text-center mb-14 lg:mb-20"
-          initial={false}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.65 }}
-        >
+        <div data-reveal
+              className="text-center mb-14 lg:mb-20"
+            >
           <p className="section-label text-gold/70 mb-4">{sectionLabel}</p>
           <h2
             id="process-heading"
@@ -240,7 +227,7 @@ export default function ProcessSteps({
             {heading}
           </h2>
           <div className="w-12 h-px bg-gold mx-auto" aria-hidden="true" />
-        </motion.div>
+        </div>
 
         <div ref={gridRef}>
 
@@ -248,17 +235,12 @@ export default function ProcessSteps({
           <div className="hidden md:block relative">
             <div className="grid grid-cols-3 gap-px bg-ivory/8">
               {steps.map((step, i) => (
-                <motion.div
-                  key={i}
-                  custom={i}
-                  initial={false}
-                  whileInView="visible"
-                  variants={fadeUp}
-                  viewport={{ once: true, margin: "-40px" }}
-                  className="group relative bg-near_black p-8 lg:p-10 flex flex-col gap-4 cursor-default transition-colors duration-300 hover:bg-ivory/[0.04]"
-                  onMouseEnter={() => setHovered(i)}
-                  onMouseLeave={() => setHovered(null)}
-                >
+                <div data-reveal
+              key={i}
+              className="group relative bg-near_black p-8 lg:p-10 flex flex-col gap-4 cursor-default transition-colors duration-300 hover:bg-ivory/[0.04]"
+              onMouseEnter={() => setHovered(i)}
+              onMouseLeave={() => setHovered(null)}
+            >
                   <p
                     className="font-cormorant font-light leading-none transition-colors duration-400"
                     style={{
@@ -291,7 +273,7 @@ export default function ProcessSteps({
                   <p className="font-jost text-ivory/45 text-sm leading-relaxed">
                     {step.body}
                   </p>
-                </motion.div>
+                </div>
               ))}
             </div>
 
@@ -430,15 +412,10 @@ export default function ProcessSteps({
 
             <div className="space-y-10">
               {steps.map((step, i) => (
-                <motion.div
-                  key={i}
-                  custom={i}
-                  initial={false}
-                  whileInView="visible"
-                  variants={fadeUp}
-                  viewport={{ once: true, margin: "-30px" }}
-                  className="relative"
-                >
+                <div data-reveal
+              key={i}
+              className="relative"
+            >
                   <div
                     className="absolute -left-10 top-1 w-2.5 h-2.5 rounded-full bg-gold/40 ring-4 ring-near_black"
                     aria-hidden="true"
@@ -455,7 +432,7 @@ export default function ProcessSteps({
                   </div>
                   <h3 className="font-cormorant italic text-ivory text-xl mb-2">{step.title}</h3>
                   <p className="font-jost text-ivory/45 text-sm leading-relaxed">{step.body}</p>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>
@@ -463,20 +440,16 @@ export default function ProcessSteps({
         </div>
 
         {/* CTA */}
-        <motion.div
-          className="text-center mt-14 lg:mt-16"
-          initial={false}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
+        <div data-reveal
+              className="text-center mt-14 lg:mt-16"
+            >
           <p className="font-jost text-ivory/60 text-sm tracking-[0.18em] uppercase mb-6">
             {ctaText}
           </p>
           <Link href={ctaHref} className="btn-outline-ivory">
             {ctaLabel}
           </Link>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
