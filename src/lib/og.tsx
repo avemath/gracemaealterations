@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import sharp from "sharp";
 import { readFileSync } from "fs";
 import { join } from "path";
 
@@ -7,6 +8,8 @@ export const OG_SIZE = { width: 1200, height: 630 };
 const IVORY = "#FAF7F2";
 const CHARCOAL = "#1C1C1C";
 const GOLD = "#C9A84C";
+// Gold text on ivory fails contrast; the eyebrow uses gold_ink like the site.
+const GOLD_INK = "#7A5F1E";
 
 /** Pull one Google font file out of the CSS the API returns. */
 async function loadFont(family: string): Promise<ArrayBuffer | null> {
@@ -64,7 +67,7 @@ export async function ogCard({
   // Long headlines need to step down a size to stay on two lines.
   const fontSize = headline.length > 26 ? 68 : headline.length > 16 ? 88 : 112;
 
-  return new ImageResponse(
+  const card = new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", background: IVORY, display: "flex", position: "relative" }}>
         {background && (
@@ -109,7 +112,7 @@ export async function ogCard({
               fontSize: "14px",
               letterSpacing: "0.22em",
               textTransform: "uppercase",
-              color: GOLD,
+              color: GOLD_INK,
               marginBottom: "26px",
             }}
           >
@@ -155,4 +158,20 @@ export async function ogCard({
       ],
     }
   );
+
+  return toJpeg(card);
+}
+
+/**
+ * ImageResponse only emits PNG, and a PNG of a photograph came out at about
+ * 960 KB per card. WhatsApp and several other link previewers skip images
+ * over roughly 300 KB, so the card is re-encoded as a JPEG (about 100 KB).
+ */
+async function toJpeg(png: Response): Promise<Response> {
+  const jpeg = await sharp(Buffer.from(await png.arrayBuffer()))
+    .jpeg({ quality: 82, mozjpeg: true })
+    .toBuffer();
+  return new Response(new Uint8Array(jpeg), {
+    headers: { "Content-Type": "image/jpeg", "Cache-Control": "public, max-age=3600" },
+  });
 }

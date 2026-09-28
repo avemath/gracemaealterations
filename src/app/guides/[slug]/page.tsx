@@ -7,7 +7,7 @@ import {
   getPublishedGuides,
   getPublishedBustleStyles,
 } from "@/lib/sanity.queries";
-import { pageMetadata, SITE_URL } from "@/lib/metadata";
+import { pageMetadata, SITE_URL, FALLBACK_OG_IMAGE } from "@/lib/metadata";
 import SanityImage from "@/components/ui/SanityImage";
 
 export const revalidate = 60;
@@ -28,6 +28,7 @@ export async function generateMetadata({
     path: `/guides/${guide.slug}`,
     title: guide.seo?.title ?? `${guide.title} | Grace Mae`,
     description: guide.seo?.description ?? guide.summary ?? "",
+    image: FALLBACK_OG_IMAGE,
   });
 }
 
