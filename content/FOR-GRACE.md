@@ -85,6 +85,8 @@ These are live on the site now and disagree with each other or with the house st
   - **Content, then Site Settings, then Response Time Note**
   - **Content, then Home Page, then Process steps, then the first step**
   - **Content, then Contact Page, then Success message**
+
+  Or ask me to run `npm run copy:response-time`, which does all three in one go.
 - **"Calling ahead".** The FAQ "How far in advance should I book?" suggests calling ahead, but there is no phone number, and it tells brides to book as soon as they have their dress while bridal is a waitlist. At **Content, then FAQ**.
 - **Long dashes.** Several paragraphs use a long dash (the About story, some service descriptions, several FAQ answers, the process steps). A comma, colon or full stop reads cleaner and matches the rest of the site.
 - **"I'm currently fully booked."** At **Content, then Contact Page, then Waitlist banner bold**. It only shows if the whole site is ever switched to waitlist, but tailoring is open, so it would say the wrong thing today.
