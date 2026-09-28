@@ -10,7 +10,7 @@
 import { spawn, execFile } from "child_process";
 import { existsSync, mkdirSync, readFileSync, readdirSync } from "fs";
 import { join } from "path";
-import { homedir } from "os";
+import { homedir, tmpdir } from "os";
 import { promisify } from "util";
 
 /** Lighthouse needs a Chrome binary; reuse the one Playwright downloaded. */
@@ -78,7 +78,9 @@ try {
         "--output=json",
         `--output-path=./${file}`,
         "--quiet",
-        '--chrome-flags=--headless=new --no-sandbox',
+        // Without an explicit user-data-dir, Chrome writes its profile into
+        // the working directory, which once put 1,993 files into a commit.
+        `--chrome-flags=--headless=new --no-sandbox --user-data-dir=${tmpdir()}/lh-profile`,
       ];
       // The mobile preset is Lighthouse's default; only desktop needs the flag.
       if (preset === "desktop") args.push("--preset=desktop");
