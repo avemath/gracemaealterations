@@ -5,7 +5,6 @@ import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import SanityImage from "@/components/ui/SanityImage";
 import CTABanner from "@/components/sections/CTABanner";
-import PriceTable from "@/components/ui/PriceTable";
 import ExampleQuotes from "@/components/sections/ExampleQuotes";
 import { ctas } from "@/lib/cta";
 import type {
@@ -188,9 +187,7 @@ export default function ServicesPageContent({ services, page, availability }: Pr
                     <p className="font-cormorant font-medium text-charcoal leading-none mb-2 lining-nums text-[1.5rem]">
                       {service.priceRange}
                     </p>
-                    <p className="font-jost text-charcoal/75 text-xs mb-6">{service.priceNote}</p>
-
-                    <PriceTable rows={service.priceTable ?? []} />
+                    <p className="font-jost text-charcoal/75 text-xs">{service.priceNote}</p>
 
                     {service.typicalTimeline && (
                       <p className="mt-6 font-jost text-charcoal/75 text-sm leading-[1.65]">

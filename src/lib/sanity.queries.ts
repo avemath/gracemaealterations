@@ -152,12 +152,6 @@ export interface SanityContactPage {
   waitlistSuccessMessage?: string;
 }
 
-export interface SanityPriceRow {
-  item: string;
-  from?: number | null;
-  note?: string | null;
-}
-
 export interface SanityExampleQuote {
   gown: string;
   work: string;
@@ -176,7 +170,6 @@ export interface SanityService {
   priceNote: string;
   freeConsult?: string;
   cardImage?: SanityImage | null;
-  priceTable?: SanityPriceRow[] | null;
   typicalTimeline?: string | null;
 }
 
@@ -298,7 +291,6 @@ export async function getServices(): Promise<SanityService[] | null> {
     _id, title, "id": slug.current, icon,
     shortDescription, description, services,
     priceRange, priceNote, freeConsult,
-    priceTable[]{ item, from, note },
     typicalTimeline,
     cardImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop }
   }`);
@@ -681,7 +673,6 @@ export async function getMergedServices() {
     priceNote: svc.priceNote,
     freeConsult: svc.freeConsult,
     cardImage: null,
-    priceTable: null,
     typicalTimeline: null,
   }));
 }

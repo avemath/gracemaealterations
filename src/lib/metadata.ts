@@ -57,7 +57,7 @@ export const PAGE_META: Record<string, PageMeta> = {
     path: "/services",
     title: "Wedding Dress Alterations & Prices | Pittsburgh | Grace Mae",
     description:
-      "Hems, bustles, bodice work and everyday tailoring in Pittsburgh, with typical prices and timelines.",
+      "Hems, bustles, bodice work and everyday tailoring in Pittsburgh, with price ranges and typical timelines.",
   },
   portfolio: {
     path: "/portfolio",
