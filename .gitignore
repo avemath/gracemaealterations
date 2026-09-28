@@ -42,3 +42,6 @@ assets/prepared/
 /lighthouse/
 /test-results/
 /playwright-report/
+
+# lighthouse chrome profiles (WSL writes these with Windows-style names)
+C:\\*
