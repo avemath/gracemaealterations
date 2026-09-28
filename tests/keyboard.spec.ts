@@ -32,15 +32,22 @@ test.describe("keyboard", () => {
     const dialog = page.getByRole("dialog", { name: /mobile navigation/i });
     await expect(dialog).toBeVisible();
 
-    // Tab all the way round; focus must stay inside the dialog.
+    // Tab all the way round; focus must stay inside the dialog or on its own
+    // close button in the header, and the close button must be reachable.
+    let reachedClose = false;
     for (let i = 0; i < 12; i++) {
       await page.keyboard.press("Tab");
-      const insideDialog = await page.evaluate(() => {
+      const where = await page.evaluate(() => {
         const dlg = document.querySelector('[role="dialog"]');
-        return !!dlg && !!document.activeElement && dlg.contains(document.activeElement);
+        const el = document.activeElement;
+        if (!dlg || !el) return "out";
+        if (dlg.contains(el)) return "in";
+        return el.getAttribute("aria-label") === "Close menu" ? "close" : "out";
       });
-      expect(insideDialog, `focus escaped the dialog on tab ${i + 1}`).toBe(true);
+      if (where === "close") reachedClose = true;
+      expect(where, `focus escaped the dialog on tab ${i + 1}`).not.toBe("out");
     }
+    expect(reachedClose, "Tab never reached the close button").toBe(true);
 
     await page.keyboard.press("Escape");
     await expect(dialog).toBeHidden();

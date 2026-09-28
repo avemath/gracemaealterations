@@ -15,18 +15,25 @@ type MediaType = (typeof MEDIA_TYPES)[number];
 
 // ── Abuse limits ─────────────────────────────────────────────────────────────
 // Each check costs a few cents, so: six per connection per hour, only from this
-// site's own pages, and nothing at all unless the key is configured.
+// site's own pages, and nothing at all unless the key is configured. The
+// Origin header can be faked by a script, so there is also a ceiling on all
+// checks per hour, and the Anthropic key should carry its own spend limit.
 const RATE_LIMIT = 6;
+const HOURLY_CEILING = 60;
 const RATE_WINDOW_MS = 60 * 60 * 1000;
 const hits = new Map<string, number[]>();
+let all: number[] = [];
 
 function rateLimited(ip: string): boolean {
   const now = Date.now();
+  all = all.filter((t) => now - t < RATE_WINDOW_MS);
   const recent = (hits.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
+  if (recent.length >= RATE_LIMIT || all.length >= HOURLY_CEILING) return true;
   recent.push(now);
+  all.push(now);
   hits.set(ip, recent);
   if (hits.size > 5000) hits.clear();
-  return recent.length > RATE_LIMIT;
+  return false;
 }
 
 function allowedOrigin(origin: string | null): boolean {
@@ -38,7 +45,8 @@ function allowedOrigin(origin: string | null): boolean {
       host === "www.gracemaealterations.com" ||
       host === "localhost" ||
       host === "127.0.0.1" ||
-      host.endsWith(".vercel.app")
+      // This project's own previews only, not every site on vercel.app.
+      /^site-[a-z0-9-]+-averymatherne-2588s-projects\.vercel\.app$/.test(host)
     );
   } catch {
     return false;
@@ -116,7 +124,7 @@ export async function POST(req: NextRequest) {
   }
   const serviceType = typeof body.serviceType === "string" ? body.serviceType : "";
 
-  const client = new Anthropic({ timeout: 50_000, maxRetries: 1 });
+  const client = new Anthropic({ timeout: 50_000, maxRetries: 0 });
 
   try {
     const response = await client.beta.messages.create({

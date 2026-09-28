@@ -4,6 +4,9 @@ export const SITE_URL = "https://gracemaealterations.com";
 export const SITE_NAME = "Grace Mae Alterations";
 
 /** The home share card, for routes with no opengraph-image of their own. */
+/** The landing pages allowed at the site root (/[slug]); the sitemap lists only these. */
+export const LANDING_SLUGS = ["david-s-bridal-dress-alterations", "bridal-party-alterations"];
+
 export const FALLBACK_OG_IMAGE = "/opengraph-image";
 
 interface PageMeta {
@@ -78,3 +81,21 @@ export const PAGE_META: Record<string, PageMeta> = {
       "Send photos and details and I'll reply personally. Tailoring and repairs open now in Pittsburgh.",
   },
 };
+
+/**
+ * JSON-LD for a <script> tag. Text from Sanity goes in here, so "<" is escaped:
+ * a title containing "</script>" can't end the tag and run as page script.
+ */
+export function jsonLdHtml(data: unknown): string {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
+/** Shortens text for a meta description at a word boundary, never mid-word. */
+export function shortDescription(text: string | undefined, max = 155): string {
+  const t = (text ?? "").replace(/\s+/g, " ").trim();
+  if (t.length <= max) return t;
+  const cut = t.slice(0, max - 1);
+  const sentence = cut.lastIndexOf(". ");
+  if (sentence > max * 0.6) return cut.slice(0, sentence + 1);
+  return cut.slice(0, cut.lastIndexOf(" ")).replace(/[,;:]$/, "") + "…";
+}

@@ -7,7 +7,7 @@ import {
   getPublishedGuides,
   getPublishedBustleStyles,
 } from "@/lib/sanity.queries";
-import { pageMetadata, SITE_URL, FALLBACK_OG_IMAGE } from "@/lib/metadata";
+import { pageMetadata, SITE_URL, FALLBACK_OG_IMAGE, jsonLdHtml } from "@/lib/metadata";
 import SanityImage from "@/components/ui/SanityImage";
 import BustleExplorer from "@/components/sections/BustleExplorer";
 import FittingChecklist, { type ChecklistItem } from "@/components/sections/FittingChecklist";
@@ -83,6 +83,7 @@ export default async function GuidePage({ params }: { params: { slug: string } }
         headline: guide.title,
         description: guide.summary,
         mainEntityOfPage: `${SITE_URL}/guides/${guide.slug}`,
+        ...(guide._createdAt && { datePublished: guide._createdAt }),
         dateModified: guide._updatedAt,
         author: { "@type": "Person", name: "Grace Mae" },
         publisher: { "@id": `${SITE_URL}/#business` },
@@ -92,13 +93,13 @@ export default async function GuidePage({ params }: { params: { slug: string } }
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }} />
 
       <article>
         <section className="bg-near_black" aria-label="Guide hero">
           <div className="max-w-3xl mx-auto px-6 lg:px-12 pt-36 lg:pt-44 pb-14">
             <nav aria-label="Breadcrumb" className="mb-6">
-              <Link href="/guides" className="section-label text-gold hover:text-gold_light transition-colors">
+              <Link href="/guides" className="inline-block py-2 section-label text-gold hover:text-gold_light transition-colors">
                 Guides
               </Link>
             </nav>
@@ -159,7 +160,9 @@ export default async function GuidePage({ params }: { params: { slug: string } }
               </ol>
             )}
 
-            {bustleStyles.length > 0 && (
+            {/* The explorer above already carries every style's details; the
+                cards only earn their place once there are real photos. */}
+            {bustleStyles.some((style) => style.image) && (
               <div className="mt-14 border-t border-blush pt-10">
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                   {bustleStyles.map((style) => (

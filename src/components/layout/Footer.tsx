@@ -21,6 +21,8 @@ const InstagramIcon = () => (
 export interface GuideLink {
   title: string;
   slug: string;
+  /** Defaults to /guides/<slug>; landing pages live at the root. */
+  href?: string;
 }
 
 interface FooterProps {
@@ -105,7 +107,7 @@ export default function Footer({
               <ul>
                 {guides.map((guide) => (
                   <li key={guide.slug}>
-                    <Link href={`/guides/${guide.slug}`} className={`${linkClass} inline-block`}>
+                    <Link href={guide.href ?? `/guides/${guide.slug}`} className={`${linkClass} inline-block`}>
                       {guide.title}
                     </Link>
                   </li>
@@ -157,17 +159,18 @@ export default function Footer({
             &copy; {year} {businessName}. All rights reserved.
           </p>
           <nav aria-label="Footer navigation">
-            <ul className="flex flex-wrap gap-6">
+            <ul className="flex flex-wrap justify-center gap-x-5 gap-y-1">
               {[
                 { label: "Services", href: "/services" },
                 { label: "Portfolio", href: "/portfolio" },
+                ...(guides.some((g) => !g.href) ? [{ label: "Guides", href: "/guides" }] : []),
                 { label: "About", href: "/about" },
                 { label: "Contact", href: "/contact" },
               ].map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="font-jost text-xs tracking-[0.16em] uppercase text-ivory/75 hover:text-ivory transition-colors duration-300"
+                    className="inline-block py-2 font-jost text-xs tracking-[0.16em] uppercase text-ivory/75 hover:text-ivory transition-colors duration-300"
                   >
                     {link.label}
                   </Link>
