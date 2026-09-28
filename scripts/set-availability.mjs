@@ -85,7 +85,7 @@ const LIMITED = {
   limitedNote: `I'm home with our new baby, so for now I'm taking everyday tailoring and small repairs only. Bridal fittings reopen in ${BRIDAL_REOPENS}. If your wedding is in ${REOPEN_YEAR}, join the waitlist and you'll get first pick of fitting dates, in the order you joined. If your date is sooner, tell me anyway and I'll give you an honest answer, plus a referral if I can't take it.`,
   availability: `By Appointment. Bridal reopens ${BRIDAL_REOPENS}`,
   trustItems: TRUST_ITEMS,
-  responseTime: "I reply to every message within 2 business days, usually sooner.",
+  responseTime: "I read every message myself and reply as soon as I can.",
 };
 
 const OPEN = {
@@ -96,7 +96,7 @@ const OPEN = {
   limitedNote: "",
   availability: "Available by Appointment",
   trustItems: TRUST_ITEMS,
-  responseTime: "I reply to every message within 2 business days, usually sooner.",
+  responseTime: "I read every message myself and reply as soon as I can.",
 };
 
 const settings = mode === "limited" ? LIMITED : OPEN;

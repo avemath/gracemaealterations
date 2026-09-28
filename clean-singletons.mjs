@@ -64,7 +64,7 @@ await cleanReplace({
   instagramUrl: 'https://instagram.com/gracemaealterations',
   location: 'Pittsburgh, PA',
   availability: 'Available by Appointment',
-  responseTime: 'I respond to all inquiries within 24 hours.',
+  responseTime: 'I read every message myself and reply as soon as I can.',
   bookingNote: 'Now scheduling Spring & Summer 2026 consultations',
   phone: '',
   isAcceptingClients: true,
@@ -93,7 +93,7 @@ await cleanReplace({
   processHeading: 'What to Expect',
   processCTA: 'Ready to begin?',
   processSteps: [
-    { _key: 'ps0', title: 'Reach Out',          body: 'Fill out the contact form with a few details about your garment. I respond to every inquiry within 24 hours.' },
+    { _key: 'ps0', title: 'Reach Out',          body: 'Fill out the contact form with a few details about your garment. I read every message myself and reply as soon as I can.' },
     { _key: 'ps1', title: 'Free Consultation',   body: 'We look at the garment together. I assess what needs to be done and give you an honest, itemized quote. No commitment required.' },
     { _key: 'ps2', title: 'First Fitting',       body: 'I pin and mark every adjustment directly on you, so we both see exactly what changes before a single seam is cut.' },
     { _key: 'ps3', title: 'The Work',            body: 'I complete your alterations with full attention. For complex bridal gowns this may involve multiple stages of careful work.' },
@@ -174,7 +174,7 @@ await cleanReplace({
   waitlistBannerBold: "I'm currently fully booked.",
   waitlistBannerText: "Fill out the form below to join my waitlist — I'll reach out as soon as a spot opens up.",
   successHeading: 'Thank you.',
-  successMessage: "Your message has been received. Check your inbox — I've sent a confirmation with next steps. I'll follow up within 24 hours.",
+  successMessage: "Your message has been received. Check your inbox: I've sent a confirmation with next steps. I read every message myself and reply as soon as I can.",
   waitlistSuccessMessage: "You're on my waitlist. I'll reach out as soon as a spot opens up.",
 });
 

@@ -60,7 +60,7 @@ export const contactPage = defineType({
       type: "text",
       rows: 3,
       initialValue:
-        "Your message has been received. Check your inbox: I've sent a confirmation with next steps. I reply to every message within 2 business days, usually sooner.",
+        "Your message has been received. Check your inbox: I've sent a confirmation with next steps. I read every message myself and reply as soon as I can.",
     }),
     defineField({
       name: "waitlistSuccessMessage",

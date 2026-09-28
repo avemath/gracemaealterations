@@ -177,7 +177,7 @@ export const homePage = defineType({
         },
       ],
       initialValue: [
-        { _key: "ps0", title: "Reach Out",        body: "Fill out the contact form with a few details about your garment. I reply to every message within 2 business days, usually sooner." },
+        { _key: "ps0", title: "Reach Out",        body: "Fill out the contact form with a few details about your garment. I read every message myself and reply as soon as I can." },
         { _key: "ps1", title: "Free Consultation", body: "We look at the garment together. I assess what needs to be done and give you an honest, itemized quote. No commitment required." },
         { _key: "ps2", title: "First Fitting",     body: "I pin and mark every adjustment directly on you, so we both see exactly what changes before a single seam is cut." },
         { _key: "ps3", title: "The Work",          body: "I complete your alterations with full attention. For complex bridal gowns this may involve multiple stages of careful work." },

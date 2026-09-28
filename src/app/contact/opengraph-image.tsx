@@ -8,6 +8,6 @@ export const contentType = "image/jpeg";
 export default async function Image() {
   return ogCard({
     headline: "Let's talk",
-    tagline: "Send photos and details. I reply within 2 business days.",
+    tagline: "Send photos and details, and I'll reply personally.",
   });
 }

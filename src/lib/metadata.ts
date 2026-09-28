@@ -75,6 +75,6 @@ export const PAGE_META: Record<string, PageMeta> = {
     path: "/contact",
     title: "Book Tailoring or Join the 2027 Bridal Waitlist | Grace Mae",
     description:
-      "Send photos and details. I reply within 2 business days. Tailoring and repairs open now in Pittsburgh.",
+      "Send photos and details and I'll reply personally. Tailoring and repairs open now in Pittsburgh.",
   },
 };
