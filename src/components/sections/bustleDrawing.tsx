@@ -69,12 +69,12 @@ function pathOpacity(t: number) {
 export const STEPS: Record<BustleStyleId, [string, string, string]> = {
   american: [
     "Loops are sewn under the train.",
-    "Each loop is lifted up the back of the skirt…",
+    "One at a time, from the center, each loop is lifted up the skirt…",
     "…and hooked onto a button at the hip.",
   ],
   french: [
     "Ribbons are sewn under the train.",
-    "Each ribbon is tucked up underneath the skirt…",
+    "From the center out, each ribbon is tucked up underneath the skirt…",
     "…and tied to its partner inside.",
   ],
   austrian: [
@@ -146,6 +146,20 @@ function drapeLines(depth: number, hemHalf: number) {
 function spread(n: number, width: number, cx = CX) {
   if (n <= 1) return [cx];
   return Array.from({ length: n }, (_, i) => cx - width / 2 + (i * width) / (n - 1));
+}
+
+/**
+ * Real bustles are done one point at a time, from the center out, so each
+ * point gets its own slice of the timeline: the center is in place about
+ * halfway through and the outermost pair finishes last.
+ */
+function staggered(t: number, i: number, n: number) {
+  const mid = (n - 1) / 2;
+  const R = Math.floor(mid);
+  if (R === 0) return { move: phase(t, 0, 0.92), lift: phase(t, 0.08, 1) };
+  const r = Math.floor(Math.abs(i - mid));
+  const a = (0.45 * r) / R;
+  return { move: phase(t, a, a + 0.47), lift: phase(t, a + 0.08, a + 0.55) };
 }
 
 /**
@@ -225,7 +239,6 @@ export function BackView({
     const top = 238;
     const gap = n === 1 ? 60 : Math.min(30, 96 / (n - 1));
     const xs = spread(n, n === 1 ? 0 : gap * (n - 1));
-    const h = (34 + L * 0.5) * lift;
     const w = gap * 0.7 + 10;
     const anchors = [
       { x: CX - halfAt(top + 40, hemHalf) + 6, y: top + 40 },
@@ -254,6 +267,8 @@ export function BackView({
       .sort((a, b) => Math.abs(b - (n - 1) / 2) - Math.abs(a - (n - 1) / 2))
       .forEach((i) => {
         const x = xs[i];
+        const pl = staggered(t, i, n).lift;
+        const h = (34 + L * 0.5) * pl;
         overlay.push(
           <path
             key={`pouf-${i}`}
@@ -261,7 +276,7 @@ export function BackView({
             fill={`url(#${uid}-pouf)`}
             stroke={SHADE}
             strokeWidth={1}
-            opacity={Math.min(1, lift * 2)}
+            opacity={Math.min(1, pl * 2)}
           />,
           // Tension folds radiate from the hook down into the pouf.
           <path
@@ -270,16 +285,17 @@ export function BackView({
             fill="none"
             stroke={SHADE}
             strokeWidth={0.8}
-            opacity={Math.min(1, lift * 2) * 0.5}
+            opacity={Math.min(1, pl * 2) * 0.5}
           />
         );
       });
     xs.forEach((x, i) => {
       const start = { x, y: trainY(x, depth0, HEM_HALF) - 8 };
       const end = { x, y: top };
-      overlay.push(<circle key={`hook-${i}`} cx={f(x)} cy={top} r={3.4} fill={GOLD} opacity={0.5 + 0.5 * lift} />);
+      const s = staggered(t, i, n);
+      overlay.push(<circle key={`hook-${i}`} cx={f(x)} cy={top} r={3.4} fill={GOLD} opacity={0.5 + 0.5 * s.lift} />);
       movers.push(
-        <Mover key={`m-${i}`} id={`back-${i}`} uid={uid} t={t} hidden={false} from={start} to={end} u={move} />
+        <Mover key={`m-${i}`} id={`back-${i}`} uid={uid} t={t} hidden={false} from={start} to={end} u={s.move} />
       );
     });
   }
@@ -304,11 +320,13 @@ export function BackView({
     spread(n, Math.min(120, 34 * (n - 1))).forEach((x, i) => {
       const end = { x, y: top - 4 };
       const start = { x, y: trainY(x, depth0, HEM_HALF) - 8 };
+      const s = staggered(t, i, n);
       overlay.push(
-        <circle key={`tie-${i}`} cx={f(x)} cy={top - 4} r={4.2} fill="none" stroke={GOLD} strokeWidth={1.4} strokeDasharray="2.2 2" opacity={0.5 + 0.5 * lift} />
+        <circle key={`tie-${i}`} cx={f(x)} cy={top - 4} r={4.2} fill="none" stroke={GOLD} strokeWidth={1.4} strokeDasharray="2.2 2" opacity={0.5 + 0.5 * s.lift} />,
+        <TieNumber key={`num-${i}`} x={x} y={top - 13} n={tieNumber(i, n)} />
       );
       movers.push(
-        <Mover key={`m-${i}`} id={`back-${i}`} uid={uid} t={t} hidden from={start} to={end} u={move} />
+        <Mover key={`m-${i}`} id={`back-${i}`} uid={uid} t={t} hidden from={start} to={end} u={s.move} />
       );
     });
   }
@@ -363,15 +381,17 @@ export function BackView({
     const y = 364;
     const half = halfAt(y, hemHalf) * 0.86;
     spread(n, half * 2).forEach((x, i) => {
+      const s = staggered(t, i, n);
       const yi = y + 6 * (1 - Math.pow((x - CX) / half, 2));
       const start = { x, y: Math.max(yi + 16, trainY(x, depth0, HEM_HALF) - 6) };
       const end = { x, y: yi };
       overlay.push(
-        <path key={`fold-${i}`} d={`M${f(x)},${f(yi + 4)} q3,${f(14 * lift)} 0,${f(28 * lift)}`} fill="none" stroke={SHADE} strokeWidth={1.1} opacity={lift} />,
-        <circle key={`tie-${i}`} cx={f(x)} cy={f(yi)} r={3.8} fill="none" stroke={GOLD} strokeWidth={1.4} strokeDasharray="2.2 2" opacity={0.5 + 0.5 * lift} />
+        <path key={`fold-${i}`} d={`M${f(x)},${f(yi + 4)} q3,${f(14 * s.lift)} 0,${f(28 * s.lift)}`} fill="none" stroke={SHADE} strokeWidth={1.1} opacity={s.lift} />,
+        <circle key={`tie-${i}`} cx={f(x)} cy={f(yi)} r={3.8} fill="none" stroke={GOLD} strokeWidth={1.4} strokeDasharray="2.2 2" opacity={0.5 + 0.5 * s.lift} />,
+        <TieNumber key={`num-${i}`} x={x} y={yi - 9} n={tieNumber(i, n)} />
       );
       movers.push(
-        <Mover key={`m-${i}`} id={`back-${i}`} uid={uid} t={t} hidden from={start} to={end} u={move} />
+        <Mover key={`m-${i}`} id={`back-${i}`} uid={uid} t={t} hidden from={start} to={end} u={s.move} />
       );
     });
   }
@@ -434,6 +454,21 @@ export function BackView({
       {overlay}
       {movers}
     </g>
+  );
+}
+
+/** Ties are numbered from the center out, the order they're done in, like the labels sewn into real gowns. */
+function tieNumber(i: number, n: number) {
+  const mid = (n - 1) / 2;
+  const order = Array.from({ length: n }, (_, j) => j).sort((a, b) => Math.abs(a - mid) - Math.abs(b - mid) || a - b);
+  return order.indexOf(i) + 1;
+}
+
+function TieNumber({ x, y, n }: { x: number; y: number; n: number }) {
+  return (
+    <text x={f(x)} y={f(y)} textAnchor="middle" fontSize={8} fontFamily="Georgia, serif" fill={GOLD} opacity={0.9}>
+      {n}
+    </text>
   );
 }
 
@@ -735,6 +770,10 @@ export function SideView({
   return (
     <g>
       <SideBase uid={uid} under={inside ? fabric : undefined} />
+      {!inside && style === "american" && (
+        // A soft shadow where the pouf stands off the skirt.
+        <path d={fabric} transform="translate(3 5)" fill="#000" opacity={f(0.14 * settle)} />
+      )}
       {!inside && (
         <path d={fabric} fill={`url(#${uid}-${style === "american" ? "pouf" : "silk-side"})`} stroke={SHADE} strokeWidth={1} />
       )}
