@@ -6,7 +6,14 @@ import SiteChrome from "@/components/layout/SiteChrome";
 import StickyMobileCTA from "@/components/layout/StickyMobileCTA";
 import StickyDesktopCTA from "@/components/layout/StickyDesktopCTA";
 import MotionProvider from "@/components/layout/MotionProvider";
-import { getMergedSite } from "@/lib/sanity.queries";
+import { getMergedSite, getMergedServices } from "@/lib/sanity.queries";
+import { SITE_URL } from "@/lib/metadata";
+
+/** First dollar figure in a range like "$75 – $450+", or null when quoted. */
+function minPrice(range?: string): number | null {
+  const match = range?.match(/\$\s?([\d,]+)/);
+  return match ? Number(match[1].replace(/,/g, "")) : null;
+}
 
 // ── FONTS ─────────────────────────────────────────────────────
 const cormorant = Cormorant_Garamond({
@@ -34,16 +41,6 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s | ${site.businessName}`,
     },
     description: site.metaDescription,
-    keywords: [
-      "bridal alterations Pittsburgh",
-      "wedding dress alterations Pittsburgh PA",
-      "seamstress Pittsburgh",
-      "clothing alterations Pittsburgh",
-      "tailoring Pittsburgh",
-      "bridal seamstress Pittsburgh",
-      "wedding gown alterations",
-      "dress alterations Pittsburgh",
-    ],
     openGraph: {
       type: "website",
       locale: "en_US",
@@ -71,95 +68,82 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const site = await getMergedSite();
+  const [site, services] = await Promise.all([getMergedSite(), getMergedServices()]);
 
-  // ── LOCAL BUSINESS STRUCTURED DATA (JSON-LD) ─────────────────
-  // Street address intentionally omitted — home-based, appointment-only business.
+  // ── STRUCTURED DATA (one @graph) ─────────────────────────────
+  // Street address intentionally omitted: home based, appointment only.
+  // No telephone: the contact form is the only channel.
+  const GBP_URL = "";
+  const BUSINESS_ID = `${SITE_URL}/#business`;
+
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "@id": "https://gracemaealterations.com/#business",
-    name: site.businessName,
-    alternateName: site.name,
-    description: site.metaDescription,
-    url: "https://gracemaealterations.com",
-    email: site.email,
-    image: "https://gracemaealterations.com/opengraph-image",
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Pittsburgh",
-      addressRegion: "PA",
-      addressCountry: "US",
-    },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: "40.4406",
-      longitude: "-79.9959",
-    },
-    areaServed: [
-      { "@type": "City", name: "Pittsburgh" },
-      { "@type": "AdministrativeArea", name: "Allegheny County" },
-      { "@type": "AdministrativeArea", name: "Greater Pittsburgh Area" },
+    "@graph": [
+      {
+        "@type": "LocalBusiness",
+        "@id": BUSINESS_ID,
+        name: site.businessName,
+        alternateName: site.name,
+        description: site.metaDescription,
+        url: SITE_URL,
+        email: site.email,
+        image: `${SITE_URL}/opengraph-image`,
+        priceRange: "$$",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Pittsburgh",
+          addressRegion: "PA",
+          addressCountry: "US",
+        },
+        areaServed: "Pittsburgh, PA",
+        sameAs: [site.instagramUrl, GBP_URL].filter(Boolean),
+        knowsAbout: [
+          "Bridal Alterations",
+          "Wedding Dress Alterations",
+          "Clothing Tailoring",
+          "Seamstress Services",
+          "Garment Repair",
+        ],
+        founder: {
+          "@type": "Person",
+          name: site.name,
+          jobTitle: "Bridal seamstress and designer",
+          alumniOf: {
+            "@type": "EducationalOrganization",
+            name: "Indiana University of Pennsylvania",
+          },
+          hasCredential: {
+            "@type": "EducationalOccupationalCredential",
+            credentialCategory: "degree",
+            educationalLevel: "Bachelor of Science",
+            name: "B.S. Fashion & Apparel Design",
+            recognizedBy: {
+              "@type": "EducationalOrganization",
+              name: "Indiana University of Pennsylvania",
+            },
+          },
+        },
+      },
+      ...services.map((service) => ({
+        "@type": "Service",
+        "@id": `${SITE_URL}/services#${service.id}`,
+        name: service.title,
+        description: service.shortDescription,
+        serviceType: service.title,
+        provider: { "@id": BUSINESS_ID },
+        areaServed: "Pittsburgh, PA",
+        ...(minPrice(service.priceRange) !== null && {
+          offers: {
+            "@type": "Offer",
+            priceSpecification: {
+              "@type": "PriceSpecification",
+              minPrice: minPrice(service.priceRange),
+              priceCurrency: "USD",
+            },
+          },
+        }),
+      })),
     ],
-    priceRange: "$$",
-    openingHoursSpecification: {
-      "@type": "OpeningHoursSpecification",
-      description: "By appointment only — contact to schedule",
-    },
-    hasOfferCatalog: {
-      "@type": "OfferCatalog",
-      name: "Alteration Services",
-      itemListElement: [
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Bridal Alterations Pittsburgh",
-            description:
-              "Wedding dress alterations in Pittsburgh including hem adjustments, bustle additions, bodice fitting, corset back conversion, and lace and beading work. By appointment only.",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Clothing Tailoring Pittsburgh",
-            description:
-              "Clothing alterations in Pittsburgh including pants hemming, dress and skirt alterations, jacket tailoring, zipper repair and replacement, and waist adjustments.",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Custom Sewing and Garment Repair Pittsburgh",
-            description:
-              "Vintage garment restoration, costume construction and alterations, structural garment repair, and special occasion dress alterations in Pittsburgh.",
-          },
-        },
-      ],
-    },
-    knowsAbout: [
-      "Bridal Alterations",
-      "Wedding Dress Alterations",
-      "Clothing Tailoring",
-      "Seamstress Services",
-      "Garment Repair",
-      "Vintage Restoration",
-      "Costume Alterations",
-    ],
-    founder: {
-      "@type": "Person",
-      name: site.name,
-      jobTitle: "Seamstress and Alterations Specialist",
-      alumniOf: [
-        {
-          "@type": "EducationalOrganization",
-          name: "Indiana University of Pennsylvania",
-        },
-      ],
-    },
-    sameAs: [site.instagramUrl],
   };
 
   return (

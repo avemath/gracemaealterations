@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
+import { analytics } from "@/lib/analytics";
 
 type Variant = "gold" | "outline" | "outline-ivory";
 
@@ -34,7 +37,12 @@ export default function Button({
 
   if (href) {
     return (
-      <Link href={href} className={classes} aria-label={ariaLabel}>
+      <Link
+        href={href}
+        className={classes}
+        aria-label={ariaLabel}
+        onClick={() => analytics.ctaClick(typeof children === "string" ? children : href)}
+      >
         {children}
       </Link>
     );

@@ -6,5 +6,8 @@ export const size = OG_SIZE;
 export const contentType = "image/png";
 
 export default async function Image() {
-  return ogCard({ headline: "Grace Mae" });
+  return ogCard({
+    headline: "Let's talk",
+    tagline: "Send photos and details. I reply within 2 business days.",
+  });
 }

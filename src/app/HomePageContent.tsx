@@ -287,7 +287,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                         image={service.cardImage}
                         fill
                         placeholderLabel="SERVICE_CARD_IMAGE"
-                        sizes="(max-width: 768px) 100vw, 33vw"
+                        sizes="(min-width:1024px) 33vw, 100vw"
                         className="opacity-[0.55] group-hover:opacity-70 transition-opacity duration-500"
                         aria-hidden
                       />
@@ -394,7 +394,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                     placeholderLabel={`PORTFOLIO_${i + 1}`}
                     placeholderRatio="portrait"
                     alt={item.label}
-                    sizes="(max-width: 1024px) 50vw, 25vw"
+                    sizes="(min-width:1024px) 25vw, 50vw"
                   />
                 </div>
                 <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/55 transition-all duration-500" aria-hidden="true" />

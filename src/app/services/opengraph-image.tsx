@@ -6,5 +6,8 @@ export const size = OG_SIZE;
 export const contentType = "image/png";
 
 export default async function Image() {
-  return ogCard({ headline: "Grace Mae" });
+  return ogCard({
+    headline: "Alterations & prices",
+    tagline: "Hems, bustles, bodice work and everyday tailoring in Pittsburgh.",
+  });
 }

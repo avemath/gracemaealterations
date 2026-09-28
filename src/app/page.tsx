@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata, PAGE_META } from "@/lib/metadata";
 import HomePageContent from "./HomePageContent";
 import {
   getMergedSite,
@@ -9,9 +10,7 @@ import {
   getMergedAboutPage,
 } from "@/lib/sanity.queries";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "https://gracemaealterations.com" },
-};
+export const metadata: Metadata = pageMetadata(PAGE_META.home);
 
 
 export default async function HomePage() {

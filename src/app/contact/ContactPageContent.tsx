@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SanityImage from "@/components/ui/SanityImage";
 import Accordion from "@/components/ui/Accordion";
+import { analytics } from "@/lib/analytics";
 import type { SanityFaqItem, SanityImage as SanityImageType } from "@/lib/sanity.queries";
 
 // ── Constants ──────────────────────────────────────────────────
@@ -220,8 +221,14 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
 
   // ── Handlers ──────────────────────────────────────────────
 
+  const startedRef = useRef(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    if (!startedRef.current) {
+      startedRef.current = true;
+      analytics.formStart(formData.serviceType || "unspecified");
+    }
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (name === "garmentDetails") setCharCount(value.length);
     if (errors[name as keyof FormData]) setErrors((prev) => ({ ...prev, [name]: undefined }));
@@ -279,6 +286,8 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
       });
       setStatus(res.ok ? "success" : "error");
       if (res.ok) {
+        analytics.formSubmit(svc || "unspecified");
+        if (isWaitlist) analytics.waitlistJoin(svc || "bridal");
         setFormData(INITIAL_FORM);
         setCharCount(0);
         setAttachments([]);
