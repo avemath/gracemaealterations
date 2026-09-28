@@ -16,7 +16,8 @@
     "portfolio:apply": "node scripts/portfolio-captions.mjs --apply",
     "test:a11y": "playwright test",
     "lighthouse": "node scripts/run-lighthouse.mjs",
-    "copy:response-time": "node scripts/set-response-time.mjs"
+    "copy:response-time": "node scripts/set-response-time.mjs",
+    "copy:tidy-dashes": "node scripts/tidy-dashes.mjs"
   },
   "dependencies": {
     "@sanity/image-url": "^1.2.0",
