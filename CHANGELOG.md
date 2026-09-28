@@ -2,6 +2,10 @@
 
 Newest first. Grace facing notes live in `site/content/FOR-GRACE.md`.
 
+## Price list removed, September 2026
+
+- `feat: drop the itemised price list from services`: the "See typical prices" list under each service had no prices in it, so every row read "quoted at fitting". Every garment is priced at the fitting, so the list is gone and each service shows only its price range, note and typical timeline. The Studio field is hidden, not deleted, so nothing is lost.
+
 ## Second audit, September 2026
 
 - `fix: second audit follow-ups`:
