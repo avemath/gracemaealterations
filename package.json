@@ -22,6 +22,7 @@
     "content:publish": "node scripts/publish-drafts.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.129.0",
     "@sanity/image-url": "^1.2.0",
     "@sanity/vision": "^3.99.0",
     "@vercel/analytics": "^2.0.1",

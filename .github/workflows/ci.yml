@@ -22,6 +22,10 @@ jobs:
       NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ vars.NEXT_PUBLIC_SANITY_PROJECT_ID || 'qv75bufa' }}
       NEXT_PUBLIC_SANITY_DATASET: ${{ vars.NEXT_PUBLIC_SANITY_DATASET || 'production' }}
       NEXT_TELEMETRY_DISABLED: 1
+      # Not a real key. It only makes the build render the photo check button,
+      # so tests/photo-check.spec.ts can drive it; that spec intercepts
+      # /api/photo-check, so no model is ever called from CI.
+      ANTHROPIC_API_KEY: ci-placeholder-not-a-key
     steps:
       - uses: actions/checkout@v4
 

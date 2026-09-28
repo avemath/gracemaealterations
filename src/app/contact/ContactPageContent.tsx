@@ -7,6 +7,8 @@ import SanityImage from "@/components/ui/SanityImage";
 import Accordion from "@/components/ui/Accordion";
 import { analytics } from "@/lib/analytics";
 import { preparePhoto } from "@/lib/compressImage";
+import PhotoCheck from "@/components/contact/PhotoCheck";
+import type { PhotoCheckResult } from "@/lib/photoCheck";
 import {
   BRIDAL_ALTERATIONS,
   SHOES_UNDERGARMENTS,
@@ -198,6 +200,8 @@ interface Props {
   availability: Availability;
   hasPolicies: boolean;
   text: ContactText;
+  /** True when the AI photo check is configured (ANTHROPIC_API_KEY is set). */
+  photoCheckEnabled?: boolean;
 }
 
 // ── Component ──────────────────────────────────────────────────────────────
@@ -209,6 +213,7 @@ export default function ContactPageContent({
   availability,
   hasPolicies,
   text,
+  photoCheckEnabled = false,
 }: Props) {
   const { limitedMode, waitlistServices, reopensLabel, limitedNote } = availability;
 
@@ -220,6 +225,8 @@ export default function ContactPageContent({
   const [preparing, setPreparing] = useState(false);
   const [alterationsNeeded, setAlterationsNeeded] = useState<string[]>([]);
   const [submitError, setSubmitError] = useState("");
+  const [photoCheck, setPhotoCheck] = useState<PhotoCheckResult | null>(null);
+  const [photoCheckIncluded, setPhotoCheckIncluded] = useState(false);
   const startedRef = useRef(false);
   const formRef = useRef<HTMLDivElement>(null);
 
@@ -309,6 +316,7 @@ export default function ContactPageContent({
       problem = "One of those photos could not be read. Please try another.";
     } finally {
       setAttachments((prev) => [...prev, ...added]);
+      if (added.length) setPhotoCheck(null);
       if (problem) setErrors((prev) => ({ ...prev, files: problem }));
       setPreparing(false);
     }
@@ -322,6 +330,7 @@ export default function ContactPageContent({
 
   const removeAttachment = (i: number) => {
     setAttachments((prev) => prev.filter((_, idx) => idx !== i));
+    setPhotoCheck(null);
     setErrors((prev) => ({ ...prev, files: undefined }));
   };
 
@@ -345,6 +354,7 @@ export default function ContactPageContent({
           isWaitlist,
           reopensLabel,
           attachments: attachments.map(({ filename, content }) => ({ filename, content })),
+          photoCheck: photoCheck && photoCheckIncluded ? photoCheck : null,
         }),
       });
       setStatus(res.ok ? "success" : "error");
@@ -354,6 +364,7 @@ export default function ContactPageContent({
         setFormData(INITIAL_FORM);
         setAttachments([]);
         setAlterationsNeeded([]);
+        setPhotoCheck(null);
       } else if (res.status === 413) {
         setSubmitError("The photos were too large to send.");
       } else if (res.status === 429) {
@@ -703,6 +714,17 @@ export default function ContactPageContent({
                                     </li>
                                   ))}
                                 </ul>
+                              )}
+                              {photoCheckEnabled && (
+                                <PhotoCheck
+                                  photos={attachments.map((a) => a.content)}
+                                  serviceType={branch ?? "unsure"}
+                                  alterationsNeeded={alterationsNeeded}
+                                  onToggleAlteration={toggleAlteration}
+                                  included={photoCheckIncluded}
+                                  onResult={setPhotoCheck}
+                                  onIncludedChange={setPhotoCheckIncluded}
+                                />
                               )}
                             </div>
 
