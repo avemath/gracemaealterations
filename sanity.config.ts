@@ -3,7 +3,7 @@ import { deskTool } from "sanity/desk";
 import { visionTool } from "@sanity/vision";
 import { schemaTypes } from "./sanity/schemaTypes";
 
-const SINGLETONS = new Set(["siteSettings", "homePage", "aboutPage", "servicesPage", "contactPage", "portfolioPage"]);
+const SINGLETONS = new Set(["siteSettings", "homePage", "aboutPage", "servicesPage", "contactPage", "portfolioPage", "policies"]);
 const SINGLETON_ACTIONS = new Set(["publish", "discardChanges", "restore"]);
 
 export default defineConfig({
@@ -49,6 +49,11 @@ export default defineConfig({
               .title("Portfolio Page")
               .id("portfolioPage")
               .child(S.document().schemaType("portfolioPage").documentId("portfolioPage")),
+
+            S.listItem()
+              .title("Policies")
+              .id("policies")
+              .child(S.document().schemaType("policies").documentId("policies")),
 
             // ── CONTENT LISTS ─────────────────────────────────
             S.listItem()
