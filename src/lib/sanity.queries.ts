@@ -32,6 +32,7 @@ export interface SanityImage {
   };
   alt?: string;
   hotspot?: { x: number; y: number };
+  crop?: { top: number; bottom: number; left: number; right: number };
 }
 
 export interface SanitySiteSettings {
@@ -234,7 +235,7 @@ export async function getSiteSettings(): Promise<SanitySiteSettings | null> {
 
 export async function getHomePage(): Promise<SanityHomePage | null> {
   return safeFetch(`*[_type == "homePage"][0]{
-    heroImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
+    heroImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
     trustStats,
     heroSectionLabel, heroCredentialText,
     servicesLabel, servicesHeading,
@@ -249,9 +250,9 @@ export async function getHomePage(): Promise<SanityHomePage | null> {
 
 export async function getAboutPage(): Promise<SanityAboutPage | null> {
   return safeFetch(`*[_type == "aboutPage"][0]{
-    heroImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
-    secondaryImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
-    portraitImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
+    heroImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
+    secondaryImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
+    portraitImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
     heroLabel, storyLabel, storyHeading,
     paragraph1, paragraph2, paragraph3, pullQuote,
     valuesLabel, valuesHeading,
@@ -262,7 +263,7 @@ export async function getAboutPage(): Promise<SanityAboutPage | null> {
 
 export async function getServicesPage(): Promise<SanityServicesPage | null> {
   return safeFetch(`*[_type == "servicesPage"][0]{
-    heroImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
+    heroImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
     heroLabel, heroHeading,
     pricingLabel, pricingHeading,
     pricingCards[]{ title, body },
@@ -274,7 +275,7 @@ export async function getServicesPage(): Promise<SanityServicesPage | null> {
 
 export async function getContactPage(): Promise<SanityContactPage | null> {
   return safeFetch(`*[_type == "contactPage"][0]{
-    image{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
+    image{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
     heroLabel, heroHeading,
     waitlistBannerBold, waitlistBannerText,
     successHeading, successMessage, waitlistSuccessMessage
@@ -286,8 +287,8 @@ export async function getPortfolioPage(): Promise<SanityPortfolioPage | null> {
     heroLabel, heroHeading, heroSubtext,
     featuredSectionLabel, featuredHeading, featuredBody,
     featuredLabel, featuredDescription,
-    beforeImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
-    afterImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
+    beforeImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
+    afterImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
     ctaHeadline, ctaSubhead, ctaButton
   }`);
 }
@@ -299,7 +300,7 @@ export async function getServices(): Promise<SanityService[] | null> {
     priceRange, priceNote, freeConsult,
     priceTable[]{ item, from, note },
     typicalTimeline,
-    cardImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot }
+    cardImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop }
   }`);
 }
 
@@ -370,7 +371,7 @@ export interface SanityLandingPage {
 
 const GUIDE_FIELDS = `
   _id, _updatedAt, title, "slug": slug.current, summary,
-  heroImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
+  heroImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
   body,
   timelineSteps[]{ weeksOut, title, detail },
   seo
@@ -411,7 +412,7 @@ export async function getGuide(slug: string): Promise<SanityGuide | null> {
 export async function getPublishedBustleStyles(): Promise<SanityBustleStyle[] | null> {
   return safeFetch<SanityBustleStyle[]>(`*[_type == "bustleStyle" && published == true] | order(order asc) {
     _id, name, "slug": slug.current,
-    image{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
+    image{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
     alsoCalled, typicalPoints, bestFor, fabricNotes, priceFrom
   }`).then((styles) =>
     styles
@@ -480,9 +481,9 @@ const CASE_STUDY_FIELDS = `
   _id, _updatedAt, label, caption, type, order, "slug": slug.current,
   designer, silhouette, alterations, fittings, weeks, venue,
   image{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
-  beforeImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
-  afterImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
-  gallery[]{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
+  beforeImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
+  afterImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
+  gallery[]{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
   testimonial->{ _id, quote, name, occasion, dressDesigner, alterations, venue, month, source }
 `;
 
