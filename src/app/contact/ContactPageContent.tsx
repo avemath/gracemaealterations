@@ -411,8 +411,9 @@ export default function ContactPageContent({
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[5fr_7fr] gap-16 lg:gap-24">
 
-            {/* ── Left: info. Email only, by design. ───────────── */}
-            <div data-reveal
+            {/* ── Left: info. Email only, by design. Below the form
+                on phones, so the form is the first thing they reach. ── */}
+            <div data-reveal className="order-2 lg:order-none"
             >
               <h2 className="font-cormorant italic text-charcoal text-3xl mb-8">Contact information</h2>
               <ul className="space-y-7 mb-10" role="list">
@@ -420,7 +421,7 @@ export default function ContactPageContent({
                   <span className="text-gold_ink mt-0.5 flex-shrink-0"><PinIcon /></span>
                   <div>
                     <p className="font-jost text-charcoal text-xs tracking-widest uppercase mb-1">Location</p>
-                    <p className="font-jost text-charcoal/75 text-sm">{site.location}</p>
+                    <p className="font-jost text-charcoal/75 text-sm">{site.location} · By appointment</p>
                     <p className="font-jost text-charcoal/75 text-sm">{site.availability}</p>
                   </div>
                 </li>
@@ -461,7 +462,7 @@ export default function ContactPageContent({
             </div>
 
             {/* ── Right: branching form ────────────────────────── */}
-            <div data-reveal
+            <div data-reveal className="order-1 lg:order-none"
               ref={formRef}
             >
               {status === "success" ? (

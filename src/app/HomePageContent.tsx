@@ -293,7 +293,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                     <div className="w-8 h-px bg-gold/40 mb-6" aria-hidden="true" />
                     {isWaitlisted(service.id) && (
                       <p className="font-jost text-[10px] tracking-[0.2em] uppercase text-gold mb-2">
-                        Booking for {site.reopensLabel}
+                        Waitlist for {site.reopensLabel}
                       </p>
                     )}
                     <h3 className="font-cormorant text-ivory text-2xl mb-3">{service.title}</h3>
@@ -307,7 +307,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                     )}
                     <Link
                       href={`/services#${service.id}`}
-                      className="mt-6 inline-flex items-center gap-2 font-jost text-xs text-gold tracking-[0.18em] uppercase group-hover:text-gold_light transition-colors duration-300"
+                      className="mt-4 py-2 inline-flex items-center gap-2 font-jost text-xs text-gold tracking-[0.18em] uppercase group-hover:text-gold_light transition-colors duration-300"
                     >
                       <span>
                         {isWaitlisted(service.id) ? "Join the Waitlist" : "Learn More"}
@@ -366,7 +366,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                     fill
                     placeholderLabel={`PORTFOLIO_${i + 1}`}
                     placeholderRatio="portrait"
-                    alt={item.label}
+                    alt={item.image?.alt ?? item.label}
                     sizes="(min-width:1024px) 25vw, 50vw"
                   />
                 </div>
@@ -433,8 +433,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               </p>
               <Link
                 href="/about"
-                className="inline-flex items-center gap-2 font-jost text-xs text-gold_ink tracking-[0.18em] uppercase hover:text-gold_dark transition-colors duration-300 group"
-                aria-label="Read Grace's story"
+                className="inline-flex items-center gap-2 py-2 font-jost text-xs text-gold_ink tracking-[0.18em] uppercase hover:text-gold_dark transition-colors duration-300 group"
               >
                 Read Grace&rsquo;s story
                 <span className="transition-transform duration-300 group-hover:translate-x-1"><ArrowRight /></span>

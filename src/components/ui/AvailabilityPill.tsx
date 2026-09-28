@@ -19,9 +19,17 @@ export default function AvailabilityPill({
   bookingNote,
   className = "",
 }: Props) {
-  const label = limitedMode
-    ? `Tailoring & repairs: booking now · Bridal: ${reopensLabel} waitlist open`
-    : bookingNote;
+  // One line per lane on phones, so a wrap never strands the separator.
+  const label = limitedMode ? (
+    <>
+      <span className="block sm:inline">Tailoring &amp; repairs: booking now</span>
+      <span className="sr-only">. </span>
+      <span className="hidden sm:inline" aria-hidden="true"> · </span>
+      <span className="block sm:inline">Bridal: {reopensLabel} waitlist open</span>
+    </>
+  ) : (
+    bookingNote
+  );
 
   return (
     <p

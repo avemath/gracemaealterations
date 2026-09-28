@@ -105,8 +105,9 @@ function readableDate(value: string): string {
 }
 
 /**
- * One line so Grace can triage without date maths. Bridal fittings ideally
- * start 3 to 6 months before the wedding; anything under 8 weeks is a rush.
+ * One line so Grace can triage without date maths. Matches the Services page:
+ * the first bridal fitting is usually 8 to 12 weeks before the wedding, and
+ * anything under 8 weeks is a rush.
  */
 function timingNote(value: string, serviceType: string, now = new Date()): { text: string; rush: boolean } | null {
   const date = parseDate(value);
@@ -119,13 +120,11 @@ function timingNote(value: string, serviceType: string, now = new Date()): { tex
   const away = weeks === 0 ? `${days} day${days === 1 ? "" : "s"} away` : `${weeks} week${weeks === 1 ? "" : "s"} away`;
 
   if (serviceType === "bridal") {
-    if (weeks > 26) {
-      const from = formatDate(new Date(date.getTime() - 26 * 7 * DAY_MS));
-      const to = formatDate(new Date(date.getTime() - 13 * 7 * DAY_MS));
-      return { text: `${away}. Early: first fitting ideally between ${from} and ${to}.`, rush: false };
-    }
-    if (weeks >= 13) return { text: `${away}. In the ideal window for a first fitting.`, rush: false };
-    if (weeks >= 8) return { text: `${away}. Tight: fittings need to start now.`, rush: false };
+    const from = formatDate(new Date(date.getTime() - 12 * 7 * DAY_MS));
+    const to = formatDate(new Date(date.getTime() - 8 * 7 * DAY_MS));
+    if (weeks > 26) return { text: `${away}. Early: first fitting around ${from} to ${to}.`, rush: false };
+    if (weeks > 12) return { text: `${away}. Good timing: first fitting around ${from} to ${to}.`, rush: false };
+    if (weeks >= 8) return { text: `${away}. The first fitting is due now.`, rush: false };
     return { text: `${away}. Rush timeline.`, rush: true };
   }
   if (weeks < 3) return { text: `${away}. Rush timeline.`, rush: true };

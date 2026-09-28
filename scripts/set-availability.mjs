@@ -87,7 +87,7 @@ const LIMITED = {
     ? `Home with our new baby and taking on smaller projects. Bridal reopens ${BRIDAL_REOPENS}.`
     : `Now taking on everyday tailoring and repairs. Bridal reopens ${BRIDAL_REOPENS}.`,
   limitedNote: `I'm home with our new baby, so for now I'm taking everyday tailoring and small repairs only. Bridal fittings reopen in ${BRIDAL_REOPENS}. If your wedding is in ${REOPEN_YEAR}, join the waitlist and you'll get first pick of fitting dates, in the order you joined. If your date is sooner, tell me anyway and I'll give you an honest answer, plus a referral if I can't take it.`,
-  availability: `By Appointment. Bridal reopens ${BRIDAL_REOPENS}`,
+  availability: `Bridal waitlist open for ${BRIDAL_REOPENS}`,
   trustItems: TRUST_ITEMS,
   responseTime: "I read every message myself and reply as soon as I can.",
 };
@@ -98,7 +98,7 @@ const OPEN = {
   reopensLabel: "",
   bookingNote: "Now scheduling consultations",
   limitedNote: "",
-  availability: "Available by Appointment",
+  availability: "Bridal and tailoring booking now",
   trustItems: TRUST_ITEMS,
   responseTime: "I read every message myself and reply as soon as I can.",
 };
@@ -109,7 +109,7 @@ const settings = mode === "limited" ? LIMITED : OPEN;
 
 // Shared by both modes: how far ahead to start bridal fittings.
 const BOOKING_LEAD =
-  "Fittings ideally start 3 to 6 months before your wedding date, which leaves time for several fittings without rushing. For everyday tailoring, 2–3 weeks is usually plenty. Send a request and I'll confirm what's possible.";
+  "The first fitting is usually 8 to 12 weeks before the wedding, so getting in touch 3 to 6 months ahead leaves room for every fitting without rushing. For everyday tailoring, a week or two's notice is usually plenty. Send a request and I'll confirm what's possible.";
 
 const FAQ_LIMITED = {
   "faq-booking": {
@@ -122,7 +122,7 @@ const FAQ_LIMITED = {
   },
   "faq-bridal-reopen": {
     question: "When does bridal booking reopen?",
-    answer: `${BRIDAL_REOPENS.charAt(0).toUpperCase()}${BRIDAL_REOPENS.slice(1)}. Join the waitlist from the contact page and I'll reach out in order.`,
+    answer: `${BRIDAL_REOPENS.charAt(0).toUpperCase()}${BRIDAL_REOPENS.slice(1)}. Join the waitlist with the form above and I'll reach out in order.`,
     order: 7,
   },
 };

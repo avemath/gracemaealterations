@@ -75,6 +75,7 @@ export default function ServicesPageContent({ services, page, availability }: Pr
             <SanityImage
               image={page.heroImage}
               fill
+              priority
               placeholderLabel="SERVICES_HERO_IMAGE"
               placeholderRatio="landscape"
               sizes="100vw"
@@ -127,10 +128,8 @@ export default function ServicesPageContent({ services, page, availability }: Pr
                   className="font-cormorant text-gold_ink/25 font-light leading-none mb-3"
                   style={{ fontSize: "5rem" }}
                   aria-hidden="true"
-                  data-decorative
-                >
-                  0{i + 1}
-                </p>
+                  data-numeral={`0${i + 1}`}
+                />
                 <div className="w-12 h-px bg-gold mb-6" aria-hidden="true" />
 
                 {isWaitlisted(service.id) && (
@@ -161,8 +160,8 @@ export default function ServicesPageContent({ services, page, availability }: Pr
 
                   {limitedMode && service.id === "custom" && !isWaitlisted(service.id) && (
                     <p className="font-jost text-charcoal/75 text-base leading-relaxed max-w-2xl mt-4">
-                      Small repairs are open now; larger construction and restoration projects are
-                      booking for {reopensLabel}.
+                      Small repairs are open now. Larger construction and restoration projects
+                      reopen in {reopensLabel}, and you can join the waitlist today.
                     </p>
                   )}
                 </div>
@@ -236,9 +235,10 @@ export default function ServicesPageContent({ services, page, availability }: Pr
                       </h3>
                       <p className="font-jost text-charcoal/75 text-sm leading-[1.65] max-w-[65ch] mb-5">
                         Bridesmaids, mothers, flower girls: one point of contact, one pickup day.
+                        Open now, separate from the bridal waitlist.
                       </p>
-                      <Link href={primary.href} className="btn-outline">
-                        {primary.label}
+                      <Link href="/contact?service=party" className="btn-outline">
+                        Send a bridal party request
                       </Link>
                     </div>
                   </>
