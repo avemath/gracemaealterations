@@ -115,6 +115,8 @@ export interface SanityServicesPage {
   pricingLabel?: string;
   pricingHeading?: string;
   pricingCards?: SanityPricingCard[];
+  exampleQuotes?: SanityExampleQuote[];
+  exampleQuotesCaption?: string;
   ctaHeadline?: string;
   ctaSubhead?: string;
   ctaButton?: string;
@@ -147,6 +149,18 @@ export interface SanityContactPage {
   waitlistSuccessMessage?: string;
 }
 
+export interface SanityPriceRow {
+  item: string;
+  from?: number | null;
+  note?: string | null;
+}
+
+export interface SanityExampleQuote {
+  gown: string;
+  work: string;
+  price?: number | null;
+}
+
 export interface SanityService {
   _id: string;
   title: string;
@@ -159,6 +173,8 @@ export interface SanityService {
   priceNote: string;
   freeConsult?: string;
   cardImage?: SanityImage | null;
+  priceTable?: SanityPriceRow[] | null;
+  typicalTimeline?: string | null;
 }
 
 export interface SanityPortfolioItem {
@@ -176,6 +192,11 @@ export interface SanityTestimonial {
   quote: string;
   name: string;
   occasion: string;
+  dressDesigner?: string | null;
+  alterations?: string | null;
+  venue?: string | null;
+  month?: string | null;
+  source?: string | null;
 }
 
 export interface SanityFaqItem {
@@ -242,6 +263,8 @@ export async function getServicesPage(): Promise<SanityServicesPage | null> {
     heroLabel, heroHeading,
     pricingLabel, pricingHeading,
     pricingCards[]{ title, body },
+    exampleQuotes[]{ gown, work, price },
+    exampleQuotesCaption,
     ctaHeadline, ctaSubhead, ctaButton
   }`);
 }
@@ -271,12 +294,16 @@ export async function getServices(): Promise<SanityService[] | null> {
     _id, title, "id": slug.current, icon,
     shortDescription, description, services,
     priceRange, priceNote, freeConsult,
+    priceTable[]{ item, from, note },
+    typicalTimeline,
     cardImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot }
   }`);
 }
 
 export async function getTestimonials(): Promise<SanityTestimonial[] | null> {
-  return safeFetch(`*[_type == "testimonial"] | order(order asc) { _id, quote, name, occasion }`);
+  return safeFetch(`*[_type == "testimonial"] | order(order asc) {
+    _id, quote, name, occasion, dressDesigner, alterations, venue, month, source
+  }`);
 }
 
 export async function getPortfolioItems(): Promise<SanityPortfolioItem[] | null> {
@@ -291,6 +318,21 @@ export async function getFaqItems(): Promise<SanityFaqItem[] | null> {
 
 export async function getValues(): Promise<SanityValue[] | null> {
   return safeFetch(`*[_type == "value"] | order(order asc) { _id, title, description }`);
+}
+
+export interface SanityPolicySection {
+  heading: string;
+  body: unknown[];
+}
+
+export interface SanityPolicies {
+  heading?: string;
+  intro?: string;
+  sections?: SanityPolicySection[];
+}
+
+export async function getPolicies(): Promise<SanityPolicies | null> {
+  return safeFetch(`*[_type == "policies"][0]{ heading, intro, sections[]{ heading, body } }`);
 }
 
 // ── MERGED DATA FETCHERS (Sanity → fallback to content.ts) ────
@@ -378,6 +420,8 @@ export async function getMergedServicesPage() {
     pricingLabel: p?.pricingLabel ?? SERVICES_TEXT.pricingLabel,
     pricingHeading: p?.pricingHeading ?? SERVICES_TEXT.pricingHeading,
     pricingCards: p?.pricingCards?.length ? p.pricingCards : PRICING_CARDS,
+    exampleQuotes: p?.exampleQuotes ?? [],
+    exampleQuotesCaption: p?.exampleQuotesCaption ?? "",
     ctaHeadline: p?.ctaHeadline ?? SERVICES_TEXT.ctaHeadline,
     ctaSubhead: p?.ctaSubhead ?? SERVICES_TEXT.ctaSubhead,
     ctaButton: p?.ctaButton ?? SERVICES_TEXT.ctaButton,
@@ -432,6 +476,8 @@ export async function getMergedServices() {
     priceNote: svc.priceNote,
     freeConsult: svc.freeConsult,
     cardImage: null,
+    priceTable: null,
+    typicalTimeline: null,
   }));
 }
 

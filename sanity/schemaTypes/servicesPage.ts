@@ -75,6 +75,28 @@ export const servicesPage = defineType({
 
     // ── CTA Banner ──────────────────────────────────────────────
     defineField({
+      name: "exampleQuotes",
+      title: "Three real gowns, three real quotes",
+      description: "Rows without a price stay hidden on the site.",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          fields: [
+            { name: "gown", title: "Gown", type: "string" },
+            { name: "work", title: "Work done", type: "string" },
+            { name: "price", title: "Total (USD)", type: "number" },
+          ],
+          preview: { select: { title: "gown", subtitle: "work" } },
+        },
+      ],
+    }),
+    defineField({
+      name: "exampleQuotesCaption",
+      title: "Caption under the example quotes",
+      type: "string",
+    }),
+    defineField({
       name: "ctaHeadline",
       title: "CTA Banner — Headline",
       group: "cta",
