@@ -52,3 +52,27 @@ test.describe("bustle explorer", () => {
     });
   });
 });
+
+test.describe("bustle explorer paths", () => {
+  test.use({ reducedMotion: "reduce" });
+  test("shows which way each point is pulled, then clears the arrows once bustled", async ({ page }) => {
+    await page.goto("/services");
+    const section = page.locator("#bustles");
+    await section.getByRole("img").scrollIntoViewIfNeeded();
+    const slider = section.getByRole("slider");
+    const sidePath = section.locator('[data-testid="path-side-loop"]');
+
+    await slider.fill("0");
+    await expect(sidePath).toHaveAttribute("opacity", "0.9");
+    const caption = section.getByTestId("bustle-step");
+    await expect(caption).toHaveText("Loops are sewn under the train.");
+
+    await slider.fill("100");
+    await expect(sidePath).toHaveAttribute("opacity", "0");
+    await expect(caption).toContainText("hooked onto a button at the hip");
+
+    await section.getByText("French", { exact: true }).first().click();
+    await slider.fill("40");
+    await expect(caption).toContainText("tucked up underneath the skirt");
+  });
+});
