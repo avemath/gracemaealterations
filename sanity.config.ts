@@ -55,6 +55,18 @@ export default defineConfig({
               .id("policies")
               .child(S.document().schemaType("policies").documentId("policies")),
 
+            // ── CARE CARDS (one per finished garment) ────────
+            S.listItem()
+              .title("Care Cards")
+              .id("careCards")
+              .child(
+                S.documentTypeList("careCard")
+                  .title("Care Cards")
+                  .defaultOrdering([{ field: "completedOn", direction: "desc" }])
+              ),
+
+            S.divider(),
+
             // ── CONTENT LISTS ─────────────────────────────────
             S.listItem()
               .title("Services")

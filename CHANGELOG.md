@@ -2,6 +2,14 @@
 
 Newest first. Grace facing notes live in `site/content/FOR-GRACE.md`.
 
+## Care cards, September 2026
+
+- `feat: care cards with QR codes and drafted care notes`:
+  - A new Care Cards list in the Studio. Grace fills in the garment, fabric and what she did, presses "Draft care notes" for a first version in her voice (conservative advice for that fabric, no promises, prices or stain recipes), edits it, publishes, and presses "Print the card".
+  - The card is business-card size, one side, with a QR code; printing hides everything else on the page and a dashed line marks where to trim.
+  - The QR opens `/care/<code>`: "Caring for your wedding gown", the date, the before and after slider when both photos are there, what was done, the care notes, and "If you loved how it turned out" with the Google review button (once the review link is in Site Settings), an Instagram tag and a link back to the contact form.
+  - Codes are random and unguessable, pages are noindex and out of the sitemap, unknown codes are a plain 404, and switching "Page is live" off takes a page down.
+
 ## Photo check, September 2026
 
 - `feat: optional photo check on the contact form`:
