@@ -2,6 +2,21 @@
 
 Newest first. Grace facing notes live in `site/content/FOR-GRACE.md`.
 
+## Fitting bag checklist and audit fixes, September 2026
+
+- `feat: the what-to-bring guide is a fitting bag checklist`: each item gets a small line drawing (shoes, hanger, veil, camera, two people) and a box to tick while packing, with "3 of 5 packed" and "All packed. See you at the fitting." Ticks stay on that phone only. The words still come from the guide in the Studio.
+- `fix: audit`:
+  - Care notes drafting only works for people signed in to the Studio: the Studio sends the editor's own Sanity token and the route checks it with Sanity before drafting. The Studio now keeps its sign-in as a token in the browser, so Grace signs in once more.
+  - The photo check accepts this project's own previews only (not every vercel.app site) and has an hourly ceiling on all checks; neither AI route retries past the function's time limit.
+  - The contact confirmation email only greets by a plain first name and takes the waitlist date from Sanity, so it can't be used to send someone else's message from Grace's address. Attachments must really be JPEG, PNG or WebP photos. A malformed request is a 400, not a crash, and "days away" is counted from today in Pittsburgh.
+  - Sanity reads can use a server-only read token (`SANITY_API_READ_TOKEN`) so the dataset can be made private, and always read published content.
+  - Next's own image optimizer is off (every image is served by Sanity's CDN), a light Content-Security-Policy is added, and structured data is escaped.
+  - The Sanity client no longer loads in visitors' browsers.
+  - Contact form: a failed submit takes you to the first field that needs fixing. Mobile menu: Tab reaches the close button. Portfolio lightbox: focus stays inside at the first and last photo. Before/after slider: the page scrolls normally on phones.
+  - Landing pages published after a deploy appear without a redeploy, the sitemap lists only allowed ones, the footer links them, and their descriptions no longer stop mid-word. Unpublished policies no longer claim a canonical URL.
+  - The footer's bottom links are easier to tap and include Guides. The bustle explorer's caption says "Bustling" during the move, and a choice made in the first moment isn't overridden by the autoplay. The bustle guide no longer repeats every style twice.
+  - Removed 24 one-off scripts from the repo root (two of them would overwrite live content with old copy), an unused lightbox and unused fonts; em dashes out of the seed script and a portfolio caption.
+
 ## Bustle explorer shows the pull, September 2026
 
 - `feat: bustle explorer shows which way the fabric is pulled`:

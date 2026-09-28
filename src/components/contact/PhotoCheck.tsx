@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   CONFIDENCE_LABEL,
   type Confidence,
@@ -50,10 +50,17 @@ export default function PhotoCheck({
 }: Props) {
   const [state, setState] = useState<State>({ kind: "idle" });
   const [checkedPhotos, setCheckedPhotos] = useState("");
-  const photosKey = photos.join("|").length + ":" + photos.length;
+  const photosKey = photos.map((p) => p.length + p.slice(-24)).join("|");
   const stale = state.kind === "done" && checkedPhotos !== photosKey;
+  // The photos as they are now, so a check that comes back after a photo was
+  // added or removed is dropped rather than sent about the wrong photos.
+  const currentKey = useRef(photosKey);
+  useEffect(() => {
+    currentKey.current = photosKey;
+  }, [photosKey]);
 
   const run = async () => {
+    const askedFor = photosKey;
     setState({ kind: "checking" });
     try {
       const res = await fetch("/api/photo-check", {
@@ -62,6 +69,10 @@ export default function PhotoCheck({
         body: JSON.stringify({ photos: photos.slice(0, 3), serviceType }),
       });
       const data = await res.json().catch(() => ({}));
+      if (currentKey.current !== askedFor) {
+        setState({ kind: "idle" });
+        return;
+      }
       if (!res.ok || !data.result) {
         setState({ kind: "error", message: data.error ?? "The check isn't available right now. Your request will still send." });
         onResult(null);
@@ -72,6 +83,10 @@ export default function PhotoCheck({
       onResult(data.result);
       onIncludedChange(true);
     } catch {
+      if (currentKey.current !== askedFor) {
+        setState({ kind: "idle" });
+        return;
+      }
       setState({ kind: "error", message: "The check isn't available right now. Your request will still send." });
       onResult(null);
     }

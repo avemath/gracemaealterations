@@ -110,6 +110,8 @@ export default function BustleExplorer({
   const [t, setT] = useState(0);
   const tRef = useRef(0);
   const raf = useRef(0);
+  /** The one-time autoplay; any choice the visitor makes first cancels it. */
+  const autoplay = useRef(0);
   const drawingRef = useRef<HTMLDivElement>(null);
   const reduced = useRef(false);
   // Phones show one view at a time, big enough to follow; wider screens show both.
@@ -129,6 +131,7 @@ export default function BustleExplorer({
   }, [t]);
 
   const animateTo = useCallback((target: number, from = tRef.current) => {
+    window.clearTimeout(autoplay.current);
     cancelAnimationFrame(raf.current);
     if (reduced.current) {
       setT(target);
@@ -156,13 +159,14 @@ export default function BustleExplorer({
       ([entry]) => {
         if (!entry.isIntersecting) return;
         io.disconnect();
-        window.setTimeout(() => animateTo(1), 400);
+        autoplay.current = window.setTimeout(() => animateTo(1), 400);
       },
       { threshold: 0.5 }
     );
     io.observe(el);
     return () => {
       io.disconnect();
+      window.clearTimeout(autoplay.current);
       cancelAnimationFrame(raf.current);
     };
   }, [animateTo]);
@@ -261,7 +265,7 @@ export default function BustleExplorer({
           aria-hidden="true"
         >
           <p className="font-jost text-[0.65rem] tracking-[0.18em] uppercase text-gold">
-            {bustled ? "Reception" : "Ceremony"} · Step {stepFor(t) + 1} of 3
+            {["Ceremony", "Bustling", "Reception"][stepFor(t)]} · Step {stepFor(t) + 1} of 3
           </p>
           <p className="font-cormorant italic text-ivory text-lg sm:text-xl leading-snug mt-0.5" data-testid="bustle-step">
             {step}
@@ -376,6 +380,7 @@ export default function BustleExplorer({
               value={Math.round(t * 100)}
               aria-valuetext={state}
               onChange={(e) => {
+                window.clearTimeout(autoplay.current);
                 cancelAnimationFrame(raf.current);
                 setT(Number(e.target.value) / 100);
               }}

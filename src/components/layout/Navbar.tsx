@@ -42,7 +42,7 @@ export default function Navbar({
   // Escape closes, Tab stays inside, body scroll locks, focus returns to the
   // toggle on close.
   const closeMenu = useCallback(() => setMenuOpen(false), []);
-  const menuRef = useFocusTrap<HTMLDivElement>(menuOpen, closeMenu);
+  const menuRef = useFocusTrap<HTMLDivElement>(menuOpen, closeMenu, toggleRef);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);

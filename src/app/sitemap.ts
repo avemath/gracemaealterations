@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { sanityClient } from "@/lib/sanity.client";
-import { SITE_URL } from "@/lib/metadata";
+import { SITE_URL, LANDING_SLUGS } from "@/lib/metadata";
 import {
   getPublishedGuides,
   getCaseStudies,
@@ -86,7 +86,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  for (const page of landingPages ?? []) {
+  for (const page of (landingPages ?? []).filter((p) => LANDING_SLUGS.includes(p.slug))) {
     dynamicEntries.push({
       url: `${SITE_URL}/${page.slug}`,
       lastModified: page._updatedAt ? new Date(page._updatedAt) : new Date(),

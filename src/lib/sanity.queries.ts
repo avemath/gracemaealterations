@@ -323,6 +323,7 @@ export interface SanityTimelineStep {
 
 export interface SanityGuide {
   _id: string;
+  _createdAt?: string;
   _updatedAt?: string;
   title: string;
   slug: string;
@@ -355,7 +356,7 @@ export interface SanityLandingPage {
 }
 
 const GUIDE_FIELDS = `
-  _id, _updatedAt, title, "slug": slug.current, summary,
+  _id, _createdAt, _updatedAt, title, "slug": slug.current, summary,
   heroImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
   body,
   timelineSteps[]{ weeksOut, title, detail },

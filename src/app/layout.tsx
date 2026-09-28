@@ -10,9 +10,10 @@ import {
   getMergedSite,
   getMergedServices,
   getPublishedGuides,
+  getPublishedLandingPages,
   getPolicies,
 } from "@/lib/sanity.queries";
-import { SITE_URL } from "@/lib/metadata";
+import { SITE_URL, jsonLdHtml, LANDING_SLUGS } from "@/lib/metadata";
 
 /** First dollar figure in a range like "$75 – $450+", or null when quoted. */
 function minPrice(range?: string): number | null {
@@ -57,13 +58,20 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [site, services, guides, policies] = await Promise.all([
+  const [site, services, guides, policies, landingPages] = await Promise.all([
     getMergedSite(),
     getMergedServices(),
     getPublishedGuides(),
     getPolicies(),
+    getPublishedLandingPages(),
   ]);
-  const guideLinks = (guides ?? []).map((guide) => ({ title: guide.title, slug: guide.slug }));
+  // Guides, then the landing pages, which otherwise nothing on the site links to.
+  const guideLinks = [
+    ...(guides ?? []).map((guide) => ({ title: guide.title, slug: guide.slug })),
+    ...(landingPages ?? [])
+      .filter((page) => LANDING_SLUGS.includes(page.slug))
+      .map((page) => ({ title: page.title, slug: page.slug, href: `/${page.slug}` })),
+  ];
 
   // ── STRUCTURED DATA (one @graph) ─────────────────────────────
   // Street address intentionally omitted: home based, appointment only.
@@ -153,7 +161,7 @@ export default async function RootLayout({
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }}
         />
       </head>
       <body className="bg-ivory text-charcoal antialiased">

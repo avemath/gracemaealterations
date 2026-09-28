@@ -5,13 +5,17 @@ import { notFound } from "next/navigation";
 import { getPolicies } from "@/lib/sanity.queries";
 import { pageMetadata, FALLBACK_OG_IMAGE } from "@/lib/metadata";
 
-export const metadata: Metadata = pageMetadata({
-  path: "/policies",
-  title: "Policies | Grace Mae Alterations | Pittsburgh, PA",
-  description:
-    "Deposits, rescheduling, rush work, pickup windows and the workmanship guarantee for alterations with Grace Mae in Pittsburgh.",
-  image: FALLBACK_OG_IMAGE,
-});
+// Unpublished policies are a 404, so they shouldn't claim a canonical URL.
+export async function generateMetadata(): Promise<Metadata> {
+  if (!(await getPolicies())) return { title: "Page not found", robots: { index: false } };
+  return pageMetadata({
+    path: "/policies",
+    title: "Policies | Grace Mae Alterations | Pittsburgh, PA",
+    description:
+      "Deposits, rescheduling, rush work, pickup windows and the workmanship guarantee for alterations with Grace Mae in Pittsburgh.",
+    image: FALLBACK_OG_IMAGE,
+  });
+}
 
 export default async function PoliciesPage() {
   const policies = await getPolicies();

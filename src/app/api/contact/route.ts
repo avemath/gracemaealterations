@@ -5,6 +5,7 @@ import {
   SHOES_UNDERGARMENT_LABELS,
 } from "@/lib/contactOptions";
 import { sanitizePhotoCheck, photoCheckLines } from "@/lib/photoCheck";
+import { getMergedSite } from "@/lib/sanity.queries";
 
 interface ContactPayload {
   name: string;
@@ -16,8 +17,6 @@ interface ContactPayload {
   isWaitlist?: boolean;
   /** Honeypot: any value means a bot filled it in. */
   company?: string;
-  /** e.g. "early 2027", when the waitlisted service reopens. */
-  reopensLabel?: string;
   attachments?: { filename: string; content: string }[];
   // Bridal
   dressDesigner?: string;
@@ -34,19 +33,43 @@ interface ContactPayload {
 }
 
 // ── Simple in-memory rate limit ──────────────────────────────────────────────
-// Five submissions per IP per hour. This is per instance, not a shared store,
-// which is enough to stop casual flooding of the inbox.
+// Five submissions per IP per hour, and a ceiling on all submissions per hour,
+// since each one also emails the address typed in. This is per instance, not
+// a shared store, which is enough to stop casual flooding.
 const RATE_LIMIT = 5;
+const HOURLY_CEILING = 40;
 const RATE_WINDOW_MS = 60 * 60 * 1000;
 const hits = new Map<string, number[]>();
+let all: number[] = [];
 
 function rateLimited(ip: string): boolean {
   const now = Date.now();
+  all = all.filter((t) => now - t < RATE_WINDOW_MS);
   const recent = (hits.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
+  if (recent.length >= RATE_LIMIT || all.length >= HOURLY_CEILING) return true;
   recent.push(now);
+  all.push(now);
   hits.set(ip, recent);
   if (hits.size > 5000) hits.clear();
-  return recent.length > RATE_LIMIT;
+  return false;
+}
+
+/**
+ * The confirmation goes to whatever address was typed in, so it must not carry
+ * anything a stranger could use to send their own message from Grace's
+ * address: only a plain first name, or no name at all.
+ */
+function greetingName(name: string): string {
+  const first = name.split(/\s+/)[0] ?? "";
+  return /^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'’-]{0,29}$/.test(first) ? first : "";
+}
+
+/** Only real photos go through: the file's first bytes must be a JPEG, PNG or WebP. */
+function photoType(buf: Buffer): "jpg" | "png" | "webp" | null {
+  if (buf.length > 3 && buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) return "jpg";
+  if (buf.length > 8 && buf.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return "png";
+  if (buf.length > 12 && buf.toString("ascii", 0, 4) === "RIFF" && buf.toString("ascii", 8, 12) === "WEBP") return "webp";
+  return null;
 }
 
 const SERVICE_LABELS: Record<string, string> = {
@@ -115,7 +138,9 @@ function readableDate(value: string): string {
 function timingNote(value: string, serviceType: string, now = new Date()): { text: string; rush: boolean } | null {
   const date = parseDate(value);
   if (!date) return null;
-  const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  // "Today" in Pittsburgh, so an evening request doesn't count from tomorrow.
+  const [y, mo, d] = now.toLocaleDateString("en-CA", { timeZone: "America/New_York" }).split("-").map(Number);
+  const today = Date.UTC(y, mo - 1, d);
   const days = Math.round((date.getTime() - today) / DAY_MS);
   if (days < 0) return { text: "This date has already passed. Worth checking with them.", rush: false };
 
@@ -187,6 +212,9 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
+  if (!raw || typeof raw !== "object") {
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
+  }
 
   // Bots fill the hidden field in; accept and drop so they get no signal.
   if (clean(raw.company) !== "") {
@@ -217,7 +245,10 @@ export async function POST(req: NextRequest) {
 
   const serviceType = clean(raw.serviceType);
   const isWaitlist = raw.isWaitlist === true;
-  const reopensLabel = clean(raw.reopensLabel).slice(0, 100);
+  // From Sanity, not the browser, since it goes into the confirmation email.
+  const reopensLabel = isWaitlist ? await getMergedSite().then((s) => s.reopensLabel ?? "", () => "") : "";
+  const hi = greetingName(name);
+  const hello = hi ? `Hi ${escapeHtml(hi)}, ` : "Hi, ";
   const eventDate = clean(raw.eventDate);
   const garmentDetails = clean(raw.garmentDetails);
   const referral = clean(raw.referralSource).slice(0, 100);
@@ -342,8 +373,8 @@ export async function POST(req: NextRequest) {
   const waitlistServiceWord = serviceType === "bridal" ? "bridal " : "";
 
   const waitlistIntro = reopensLabel
-    ? `Hi ${escapeHtml(name)}, you're on my ${waitlistServiceWord}waitlist. I'll reach out in order as dates open for ${escapeHtml(reopensLabel)}.`
-    : `Hi ${escapeHtml(name)}, your request has been received and you're on my waitlist. I'll reach out as soon as a spot opens up.`;
+    ? `${hello}you're on my ${waitlistServiceWord}waitlist. I'll reach out in order as dates open for ${escapeHtml(reopensLabel)}.`
+    : `${hello}your request has been received and you're on my waitlist. I'll reach out as soon as a spot opens up.`;
 
   const signOff = `
         <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
@@ -377,7 +408,7 @@ export async function POST(req: NextRequest) {
 
         <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
           <p style="font-size:15px;line-height:1.7;color:#1C1C1C;margin:0;">
-            Hi ${escapeHtml(name)}, thank you for reaching out. I've received your request, and I read every message myself. I'll reply as soon as I can.
+            ${hello}thank you for reaching out. I've received your request, and I read every message myself. I'll reply as soon as I can.
           </p>
         </div>
 
@@ -408,12 +439,13 @@ export async function POST(req: NextRequest) {
   const emailAttachments = (Array.isArray(raw.attachments) ? raw.attachments : [])
     .slice(0, MAX_ATTACHMENTS)
     .filter((a) => typeof a?.filename === "string" && typeof a?.content === "string" && a.content)
-    .map((a) => {
+    .flatMap((a, i) => {
       const base64 = a.content.includes(",") ? a.content.split(",")[1] : a.content;
-      return {
-        filename: a.filename.replace(/[^\w.\- ]+/g, "_").slice(0, 100) || "photo.jpg",
-        content: Buffer.from(base64, "base64"),
-      };
+      const content = Buffer.from(base64, "base64");
+      const type = photoType(content);
+      if (!type) return [];
+      const stem = a.filename.replace(/\.[^.]*$/, "").replace(/[^\w\- ]+/g, "_").slice(0, 80) || `photo-${i + 1}`;
+      return [{ filename: `${stem}.${type}`, content }];
     });
 
   try {

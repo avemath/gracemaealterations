@@ -6,9 +6,11 @@ import Anthropic from "@anthropic-ai/sdk";
  * garment, fabric and what she did; this returns a few short sections in her
  * voice, which land in the Studio as ordinary editable text.
  *
- * The input is three short strings and the output is care notes only, so the
- * route is no use as a general-purpose AI. Still limited: this site's own
- * pages only, and twenty drafts per connection per hour.
+ * Only people signed in to this site's Sanity project can use it: the Studio
+ * sends the editor's own Sanity token, and the route asks Sanity whether that
+ * token belongs to a project member before spending anything. The input is
+ * three short strings and the output is care notes only, and there is still
+ * a limit of twenty drafts per person per hour.
  */
 
 export const maxDuration = 60;
@@ -29,17 +31,26 @@ function rateLimited(ip: string): boolean {
   return recent.length > RATE_LIMIT;
 }
 
-function allowedOrigin(origin: string | null): boolean {
-  if (!origin) return false;
+const PROJECT_ID = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+/** Tokens Sanity has confirmed recently, so each draft doesn't need a second round trip. */
+const verified = new Map<string, number>();
+const VERIFIED_FOR_MS = 10 * 60 * 1000;
+
+/** True when the token belongs to someone with access to this Sanity project. */
+async function isProjectMember(token: string): Promise<boolean> {
+  if (!PROJECT_ID || !/^[\w.-]{20,400}$/.test(token)) return false;
+  const seen = verified.get(token);
+  if (seen && Date.now() - seen < VERIFIED_FOR_MS) return true;
   try {
-    const host = new URL(origin).hostname;
-    return (
-      host === "gracemaealterations.com" ||
-      host === "www.gracemaealterations.com" ||
-      host === "localhost" ||
-      host === "127.0.0.1" ||
-      host.endsWith(".vercel.app")
-    );
+    const res = await fetch(`https://api.sanity.io/v2021-06-07/projects/${PROJECT_ID}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) return false;
+    if (verified.size > 200) verified.clear();
+    verified.set(token, Date.now());
+    return true;
   } catch {
     return false;
   }
@@ -86,12 +97,14 @@ export async function POST(req: NextRequest) {
       { status: 503 }
     );
   }
-  if (!allowedOrigin(req.headers.get("origin"))) {
-    return NextResponse.json({ error: "Not allowed." }, { status: 403 });
+  const token = req.headers.get("authorization")?.match(/^Bearer (.+)$/)?.[1] ?? "";
+  if (!(await isProjectMember(token))) {
+    return NextResponse.json(
+      { error: "Drafting only works from the Studio while you're signed in. Sign out and back in, then try again." },
+      { status: 401 }
+    );
   }
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? req.headers.get("x-real-ip") ?? "unknown";
-  if (rateLimited(ip)) {
+  if (rateLimited(token.slice(-24))) {
     return NextResponse.json({ error: "That's a lot of drafts for one hour. Try again a little later." }, { status: 429 });
   }
 
@@ -108,7 +121,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Fill in Garment first." }, { status: 400 });
   }
 
-  const client = new Anthropic({ timeout: 50_000, maxRetries: 1 });
+  const client = new Anthropic({ timeout: 50_000, maxRetries: 0 });
   try {
     const response = await client.beta.messages.create({
       model: MODEL,
