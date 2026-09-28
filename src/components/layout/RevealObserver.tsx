@@ -37,7 +37,11 @@ export default function RevealObserver() {
           io.unobserve(entry.target);
         }
       },
-      { threshold: 0.15, rootMargin: "0px 0px -10% 0px" }
+      // Any overlap counts, once the element is 10% of the screen above the
+      // bottom edge. A ratio threshold (it was 0.15) can never be met by an
+      // element taller than the screen divided by that ratio: the portfolio
+      // grid passed 5,400px and stayed invisible, on phones especially.
+      { threshold: 0, rootMargin: "0px 0px -10% 0px" }
     );
 
     const track = (el: Element) => {
