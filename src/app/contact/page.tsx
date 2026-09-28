@@ -1,19 +1,9 @@
 import type { Metadata } from "next";
+import { pageMetadata, PAGE_META } from "@/lib/metadata";
 import { getMergedSite, getMergedFaq, getMergedContactPage } from "@/lib/sanity.queries";
 import ContactPageContent from "./ContactPageContent";
 
-export const metadata: Metadata = {
-  title: { absolute: "Book a Consultation | Grace Mae Alterations | Pittsburgh, PA" },
-  description:
-    "Request a bridal or tailoring consultation in Pittsburgh. Every inquiry gets a personal reply.",
-  alternates: { canonical: "https://gracemaealterations.com/contact" },
-  openGraph: {
-    title: "Book a Consultation | Grace Mae Alterations | Pittsburgh, PA",
-    description:
-      "Request a bridal or tailoring consultation in Pittsburgh. Every inquiry gets a personal reply.",
-    url: "https://gracemaealterations.com/contact",
-  },
-};
+export const metadata: Metadata = pageMetadata(PAGE_META.contact);
 
 
 export default async function ContactPage() {

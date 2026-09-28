@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { urlFor } from "@/lib/sanity.image";
+import { sanityLoader } from "@/lib/sanity.loader";
 import ImagePlaceholder from "./ImagePlaceholder";
 import type { SanityImage as SanityImageType } from "@/lib/sanity.queries";
 
@@ -32,9 +33,14 @@ export default function SanityImage({
 }: SanityImageProps) {
   // Show real image if Sanity asset exists
   if (image?.asset) {
+    // Base URL only: the loader appends w, q, auto and fit, so the file is
+    // compressed once rather than by Sanity and then again by Next.
     let src: string;
-    try { src = urlFor(image).auto("format").quality(85).url(); }
+    try { src = urlFor(image).fit("max").url(); }
     catch { return <ImagePlaceholder label={placeholderLabel} aspectRatio={placeholderRatio} className={className} />; }
+
+    const lqip = image.asset.metadata?.lqip;
+    const blur = lqip ? { placeholder: "blur" as const, blurDataURL: lqip } : {};
     const resolvedAlt = alt ?? image.alt ?? placeholderLabel;
 
     // Crop around the editor's hotspot instead of the centre of the frame.
@@ -48,6 +54,7 @@ export default function SanityImage({
       return (
         <Image
           src={src}
+          loader={sanityLoader}
           alt={resolvedAlt}
           fill
           className={`object-cover ${className}`}
@@ -55,6 +62,7 @@ export default function SanityImage({
           priority={priority}
           sizes={sizes ?? "(max-width: 768px) 100vw, 50vw"}
           aria-hidden={ariaHidden}
+          {...blur}
         />
       );
     }
@@ -66,6 +74,7 @@ export default function SanityImage({
     return (
       <Image
         src={src}
+        loader={sanityLoader}
         alt={resolvedAlt}
         width={width ?? dimensions?.width ?? 800}
         height={height ?? dimensions?.height ?? 600}
@@ -74,6 +83,7 @@ export default function SanityImage({
         priority={priority}
         sizes={sizes ?? "(max-width: 768px) 100vw, 50vw"}
         aria-hidden={ariaHidden}
+        {...blur}
       />
     );
   }

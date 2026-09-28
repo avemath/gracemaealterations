@@ -1,19 +1,9 @@
 import type { Metadata } from "next";
+import { pageMetadata, PAGE_META } from "@/lib/metadata";
 import { getMergedSite, getMergedAboutPage, getMergedValues } from "@/lib/sanity.queries";
 import AboutPageContent from "./AboutPageContent";
 
-export const metadata: Metadata = {
-  title: { absolute: "About Grace Mae | Pittsburgh Bridal Seamstress" },
-  description:
-    "Formally trained designer and former Lead Alterations Specialist at David's Bridal, now working independently in Pittsburgh.",
-  alternates: { canonical: "https://gracemaealterations.com/about" },
-  openGraph: {
-    title: "About Grace Mae | Pittsburgh Bridal Seamstress",
-    description:
-      "Formally trained designer and former Lead Alterations Specialist at David's Bridal, now working independently in Pittsburgh.",
-    url: "https://gracemaealterations.com/about",
-  },
-};
+export const metadata: Metadata = pageMetadata(PAGE_META.about);
 
 
 export default async function AboutPage() {
