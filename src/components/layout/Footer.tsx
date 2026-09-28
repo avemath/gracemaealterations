@@ -42,8 +42,11 @@ interface FooterProps {
 const columnHeading = "font-jost font-medium text-ivory text-xs tracking-[0.22em] uppercase mb-4";
 // The vertical padding makes each link a comfortable tap target (32px tall)
 // without spreading the columns out; the lists below tighten to match.
+// No display here: each link sets its own. With inline-block in here, "block"
+// on the email link lost to it (Tailwind orders inline-block later), and the
+// email and "Send a request" ran together on one line.
 const linkClass =
-  "inline-block py-1.5 font-jost text-ivory/75 text-sm hover:text-ivory transition-colors duration-300";
+  "py-1.5 font-jost text-ivory/75 text-sm hover:text-ivory transition-colors duration-300";
 
 export default function Footer({
   siteName,
@@ -102,7 +105,7 @@ export default function Footer({
               <ul>
                 {guides.map((guide) => (
                   <li key={guide.slug}>
-                    <Link href={`/guides/${guide.slug}`} className={linkClass}>
+                    <Link href={`/guides/${guide.slug}`} className={`${linkClass} inline-block`}>
                       {guide.title}
                     </Link>
                   </li>
@@ -117,7 +120,7 @@ export default function Footer({
             <ul>
               {hasPolicies && (
                 <li>
-                  <Link href="/policies" className={linkClass}>
+                  <Link href="/policies" className={`${linkClass} inline-block`}>
                     Policies
                   </Link>
                 </li>
@@ -139,7 +142,7 @@ export default function Footer({
                     href={googleReviewUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={linkClass}
+                    className={`${linkClass} inline-block`}
                   >
                     Leave a Google review
                   </a>

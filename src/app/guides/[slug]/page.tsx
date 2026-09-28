@@ -176,12 +176,6 @@ export default async function GuidePage({ params }: { params: { slug: string } }
                             <dd className="inline">{style.fabricNotes}</dd>
                           </div>
                         )}
-                        {typeof style.priceFrom === "number" && (
-                          <div>
-                            <dt className="inline font-medium text-charcoal">From: </dt>
-                            <dd className="inline lining-nums">${style.priceFrom}</dd>
-                          </div>
-                        )}
                       </dl>
                     </li>
                   ))}

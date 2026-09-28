@@ -68,7 +68,6 @@ export default async function RootLayout({
   // ── STRUCTURED DATA (one @graph) ─────────────────────────────
   // Street address intentionally omitted: home based, appointment only.
   // No telephone: the contact form is the only channel.
-  const GBP_URL = "";
   const BUSINESS_ID = `${SITE_URL}/#business`;
 
   const jsonLd = {
@@ -91,7 +90,7 @@ export default async function RootLayout({
           addressCountry: "US",
         },
         areaServed: "Pittsburgh, PA",
-        sameAs: [site.instagramUrl, GBP_URL].filter(Boolean),
+        sameAs: [site.instagramUrl, site.googleBusinessUrl].filter(Boolean),
         knowsAbout: [
           "Bridal Alterations",
           "Wedding Dress Alterations",
@@ -175,7 +174,7 @@ export default async function RootLayout({
             instagram: site.instagram,
             instagramUrl: site.instagramUrl,
             email: site.email,
-            googleReviewUrl: GBP_URL || undefined,
+            googleReviewUrl: site.googleReviewUrl || undefined,
             guides: guideLinks,
             hasPolicies: !!policies,
             limitedMode: site.limitedMode,

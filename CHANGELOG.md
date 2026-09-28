@@ -9,6 +9,14 @@ Newest first. Grace facing notes live in `site/content/FOR-GRACE.md`.
   - The copy for each style comes from the Studio's Bustle Styles once they are published, and falls back to the same wording until then.
   - On phones, the process timeline is now sewn: a running stitch follows the scroll, a needle leads it, and each step's dot fills in as the thread passes it.
 
+## Cleanup and drafts, September 2026
+
+- `chore: price leftovers out, Google links in Studio, drafts ready to publish`:
+  - The hidden "Three real gowns, three real quotes" block and the bustle "Price from" boxes are gone from the site and hidden in Studio, in line with quoting every garment at the fitting.
+  - The footer's "Leave a Google review" link read from a blank constant in the code, and Studio had no field for it, so it could never appear. Site Settings now has a Google Business Profile link and a Google review link. The profile link also goes into the structured data, so Google ties the site to the profile.
+  - `npm run content:publish` puts the three guides, five bustle styles and two landing pages live after review. It takes out the [DRAFT] markers and fixes what the review found: British spellings, and a promised referral Grace may not be able to give. Policies stay off until Grace confirms them.
+  - FOR-GRACE has a short "Only you can do these" list.
+
 ## Price list removed, September 2026
 
 - `feat: drop the itemised price list from services`: the "See typical prices" list under each service had no prices in it, so every row read "quoted at fitting". Every garment is priced at the fitting, so the list is gone and each service shows only its price range, note and typical timeline. The Studio field is hidden, not deleted, so nothing is lost.

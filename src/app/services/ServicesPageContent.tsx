@@ -6,13 +6,11 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import SanityImage from "@/components/ui/SanityImage";
 import CTABanner from "@/components/sections/CTABanner";
 import BustleExplorer, { type BustleCopy } from "@/components/sections/BustleExplorer";
-import ExampleQuotes from "@/components/sections/ExampleQuotes";
 import { ctas } from "@/lib/cta";
 import type {
   SanityService,
   SanityImage as SanityImageType,
   SanityPricingCard,
-  SanityExampleQuote,
 } from "@/lib/sanity.queries";
 
 const CHECK_ICON = (
@@ -28,8 +26,6 @@ interface ServicesPageData {
   pricingLabel: string;
   pricingHeading: string;
   pricingCards: SanityPricingCard[];
-  exampleQuotes: SanityExampleQuote[];
-  exampleQuotesCaption: string;
   ctaHeadline: string;
   ctaSubhead: string;
   ctaButton: string;
@@ -230,11 +226,6 @@ export default function ServicesPageContent({
 
                 {service.id === "bridal" && (
                   <>
-                    <ExampleQuotes
-                      quotes={page.exampleQuotes}
-                      caption={page.exampleQuotesCaption}
-                    />
-
                     <div className="mt-12 border-t border-blush pt-8">
                       <h3 className="font-cormorant italic text-charcoal text-2xl mb-3">
                         Bridal party &amp; mother of the bride

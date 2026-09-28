@@ -43,6 +43,8 @@ export interface SanitySiteSettings {
   email?: string;
   instagram?: string;
   instagramUrl?: string;
+  googleBusinessUrl?: string;
+  googleReviewUrl?: string;
   location?: string;
   availability?: string;
   responseTime?: string;
@@ -118,8 +120,6 @@ export interface SanityServicesPage {
   pricingLabel?: string;
   pricingHeading?: string;
   pricingCards?: SanityPricingCard[];
-  exampleQuotes?: SanityExampleQuote[];
-  exampleQuotesCaption?: string;
   ctaHeadline?: string;
   ctaSubhead?: string;
   ctaButton?: string;
@@ -150,12 +150,6 @@ export interface SanityContactPage {
   successHeading?: string;
   successMessage?: string;
   waitlistSuccessMessage?: string;
-}
-
-export interface SanityExampleQuote {
-  gown: string;
-  work: string;
-  price?: number | null;
 }
 
 export interface SanityService {
@@ -260,8 +254,6 @@ export async function getServicesPage(): Promise<SanityServicesPage | null> {
     heroLabel, heroHeading,
     pricingLabel, pricingHeading,
     pricingCards[]{ title, body },
-    exampleQuotes[]{ gown, work, price },
-    exampleQuotesCaption,
     ctaHeadline, ctaSubhead, ctaButton
   }`);
 }
@@ -350,7 +342,6 @@ export interface SanityBustleStyle {
   typicalPoints?: string;
   bestFor?: string;
   fabricNotes?: string;
-  priceFrom?: number | null;
 }
 
 export interface SanityLandingPage {
@@ -407,7 +398,7 @@ export async function getPublishedBustleStyles(): Promise<SanityBustleStyle[] | 
   return safeFetch<SanityBustleStyle[]>(`*[_type == "bustleStyle" && published == true] | order(order asc) {
     _id, name, "slug": slug.current,
     image{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
-    alsoCalled, typicalPoints, bestFor, fabricNotes, priceFrom
+    alsoCalled, typicalPoints, bestFor, fabricNotes
   }`).then((styles) =>
     styles
       ? styles.map((style) => ({
@@ -540,6 +531,8 @@ export async function getMergedSite() {
     email: s?.email ?? SITE.email,
     instagram: s?.instagram ?? SITE.instagram,
     instagramUrl: s?.instagramUrl ?? SITE.instagramUrl,
+    googleBusinessUrl: s?.googleBusinessUrl ?? "",
+    googleReviewUrl: s?.googleReviewUrl ?? "",
     location: s?.location ?? SITE.location,
     availability: s?.availability ?? SITE.availability,
     responseTime: s?.responseTime ?? SITE.responseTime,
@@ -613,12 +606,6 @@ export async function getMergedServicesPage() {
     pricingLabel: p?.pricingLabel ?? SERVICES_TEXT.pricingLabel,
     pricingHeading: p?.pricingHeading ?? SERVICES_TEXT.pricingHeading,
     pricingCards: p?.pricingCards?.length ? p.pricingCards : PRICING_CARDS,
-    // Rows without a real total never reach the client, so placeholder copy
-    // cannot appear even in the serialised props.
-    exampleQuotes: (p?.exampleQuotes ?? [])
-      .filter((q) => typeof q.price === "number")
-      .map((q) => ({ ...q, gown: stripDraft(q.gown), work: stripDraft(q.work) })),
-    exampleQuotesCaption: p?.exampleQuotesCaption ?? "",
     ctaHeadline: p?.ctaHeadline ?? SERVICES_TEXT.ctaHeadline,
     ctaSubhead: p?.ctaSubhead ?? SERVICES_TEXT.ctaSubhead,
     ctaButton: p?.ctaButton ?? SERVICES_TEXT.ctaButton,
