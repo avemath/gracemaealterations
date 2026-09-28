@@ -30,6 +30,7 @@ Marketing website for Grace Mae Alterations - a bridal and clothing alterations 
 ## Features
 
 - **Inquiry form** - three branches (tailoring, bridal, bridal party) with a short optional bridal intake; up to five photos, resized in the browser so the request stays under Vercel's 4.5 MB body limit; honeypot and per-instance rate limiting; waitlist mode per service
+- **Care cards** - one per finished garment, made in the Studio (Care Cards). "Draft care notes" writes a first version from the garment, fabric and work (Anthropic API, needs `ANTHROPIC_API_KEY`); "Print the card" opens a business-card-size card with a QR code. The code opens `/care/<code>`: care notes, the before and after, and a Google review button once the review link is set. Private by link, noindex, never in the sitemap
 - **Email notifications** - Resend sends a formatted notification to Grace and a confirmation email to the client on every submission
 - **Sanity CMS** - all page content and images are editable via the embedded Studio; the app falls back to static `src/data/content.ts` values when Sanity is not configured
 - **Portfolio lightbox** - click any portfolio image to open a full-screen lightbox
