@@ -2,7 +2,10 @@
 
 Newest first. Grace facing notes live in `site/content/FOR-GRACE.md`.
 
-## Brand fonts, September 2026
+## Type and stats bar, September 2026
+
+- `revert: Georgia and system sans, big gold stats bar`: Cormorant Garamond and Jost were live for a few hours and read as too thin and hard to read, so the site goes back to what visitors always saw: Georgia headings and the system sans-serif body, now set on purpose and with no web fonts downloaded. The home page gets back its large stats bar (B.S. Fashion Design, 500+ garments altered, Pittsburgh, PA), in gold_dark, with the garment count ticking up as it scrolls in. The small four-item trust strip it replaced is gone.
+
 
 - `fix: brand fonts finally load; tighter mobile hero; honest count-up`:
   - Since April, `globals.css` redefined `--font-cormorant` and `--font-jost` on `:root` with the plain family names. That overrode the names next/font generates, so no brand font ever matched and every heading fell back to Georgia (Times on phones without it). Cormorant Garamond and Jost now load.

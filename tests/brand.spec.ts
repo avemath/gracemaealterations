@@ -1,22 +1,23 @@
 import { test, expect } from "@playwright/test";
 
 /**
- * The brand typefaces actually render. A :root redefinition of
- * --font-cormorant in globals.css once overrode next/font's generated family
- * names, so every heading fell back to Georgia and nobody noticed for months.
+ * Type: Georgia headings and the system sans-serif body, chosen on purpose.
+ * Cormorant Garamond and Jost were tried and dropped as harder to read, so
+ * no web font should be downloaded.
  */
-test("Cormorant Garamond and Jost load and are used", async ({ page }) => {
-  await page.goto("/");
-  await page.evaluate(() => document.fonts.ready);
+test("headings use Georgia and body copy the system sans, with no web fonts", async ({ page }) => {
+  const fontFiles: string[] = [];
+  page.on("request", (r) => {
+    if (/\.(woff2?|ttf|otf)(\?|$)/.test(r.url())) fontFiles.push(r.url());
+  });
+  await page.goto("/", { waitUntil: "networkidle" });
   const fonts = await page.evaluate(() => ({
     h1: getComputedStyle(document.querySelector("h1")!).fontFamily,
     body: getComputedStyle(document.body).fontFamily,
-    loaded: Array.from(document.fonts).filter((f) => f.status === "loaded").map((f) => f.family),
   }));
-  expect(fonts.h1).toMatch(/Cormorant_Garamond/);
-  expect(fonts.body).toMatch(/Jost/);
-  expect(fonts.loaded.some((f) => /Cormorant_Garamond/.test(f))).toBe(true);
-  expect(fonts.loaded.some((f) => /Jost/.test(f))).toBe(true);
+  expect(fonts.h1).toMatch(/^Georgia/);
+  expect(fonts.body).toBe("sans-serif");
+  expect(fontFiles).toEqual([]);
 });
 
 test("on a phone the headline sits right under the portrait", async ({ page }, testInfo) => {
@@ -28,21 +29,30 @@ test("on a phone the headline sits right under the portrait", async ({ page }, t
   expect(top).toBeLessThan(700);
 });
 
-test("the trust strip never says 0+, to eyes or to screen readers", async ({ page }) => {
+test("the stats bar shows big gold figures and counts the garments up", async ({ page }) => {
   await page.goto("/");
-  const strip = page.getByRole("region", { name: "Experience and credentials" });
-  await expect(page.locator("[data-countup]")).toHaveCount(1);
+  const bar = page.getByRole("region", { name: "Experience and credentials" });
+  const counter = page.locator("[data-countup]");
+  await expect(counter).toHaveCount(1);
 
-  // What a screen reader reads: everything except aria-hidden nodes. It must
-  // carry the real figure even while the visual count is parked at 0 off screen.
-  const spoken = await strip.evaluate((el) => {
+  // Screen readers get the real figure even before the count has run.
+  const spoken = await bar.evaluate((el) => {
     const clone = el.cloneNode(true) as HTMLElement;
     clone.querySelectorAll('[aria-hidden="true"]').forEach((n) => n.remove());
     return clone.textContent ?? "";
   });
-  expect(spoken).toMatch(/[1-9]\d*\+ garments/);
+  expect(spoken).toMatch(/[1-9]\d*\+/);
 
-  // Once on screen, the visible count lands on the same figure.
-  await strip.scrollIntoViewIfNeeded();
-  await expect(page.locator("[data-countup]")).toHaveText(/^[1-9]\d*\+$/, { timeout: 5000 });
+  // Large and gold, not body-sized text.
+  const style = await counter.evaluate((el) => {
+    const cs = getComputedStyle(el);
+    return { size: parseFloat(cs.fontSize), color: cs.color };
+  });
+  expect(style.size).toBeGreaterThanOrEqual(28);
+  expect(style.color).toBe("rgb(168, 136, 46)");
+
+  // The bar starts below the first screen, so the count plays on scroll and
+  // lands on the real figure.
+  await bar.scrollIntoViewIfNeeded();
+  await expect(counter).toHaveText(/^[1-9]\d*\+$/, { timeout: 5000 });
 });
