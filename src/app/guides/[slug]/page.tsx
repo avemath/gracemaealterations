@@ -10,6 +10,7 @@ import {
 import { pageMetadata, SITE_URL, FALLBACK_OG_IMAGE } from "@/lib/metadata";
 import SanityImage from "@/components/ui/SanityImage";
 import BustleExplorer from "@/components/sections/BustleExplorer";
+import FittingChecklist, { type ChecklistItem } from "@/components/sections/FittingChecklist";
 
 export const revalidate = 60;
 
@@ -33,6 +34,21 @@ export async function generateMetadata({
   });
 }
 
+/** Each paragraph becomes one checklist item: its first sentence as the title, the rest below. */
+function checklistItems(body: unknown[]): ChecklistItem[] {
+  return body
+    .map((block) => {
+      const b = block as { _type?: string; children?: { text?: string }[] };
+      if (b._type !== "block") return "";
+      return (b.children ?? []).map((c) => c.text ?? "").join("").trim();
+    })
+    .filter(Boolean)
+    .map((text) => {
+      const m = text.match(/^(.+?[.!?])\s+([\s\S]*)$/);
+      return m ? { lead: m[1], rest: m[2] } : { lead: text, rest: "" };
+    });
+}
+
 export default async function GuidePage({ params }: { params: { slug: string } }) {
   const guide = await getGuide(params.slug);
   if (!guide) notFound();
@@ -40,6 +56,11 @@ export default async function GuidePage({ params }: { params: { slug: string } }
   // The bustle guide renders the bustle style cards.
   const isBustleGuide = guide.slug === "wedding-dress-bustle-types";
   const bustleStyles = isBustleGuide ? (await getPublishedBustleStyles()) ?? [] : [];
+  // The "what to bring" guide is a list, so it reads as a packing checklist.
+  const checklist =
+    guide.slug === "what-to-bring-to-your-wedding-dress-fitting" && guide.body?.length
+      ? checklistItems(guide.body)
+      : [];
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -108,7 +129,9 @@ export default async function GuidePage({ params }: { params: { slug: string } }
 
         <section className="bg-ivory py-14 lg:py-20 px-6">
           <div className="max-w-3xl mx-auto">
-            {guide.body && guide.body.length > 0 && (
+            {checklist.length > 0 ? (
+              <FittingChecklist items={checklist} />
+            ) : guide.body && guide.body.length > 0 && (
               <div className="font-jost text-charcoal/75 text-base leading-[1.65] max-w-[65ch] space-y-5">
                 <PortableText value={guide.body as PortableTextBlock[]} />
               </div>
