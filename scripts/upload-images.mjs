@@ -71,7 +71,13 @@ const VERSIONS = {};
  * Assets no longer used by any slot. After the patches land, each is deleted
  * if nothing references it any more.
  */
-const RETIRED = ["grace-portrait-studio.jpg", "grace-portrait-studio-v2.jpg"];
+const RETIRED = [
+  "grace-portrait-studio.jpg",
+  "grace-portrait-studio-v2.jpg",
+  "card-bridal.jpg",
+  "card-tailoring.jpg",
+  "card-custom.jpg",
+];
 
 /** assets/prepared name → the originalFilename it is stored under in Sanity. */
 function assetFilename(file) {
@@ -142,21 +148,21 @@ const SERVICE_SLOTS = [
   {
     slug: "bridal",
     field: "cardImage",
-    file: "card-bridal.jpg",
+    file: "card-bridal-v2.jpg",
     hotspot: { x: 0.5, y: 0.7 },
     alt: "Beaded lace and pearls in low light",
   },
   {
     slug: "tailoring",
     field: "cardImage",
-    file: "card-tailoring.jpg",
+    file: "card-tailoring-v2.jpg",
     hotspot: { x: 0.5, y: 0.4 },
     alt: "Charcoal wool with tape measure and pin",
   },
   {
     slug: "custom",
     field: "cardImage",
-    file: "card-custom.jpg",
+    file: "card-custom-v2.jpg",
     hotspot: { x: 0.5, y: 0.65 },
     alt: "Gold embroidery on velvet with embroidery scissors",
   },
