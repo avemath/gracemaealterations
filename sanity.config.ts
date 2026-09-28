@@ -77,6 +77,21 @@ export default defineConfig({
               .child(S.documentTypeList("faqItem").title("FAQ Items")),
 
             S.listItem()
+              .title("Guides")
+              .id("guides")
+              .child(S.documentTypeList("guide").title("Guides")),
+
+            S.listItem()
+              .title("Bustle Styles")
+              .id("bustleStyles")
+              .child(S.documentTypeList("bustleStyle").title("Bustle Styles")),
+
+            S.listItem()
+              .title("Landing Pages")
+              .id("landingPages")
+              .child(S.documentTypeList("landingPage").title("Landing Pages")),
+
+            S.listItem()
               .title("Values")
               .id("values")
               .child(S.documentTypeList("value").title("Values")),

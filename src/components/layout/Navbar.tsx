@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useFocusTrap } from "@/lib/useFocusTrap";
 import { ctas } from "@/lib/cta";
 
-const NAV_LINKS = [
+const BASE_NAV_LINKS = [
   { label: "Services", href: "/services" },
   { label: "Portfolio", href: "/portfolio" },
   { label: "About", href: "/about" },
@@ -19,9 +19,20 @@ interface NavbarProps {
   businessName: string;
   limitedMode?: boolean;
   reopensLabel?: string;
+  /** Guides appear in the nav only once one is published. */
+  hasGuides?: boolean;
 }
 
-export default function Navbar({ siteName, businessName, limitedMode = false, reopensLabel = "" }: NavbarProps) {
+export default function Navbar({
+  siteName,
+  businessName,
+  limitedMode = false,
+  reopensLabel = "",
+  hasGuides = false,
+}: NavbarProps) {
+  const NAV_LINKS = hasGuides
+    ? [...BASE_NAV_LINKS.slice(0, 2), { label: "Guides", href: "/guides" }, ...BASE_NAV_LINKS.slice(2)]
+    : BASE_NAV_LINKS;
   const { primary } = ctas({ limitedMode, reopensLabel });
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);

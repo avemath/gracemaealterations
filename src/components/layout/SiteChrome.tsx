@@ -36,6 +36,7 @@ export default function SiteChrome({ children, site }: Props) {
         businessName={site.businessName}
         limitedMode={site.limitedMode}
         reopensLabel={site.reopensLabel}
+        hasGuides={(site.guides?.length ?? 0) > 0}
       />
       {children}
       <Footer

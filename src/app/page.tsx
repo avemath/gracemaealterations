@@ -47,6 +47,11 @@ export default async function HomePage() {
           pullQuote: about.pullQuote,
         },
         aboutSecondaryImage: about.secondaryImage,
+        instagram: {
+          posts: site.instagramPosts ?? [],
+          handle: site.instagram,
+          profileUrl: site.instagramUrl,
+        },
         testimonials,
         text: {
           heroSectionLabel: home.heroSectionLabel,

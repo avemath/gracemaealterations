@@ -53,6 +53,7 @@ export interface SanitySiteSettings {
   reopensLabel?: string;
   limitedNote?: string;
   trustItems?: string[];
+  instagramPosts?: { image?: SanityImage; permalink?: string; alt?: string }[];
 }
 
 export interface SanityProcessStep {
@@ -183,6 +184,7 @@ export interface SanityPortfolioItem {
   label: string;
   caption?: string | null;
   featured?: boolean | null;
+  slug?: string | null;
   type: "bridal" | "tailoring" | "custom";
   order: number;
 }
@@ -308,7 +310,9 @@ export async function getTestimonials(): Promise<SanityTestimonial[] | null> {
 
 export async function getPortfolioItems(): Promise<SanityPortfolioItem[] | null> {
   return safeFetch(`*[_type == "portfolioItem"] | order(order asc) {
-    _id, image{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot }, label, caption, featured, type, order
+    _id, image{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
+    label, caption, featured, type, order,
+    "slug": select(caseStudy == true => slug.current, null)
   }`);
 }
 
@@ -318,6 +322,147 @@ export async function getFaqItems(): Promise<SanityFaqItem[] | null> {
 
 export async function getValues(): Promise<SanityValue[] | null> {
   return safeFetch(`*[_type == "value"] | order(order asc) { _id, title, description }`);
+}
+
+// ── GUIDES, BUSTLE STYLES, LANDING PAGES, CASE STUDIES ────────
+// Every one of these routes renders published documents only.
+
+export interface SanityTimelineStep {
+  weeksOut: string;
+  title: string;
+  detail?: string;
+}
+
+export interface SanityGuide {
+  _id: string;
+  _updatedAt?: string;
+  title: string;
+  slug: string;
+  summary?: string;
+  heroImage?: SanityImage | null;
+  body?: unknown[];
+  timelineSteps?: SanityTimelineStep[];
+  seo?: { title?: string; description?: string };
+}
+
+export interface SanityBustleStyle {
+  _id: string;
+  name: string;
+  slug: string;
+  image?: SanityImage | null;
+  alsoCalled?: string;
+  typicalPoints?: string;
+  bestFor?: string;
+  fabricNotes?: string;
+  priceFrom?: number | null;
+}
+
+export interface SanityLandingPage {
+  _id: string;
+  _updatedAt?: string;
+  title: string;
+  slug: string;
+  intro?: string;
+  sections?: { heading: string; body: string }[];
+  seo?: { title?: string; description?: string };
+}
+
+const GUIDE_FIELDS = `
+  _id, _updatedAt, title, "slug": slug.current, summary,
+  heroImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
+  body,
+  timelineSteps[]{ weeksOut, title, detail },
+  seo
+`;
+
+export async function getPublishedGuides(): Promise<SanityGuide[] | null> {
+  return safeFetch(`*[_type == "guide" && published == true] | order(order asc) { ${GUIDE_FIELDS} }`);
+}
+
+export async function getGuide(slug: string): Promise<SanityGuide | null> {
+  if (!sanityClient) return null;
+  try {
+    return await sanityClient.fetch(
+      `*[_type == "guide" && published == true && slug.current == $slug][0]{ ${GUIDE_FIELDS} }`,
+      { slug },
+      { next: { revalidate: 60 } }
+    );
+  } catch {
+    return null;
+  }
+}
+
+export async function getPublishedBustleStyles(): Promise<SanityBustleStyle[] | null> {
+  return safeFetch(`*[_type == "bustleStyle" && published == true] | order(order asc) {
+    _id, name, "slug": slug.current,
+    image{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
+    alsoCalled, typicalPoints, bestFor, fabricNotes, priceFrom
+  }`);
+}
+
+const LANDING_FIELDS = `
+  _id, _updatedAt, title, "slug": slug.current, intro,
+  sections[]{ heading, body }, seo
+`;
+
+export async function getPublishedLandingPages(): Promise<SanityLandingPage[] | null> {
+  return safeFetch(`*[_type == "landingPage" && published == true]{ ${LANDING_FIELDS} }`);
+}
+
+export async function getLandingPage(slug: string): Promise<SanityLandingPage | null> {
+  if (!sanityClient) return null;
+  try {
+    return await sanityClient.fetch(
+      `*[_type == "landingPage" && published == true && slug.current == $slug][0]{ ${LANDING_FIELDS} }`,
+      { slug },
+      { next: { revalidate: 60 } }
+    );
+  } catch {
+    return null;
+  }
+}
+
+export interface SanityCaseStudy extends SanityPortfolioItem {
+  _updatedAt?: string;
+  slug: string;
+  designer?: string;
+  silhouette?: string;
+  alterations?: string[];
+  fittings?: number | null;
+  weeks?: number | null;
+  venue?: string;
+  beforeImage?: SanityImage | null;
+  afterImage?: SanityImage | null;
+  gallery?: SanityImage[];
+  testimonial?: SanityTestimonial | null;
+}
+
+const CASE_STUDY_FIELDS = `
+  _id, _updatedAt, label, caption, type, order, "slug": slug.current,
+  designer, silhouette, alterations, fittings, weeks, venue,
+  image{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
+  beforeImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
+  afterImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
+  gallery[]{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
+  testimonial->{ _id, quote, name, occasion, dressDesigner, alterations, venue, month, source }
+`;
+
+export async function getCaseStudies(): Promise<SanityCaseStudy[] | null> {
+  return safeFetch(`*[_type == "portfolioItem" && caseStudy == true && defined(slug.current)]
+    | order(order asc) { ${CASE_STUDY_FIELDS} }`);
+}
+
+export async function getCaseStudy(slug: string): Promise<SanityCaseStudy | null> {
+  if (!sanityClient) return null;
+  try {
+    return await sanityClient.fetch(
+      `*[_type == "portfolioItem" && caseStudy == true && slug.current == $slug][0]{ ${CASE_STUDY_FIELDS} }`,
+      { slug },
+      { next: { revalidate: 60 } }
+    );
+  } catch {
+    return null;
+  }
 }
 
 export interface SanityPolicySection {
@@ -360,6 +505,7 @@ export async function getMergedSite() {
     reopensLabel: s?.reopensLabel ?? SITE.reopensLabel,
     limitedNote: s?.limitedNote ?? SITE.limitedNote,
     trustItems: s?.trustItems?.length ? s.trustItems : SITE.trustItems,
+    instagramPosts: s?.instagramPosts ?? [],
   };
 }
 
@@ -420,7 +566,9 @@ export async function getMergedServicesPage() {
     pricingLabel: p?.pricingLabel ?? SERVICES_TEXT.pricingLabel,
     pricingHeading: p?.pricingHeading ?? SERVICES_TEXT.pricingHeading,
     pricingCards: p?.pricingCards?.length ? p.pricingCards : PRICING_CARDS,
-    exampleQuotes: p?.exampleQuotes ?? [],
+    // Rows without a real total never reach the client, so placeholder copy
+    // cannot appear even in the serialised props.
+    exampleQuotes: (p?.exampleQuotes ?? []).filter((q) => typeof q.price === "number"),
     exampleQuotesCaption: p?.exampleQuotesCaption ?? "",
     ctaHeadline: p?.ctaHeadline ?? SERVICES_TEXT.ctaHeadline,
     ctaSubhead: p?.ctaSubhead ?? SERVICES_TEXT.ctaSubhead,

@@ -11,6 +11,7 @@ import CTABanner from "@/components/sections/CTABanner";
 import ProcessSteps from "@/components/sections/ProcessSteps";
 import CountUp from "@/components/ui/CountUp";
 import AvailabilityPill from "@/components/ui/AvailabilityPill";
+import InstagramRow, { type InstagramPost } from "@/components/sections/InstagramRow";
 import { ctas } from "@/lib/cta";
 import TestimonialCarousel from "@/components/ui/TestimonialCarousel";
 import type {
@@ -57,6 +58,7 @@ interface HomePageData {
   portfolioItems: SanityPortfolioItem[];
   bio: { paragraph1: string; paragraph2: string; pullQuote: string };
   aboutSecondaryImage: SanityImageType | null;
+  instagram: { posts: InstagramPost[]; handle: string; profileUrl: string };
   testimonials: SanityTestimonial[];
   text: HomePageText;
 }
@@ -107,7 +109,7 @@ const fadeUp = {
 };
 
 export default function HomePageContent({ data }: { data: HomePageData }) {
-  const { site, heroImage, services, portfolioItems, bio, aboutSecondaryImage, testimonials, text } = data;
+  const { site, heroImage, services, instagram, portfolioItems, bio, aboutSecondaryImage, testimonials, text } = data;
 
   // While limited availability is on, some services take waitlist requests
   // instead of bookings.
@@ -506,6 +508,13 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
           </motion.div>
         </div>
       </section>
+
+      {/* ── INSTAGRAM ─────────────────────────────────────────── */}
+      <InstagramRow
+        posts={instagram.posts}
+        handle={instagram.handle}
+        profileUrl={instagram.profileUrl}
+      />
 
       {/* ── CTA ───────────────────────────────────────────────── */}
       <CTABanner
