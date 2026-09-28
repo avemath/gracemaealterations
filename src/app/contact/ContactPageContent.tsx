@@ -6,6 +6,13 @@ import Link from "next/link";
 import SanityImage from "@/components/ui/SanityImage";
 import Accordion from "@/components/ui/Accordion";
 import { analytics } from "@/lib/analytics";
+import { preparePhoto } from "@/lib/compressImage";
+import {
+  BRIDAL_ALTERATIONS,
+  SHOES_UNDERGARMENTS,
+  MAX_PHOTOS,
+  MAX_PHOTO_TOTAL_BYTES,
+} from "@/lib/contactOptions";
 import type { SanityFaqItem, SanityImage as SanityImageType } from "@/lib/sanity.queries";
 
 // ── Branches ───────────────────────────────────────────────────────────────
@@ -31,8 +38,8 @@ const REFERRALS = [
   "Other",
 ];
 
-const MAX_PHOTOS = 5;
-const MAX_BYTES = 5 * 1024 * 1024;
+/** Anything bigger is almost certainly not a phone photo. */
+const MAX_SOURCE_BYTES = 25 * 1024 * 1024;
 
 const INITIAL_FORM = {
   name: "",
@@ -44,13 +51,16 @@ const INITIAL_FORM = {
   dressArrival: "",
   venue: "",
   garmentCount: "",
+  dressSizeOrdered: "",
+  currentStreetSize: "",
+  shoesUndergarments: "",
   // Honeypot: real people never fill this in.
   company: "",
 };
 
 type FormData = typeof INITIAL_FORM;
 type FormErrors = Partial<Record<keyof FormData | "files", string>>;
-type AttachmentState = { filename: string; content: string; preview: string };
+type AttachmentState = { filename: string; content: string; bytes: number };
 
 function validate(data: FormData): FormErrors {
   const errors: FormErrors = {};
@@ -59,6 +69,70 @@ function validate(data: FormData): FormErrors {
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
     errors.email = "That email address does not look right.";
   return errors;
+}
+
+// ── Field components ───────────────────────────────────────────────────────
+// Defined at module scope: a component declared inside the render function is
+// a new type on every render, so React remounts the input on each keystroke
+// and focus is lost after the first character.
+
+const labelClass =
+  "block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/75 mb-2 group-focus-within:text-gold_ink transition-colors duration-300";
+
+const fieldClass = (hasError: boolean) =>
+  `w-full bg-transparent border-b py-3 min-h-[44px] font-jost text-sm text-charcoal placeholder:text-charcoal/40 outline-none transition-all duration-300 ${
+    hasError ? "border-red-700 focus:border-red-700" : "border-blush focus:border-gold"
+  }`;
+
+function OptionalTag() {
+  return <span className="text-charcoal/75 normal-case tracking-normal">(optional)</span>;
+}
+
+function Field({
+  name,
+  label,
+  value,
+  onChange,
+  error,
+  type = "text",
+  placeholder,
+  optional,
+  autoComplete,
+}: {
+  name: keyof FormData;
+  label: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  error?: string;
+  type?: string;
+  placeholder?: string;
+  optional?: boolean;
+  autoComplete?: string;
+}) {
+  return (
+    <div className="group">
+      <label htmlFor={name} className={labelClass}>
+        {label} {optional && <OptionalTag />}
+      </label>
+      <input
+        id={name}
+        name={name}
+        type={type}
+        value={value}
+        onChange={onChange}
+        autoComplete={autoComplete}
+        className={`${fieldClass(!!error)} ${type === "date" ? "bg-ivory" : ""}`}
+        placeholder={placeholder}
+        aria-invalid={!!error}
+        aria-describedby={error ? `${name}-error` : undefined}
+      />
+      {error && (
+        <p id={`${name}-error`} className="mt-1.5 font-jost text-xs text-red-700" role="alert">
+          Error: {error}
+        </p>
+      )}
+    </div>
+  );
 }
 
 // ── Icons ──────────────────────────────────────────────────────────────────
@@ -143,6 +217,9 @@ export default function ContactPageContent({
   const [errors, setErrors] = useState<FormErrors>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [attachments, setAttachments] = useState<AttachmentState[]>([]);
+  const [preparing, setPreparing] = useState(false);
+  const [alterationsNeeded, setAlterationsNeeded] = useState<string[]>([]);
+  const [submitError, setSubmitError] = useState("");
   const startedRef = useRef(false);
   const formRef = useRef<HTMLDivElement>(null);
 
@@ -203,26 +280,44 @@ export default function ContactPageContent({
     if (errors[name as keyof FormData]) setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    const remaining = MAX_PHOTOS - attachments.length;
-    if (remaining <= 0) return;
-    let hasError = false;
-    files.slice(0, remaining).forEach((file) => {
-      if (file.size > MAX_BYTES) {
-        setErrors((prev) => ({ ...prev, files: `"${file.name}" is over 5 MB.` }));
-        hasError = true;
-        return;
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target;
+    const files = Array.from(input.files || []).slice(0, MAX_PHOTOS - attachments.length);
+    input.value = "";
+    if (files.length === 0) return;
+
+    setPreparing(true);
+    setErrors((prev) => ({ ...prev, files: undefined }));
+    let total = attachments.reduce((sum, a) => sum + a.bytes, 0);
+    const added: AttachmentState[] = [];
+    let problem = "";
+    try {
+      for (const file of files) {
+        if (file.size > MAX_SOURCE_BYTES) {
+          problem = `"${file.name}" is too large to attach.`;
+          continue;
+        }
+        const photo = await preparePhoto(file);
+        if (total + photo.bytes > MAX_PHOTO_TOTAL_BYTES) {
+          problem = `"${file.name}" would make the photos too large to send together. Try fewer photos, or email the rest to ${site.email}.`;
+          continue;
+        }
+        total += photo.bytes;
+        added.push({ filename: photo.filename, content: photo.dataUrl, bytes: photo.bytes });
       }
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const dataUrl = ev.target?.result as string;
-        setAttachments((prev) => [...prev, { filename: file.name, content: dataUrl, preview: dataUrl }]);
-      };
-      reader.readAsDataURL(file);
-    });
-    if (!hasError) setErrors((prev) => ({ ...prev, files: undefined }));
-    e.target.value = "";
+    } catch {
+      problem = "One of those photos could not be read. Please try another.";
+    } finally {
+      setAttachments((prev) => [...prev, ...added]);
+      if (problem) setErrors((prev) => ({ ...prev, files: problem }));
+      setPreparing(false);
+    }
+  };
+
+  const toggleAlteration = (id: string) => {
+    setAlterationsNeeded((prev) =>
+      prev.includes(id) ? prev.filter((a) => a !== id) : [...prev, id]
+    );
   };
 
   const removeAttachment = (i: number) => {
@@ -238,12 +333,14 @@ export default function ContactPageContent({
       return;
     }
     setStatus("submitting");
+    setSubmitError("");
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
+          alterationsNeeded: branch === "bridal" ? alterationsNeeded : [],
           serviceType: branch ?? "unsure",
           isWaitlist,
           reopensLabel,
@@ -256,6 +353,11 @@ export default function ContactPageContent({
         if (isWaitlist) analytics.waitlistJoin(branch ?? "bridal");
         setFormData(INITIAL_FORM);
         setAttachments([]);
+        setAlterationsNeeded([]);
+      } else if (res.status === 413) {
+        setSubmitError("The photos were too large to send.");
+      } else if (res.status === 429) {
+        setSubmitError("Too many requests from this connection.");
       }
     } catch {
       setStatus("error");
@@ -264,50 +366,12 @@ export default function ContactPageContent({
 
   // ── Field helpers ────────────────────────────────────────────────────────
 
-  const fieldClass = (field: keyof FormData) =>
-    `w-full bg-transparent border-b py-3 min-h-[44px] font-jost text-sm text-charcoal placeholder:text-charcoal/40 outline-none transition-all duration-300 ${
-      errors[field] ? "border-red-700 focus:border-red-700" : "border-blush focus:border-gold"
-    }`;
-
-  const labelClass =
-    "block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/75 mb-2 group-focus-within:text-gold_ink transition-colors duration-300";
-
-  const Field = ({
+  const fieldProps = (name: keyof FormData) => ({
     name,
-    label,
-    type = "text",
-    placeholder,
-    optional,
-  }: {
-    name: keyof FormData;
-    label: string;
-    type?: string;
-    placeholder?: string;
-    optional?: boolean;
-  }) => (
-    <div className="group">
-      <label htmlFor={name} className={labelClass}>
-        {label}{" "}
-        {optional && <span className="text-charcoal/75 normal-case tracking-normal">(optional)</span>}
-      </label>
-      <input
-        id={name}
-        name={name}
-        type={type}
-        value={formData[name]}
-        onChange={handleChange}
-        className={`${fieldClass(name)} ${type === "date" ? "bg-ivory" : ""}`}
-        placeholder={placeholder}
-        aria-invalid={!!errors[name]}
-        aria-describedby={errors[name] ? `${name}-error` : undefined}
-      />
-      {errors[name] && (
-        <p id={`${name}-error`} className="mt-1.5 font-jost text-xs text-red-700" role="alert">
-          Error: {errors[name]}
-        </p>
-      )}
-    </div>
-  );
+    value: formData[name],
+    onChange: handleChange,
+    error: errors[name],
+  });
 
   const notesLabel =
     branch === "tailoring"
@@ -461,32 +525,94 @@ export default function ContactPageContent({
 
                         <form onSubmit={handleSubmit} noValidate aria-label="Contact request form">
                           <div className="space-y-8">
-                            <Field name="name" label="Full name" placeholder="Your full name" />
-                            <Field name="email" label="Email address" type="email" placeholder="your@email.com" />
+                            <Field {...fieldProps("name")} label="Full name" placeholder="Your full name" autoComplete="name" />
+                            <Field {...fieldProps("email")} label="Email address" type="email" placeholder="your@email.com" autoComplete="email" />
 
                             {branch === "bridal" && (
                               <>
-                                <Field name="eventDate" label="Wedding date" type="date" />
+                                <Field {...fieldProps("eventDate")} label="Wedding date" type="date" />
                                 <Field
-                                  name="dressDesigner"
+                                  {...fieldProps("dressDesigner")}
                                   label="Dress designer, or where you bought it"
                                   placeholder="e.g. Allure, or David's Bridal"
                                 />
                                 <Field
-                                  name="dressArrival"
+                                  {...fieldProps("dressArrival")}
                                   label="When the dress arrives"
                                   type="date"
                                   optional
                                 />
-                                <Field name="venue" label="Venue" placeholder="Where you're getting married" optional />
+                                <Field {...fieldProps("venue")} label="Venue" placeholder="Where you're getting married" optional />
+
+                                <fieldset className="space-y-8 border-t border-blush pt-8">
+                                  <legend className="font-cormorant italic text-charcoal text-xl -mb-2 pr-3">
+                                    About the dress <span className="font-jost not-italic text-xs text-charcoal/75">(all optional)</span>
+                                  </legend>
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                                    <Field
+                                      {...fieldProps("dressSizeOrdered")}
+                                      label="Dress size ordered"
+                                      placeholder="e.g. 10"
+                                    />
+                                    <Field
+                                      {...fieldProps("currentStreetSize")}
+                                      label="Your usual street size"
+                                      placeholder="e.g. 6"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <p id="alterations-label" className="font-jost text-xs tracking-[0.12em] uppercase text-charcoal/75 mb-3">
+                                      What you think it needs
+                                    </p>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6" role="group" aria-labelledby="alterations-label">
+                                      {BRIDAL_ALTERATIONS.map((option) => (
+                                        <label
+                                          key={option.id}
+                                          className="flex items-center gap-3 min-h-[44px] font-jost text-sm text-charcoal cursor-pointer"
+                                        >
+                                          <input
+                                            type="checkbox"
+                                            name="alterationsNeeded"
+                                            value={option.id}
+                                            checked={alterationsNeeded.includes(option.id)}
+                                            onChange={() => toggleAlteration(option.id)}
+                                            className="w-4 h-4 accent-gold_ink"
+                                          />
+                                          {option.label}
+                                        </label>
+                                      ))}
+                                    </div>
+                                  </div>
+
+                                  <div className="group">
+                                    <label htmlFor="shoesUndergarments" className={labelClass}>
+                                      Do you have your shoes and undergarments yet?
+                                    </label>
+                                    <select
+                                      id="shoesUndergarments"
+                                      name="shoesUndergarments"
+                                      value={formData.shoesUndergarments}
+                                      onChange={handleChange}
+                                      className={`${fieldClass(false)} bg-ivory cursor-pointer`}
+                                    >
+                                      <option value="">Select one</option>
+                                      {SHOES_UNDERGARMENTS.map((option) => (
+                                        <option key={option.id} value={option.id}>
+                                          {option.label}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                </fieldset>
                               </>
                             )}
 
                             {branch === "party" && (
                               <>
-                                <Field name="eventDate" label="Event date" type="date" />
+                                <Field {...fieldProps("eventDate")} label="Event date" type="date" />
                                 <Field
-                                  name="garmentCount"
+                                  {...fieldProps("garmentCount")}
                                   label="How many garments"
                                   type="number"
                                   placeholder="e.g. 4"
@@ -504,10 +630,12 @@ export default function ContactPageContent({
                                 rows={4}
                                 value={formData.garmentDetails}
                                 onChange={handleChange}
-                                className={`${fieldClass("garmentDetails")} resize-none`}
+                                className={`${fieldClass(false)} resize-none`}
                                 placeholder={
                                   branch === "tailoring"
                                     ? "e.g. navy trousers, hem to flat shoes"
+                                    : branch === "bridal"
+                                    ? "e.g. fabric, lace or beading, anything you are worried about"
                                     : "Anything you want me to know"
                                 }
                               />
@@ -519,8 +647,8 @@ export default function ContactPageContent({
                                 Photos <span className="normal-case tracking-normal">(optional)</span>
                               </p>
                               <p id="photos-hint" className="font-jost text-charcoal/75 text-xs mb-3 leading-[1.65]">
-                                Up to {MAX_PHOTOS} photos, 5 MB each. Front, back, and a close-up of
-                                anything you are worried about.
+                                Up to {MAX_PHOTOS} photos. Front, back, and a close-up of anything you
+                                are worried about. Large photos are resized before sending.
                               </p>
 
                               {attachments.length < MAX_PHOTOS && (
@@ -531,7 +659,9 @@ export default function ContactPageContent({
                                   <span className="text-charcoal/75 group-hover:text-gold_ink transition-colors duration-300">
                                     <UploadIcon />
                                   </span>
-                                  <span className="font-jost text-charcoal/75 text-xs">Click to attach photos</span>
+                                  <span className="font-jost text-charcoal/75 text-xs">
+                                    {preparing ? "Preparing photos" : "Click to attach photos"}
+                                  </span>
                                   <span className="font-jost text-charcoal/75 text-xs">JPG, PNG, HEIC, WEBP</span>
                                   <input
                                     id="photos"
@@ -540,6 +670,7 @@ export default function ContactPageContent({
                                     multiple
                                     className="sr-only"
                                     onChange={handleFileChange}
+                                    disabled={preparing}
                                     aria-describedby="photos-hint"
                                   />
                                 </label>
@@ -554,7 +685,7 @@ export default function ContactPageContent({
                                   {attachments.map((file, i) => (
                                     <li key={i} className="relative group/thumb flex-shrink-0">
                                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                                      <img src={file.preview} alt="" className="w-20 h-20 object-cover border border-blush" />
+                                      <img src={file.content} alt="" className="w-20 h-20 object-cover border border-blush" />
                                       <button
                                         type="button"
                                         onClick={() => removeAttachment(i)}
@@ -584,7 +715,7 @@ export default function ContactPageContent({
                                 name="referralSource"
                                 value={formData.referralSource}
                                 onChange={handleChange}
-                                className={`${fieldClass("referralSource")} bg-ivory cursor-pointer`}
+                                className={`${fieldClass(false)} bg-ivory cursor-pointer`}
                               >
                                 <option value="">Select one</option>
                                 {REFERRALS.map((option) => (
@@ -612,7 +743,7 @@ export default function ContactPageContent({
                             <div className="pt-2">
                               <button
                                 type="submit"
-                                disabled={status === "submitting"}
+                                disabled={status === "submitting" || preparing}
                                 className="btn-gold w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                               >
                                 {status === "submitting"
@@ -623,7 +754,7 @@ export default function ContactPageContent({
                               </button>
                               {status === "error" && (
                                 <p className="mt-4 font-jost text-xs text-red-700" role="alert">
-                                  Error: something went wrong. Please email me at{" "}
+                                  Error: {submitError || "something went wrong."} Please email me at{" "}
                                   <a href={`mailto:${site.email}`} className="underline">
                                     {site.email}
                                   </a>
