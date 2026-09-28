@@ -36,6 +36,24 @@ test.describe("scroll reveals", () => {
     await expect.poll(() => opacity(page, index)).toBe("1");
   });
 
+  test("an element far taller than the screen still reveals", async ({ page }) => {
+    await page.goto("/portfolio");
+    await hydrated(page, "header a");
+
+    // Stands in for a portfolio grid with many photos in one column.
+    await page.evaluate(() => {
+      const el = document.createElement("div");
+      el.id = "tall-reveal";
+      el.setAttribute("data-reveal", "");
+      el.style.height = "20000px";
+      document.querySelector("main")!.append(el);
+    });
+    const tall = page.locator("#tall-reveal");
+    await tall.scrollIntoViewIfNeeded();
+    await page.mouse.wheel(0, 600);
+    await expect(tall).toHaveClass(/is-visible/);
+  });
+
   test("elements mounted after load are revealed too (portfolio filter)", async ({ page }) => {
     await page.goto("/portfolio");
     await hydrated(page, '[role="button"][aria-label^="View "]');
