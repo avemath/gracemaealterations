@@ -30,13 +30,13 @@ export default function RevealImage({
   return (
     <motion.div
       className={`overflow-hidden ${className}`}
-      initial={{ clipPath: "inset(0 0 100% 0)" }}
+      initial={false}
       whileInView={{ clipPath: "inset(0 0 0% 0)" }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.9, ease, delay }}
     >
       <motion.div
-        initial={{ scale: 1.06 }}
+        initial={false}
         whileInView={{ scale: 1 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.9, ease, delay }}

@@ -223,7 +223,7 @@ export default function ProcessSteps({
         {/* Header */}
         <motion.div
           className="text-center mb-14 lg:mb-20"
-          initial={{ opacity: 0, y: 20 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.65 }}
@@ -247,7 +247,7 @@ export default function ProcessSteps({
                 <motion.div
                   key={i}
                   custom={i}
-                  initial="hidden"
+                  initial={false}
                   whileInView="visible"
                   variants={fadeUp}
                   viewport={{ once: true, margin: "-40px" }}
@@ -354,7 +354,7 @@ export default function ProcessSteps({
                 <g
                   key={i}
                   ref={el => { pierceRefsArr.current[i] = el; }}
-                  style={{ opacity: 0 }}
+                  opacity={0}
                   filter="url(#pierce-hole)"
                 >
                   <ellipse cx={pt.cx} cy={pt.cy} rx="2.6" ry="1.0"  fill="rgba(30,24,18,0.60)" />
@@ -386,7 +386,7 @@ export default function ProcessSteps({
               */}
               <g
                 ref={needleRef}
-                style={{ opacity: 0 }}
+                opacity={0}
                 filter="url(#needle-glow)"
               >
                 {/* Outline — drawn first so it sits beneath the fill */}
@@ -429,7 +429,7 @@ export default function ProcessSteps({
                 <motion.div
                   key={i}
                   custom={i}
-                  initial="hidden"
+                  initial={false}
                   whileInView="visible"
                   variants={fadeUp}
                   viewport={{ once: true, margin: "-30px" }}
@@ -461,7 +461,7 @@ export default function ProcessSteps({
         {/* CTA */}
         <motion.div
           className="text-center mt-14 lg:mt-16"
-          initial={{ opacity: 0 }}
+          initial={false}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}

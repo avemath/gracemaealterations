@@ -48,7 +48,12 @@ export default function StickyMobileCTA({ limitedMode = false, reopensLabel = ""
           className="fixed bottom-0 left-0 right-0 z-40 lg:hidden"
           aria-label="Book a consultation"
         >
-          <div className="bg-ivory/97 backdrop-blur-md border-t border-blush px-4 py-3 pb-safe">
+          {/* bg-ivory/97 and pb-safe are not real Tailwind classes, so this bar
+              rendered transparent and ignored the iPhone home indicator. */}
+          <div
+            className="bg-ivory/95 backdrop-blur-md border-t border-charcoal/10 px-4 py-3"
+            style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+          >
             {limitedMode && reopensLabel && (
               <p className="font-jost text-[10px] tracking-[0.16em] uppercase text-charcoal/50 text-center mb-2">
                 Bridal booking reopens {reopensLabel}
