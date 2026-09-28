@@ -2,7 +2,16 @@
 
 Newest first. Grace facing notes live in `site/content/FOR-GRACE.md`.
 
-## Audit, September 2026
+## Polish, September 2026
+
+- `feat: branded icons, light share cards, triage-ready enquiry emails`:
+  - The favicon was still the stock Vercel triangle from the starter template. It is now a gold Cormorant "G" on near-black, with a 512 px app icon and an Apple touch icon, all rebuilt by `scripts/make-icons.mjs`.
+  - Share cards are re-encoded from PNG to JPEG, about 960 KB down to about 78 KB, so WhatsApp and iMessage show them. The eyebrow uses gold_ink.
+  - Fixed a regression where every page shared the home card: a default image in `pageMetadata` overrode each route's own `opengraph-image`.
+  - Grace's notification email now shows readable dates and a timing line (for example "36 weeks away. Early: first fitting ideally between Dec 12 and Mar 13"). Tight dates get a RUSH subject prefix.
+  - The portfolio's "Read the case study" link is no longer nested inside the photo button, and the hover caption also shows on keyboard focus.
+  - Verified end to end on production: one real submission per branch, all delivered.
+
 
 - `fix: contact form keeps focus, resizes photos, restores bridal intake`: the live form dropped every character after the first (the field component was declared inside render, so each keystroke remounted the input). Vercel logs show 76 visits to /contact and no submissions in the previous 30 days. Photos are now resized in the browser so five of them fit under Vercel's 4.5 MB request limit. The bridal branch has a short optional intake again. Dead API paths removed.
 - `fix: reveals for late-mounted content, contrast, performance, tidy`: filtering the portfolio remounted the grid, and the new tiles were never revealed, so they stayed invisible. RevealObserver now watches for elements added after load. Scanning with reduced motion exposed contrast failures that had been hidden behind opacity 0: 70% gold labels and 45% ivory body copy on near-black. Before/after slider images are priority (portfolio LCP), grid images get real `sizes`, lqip is gone from the grid query, and ProcessSteps is its own chunk. RevealText, RevealImage and TestimonialsSection are removed, and the content.ts fallbacks are back in step with Sanity. The scrolled navbar used #C9A84C text on ivory (about 2.2:1) and now uses gold_ink. FAQ answers are always in the server HTML. /guides is noindex until a guide is published, /studio is noindex, pages without their own share image fall back to the home one, and the site sends nosniff, Referrer-Policy, X-Frame-Options and Permissions-Policy headers without X-Powered-By.

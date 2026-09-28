@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getPublishedGuides } from "@/lib/sanity.queries";
-import { pageMetadata } from "@/lib/metadata";
+import { pageMetadata, FALLBACK_OG_IMAGE } from "@/lib/metadata";
 import SanityImage from "@/components/ui/SanityImage";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -12,6 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: "Wedding Dress Alteration Guides | Grace Mae | Pittsburgh",
       description:
         "Timelines, bustle types and what to bring to a fitting, written by a Pittsburgh bridal seamstress.",
+      image: FALLBACK_OG_IMAGE,
     }),
     // A placeholder page should not be indexed; this lifts itself once a
     // guide is published.

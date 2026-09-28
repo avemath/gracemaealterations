@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getLandingPage, getPublishedLandingPages } from "@/lib/sanity.queries";
-import { pageMetadata } from "@/lib/metadata";
+import { pageMetadata, FALLBACK_OG_IMAGE } from "@/lib/metadata";
 
 export const revalidate = 60;
 // Only the landing pages below exist at the root. Anything else 404s rather
@@ -27,6 +27,7 @@ export async function generateMetadata({
     path: `/${page.slug}`,
     title: page.seo?.title ?? `${page.title} | Grace Mae`,
     description: page.seo?.description ?? page.intro?.slice(0, 155) ?? "",
+    image: FALLBACK_OG_IMAGE,
   });
 }
 

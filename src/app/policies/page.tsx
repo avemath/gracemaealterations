@@ -3,13 +3,14 @@ import Link from "next/link";
 import { PortableText, type PortableTextBlock } from "@portabletext/react";
 import { notFound } from "next/navigation";
 import { getPolicies } from "@/lib/sanity.queries";
-import { pageMetadata } from "@/lib/metadata";
+import { pageMetadata, FALLBACK_OG_IMAGE } from "@/lib/metadata";
 
 export const metadata: Metadata = pageMetadata({
   path: "/policies",
   title: "Policies | Grace Mae Alterations | Pittsburgh, PA",
   description:
     "Deposits, rescheduling, rush work, pickup windows and the workmanship guarantee for alterations with Grace Mae in Pittsburgh.",
+  image: FALLBACK_OG_IMAGE,
 });
 
 export default async function PoliciesPage() {
