@@ -43,6 +43,11 @@ const JPEG_OPTS = { quality: 90, mozjpeg: false, chromaSubsampling: "4:4:4" };
 const HERO_CROP_ABOVE_HANDS = true;
 const HERO_CROP_RATIO = 1210 / 1536;
 
+// The card panels were shot very dark and then sit under a near-black gradient
+// at low opacity, which left them almost invisible. Lift them at the source.
+const CARD_BRIGHTEN = 1.7;
+const CARD_GAMMA = 1.15;
+
 /**
  * canonical name -> accepted source filenames (extension removed, matched
  * case-insensitively). The first entry is the name used in the write-up.
@@ -138,9 +143,9 @@ const triptych = sharp(triptychPath);
 const { width: tw, height: th } = await triptych.metadata();
 
 const panels = [
-  ["card-bridal", 0],
-  ["card-tailoring", 1],
-  ["card-custom", 2],
+  ["card-bridal-v2", 0],
+  ["card-tailoring-v2", 1],
+  ["card-custom-v2", 2],
 ];
 
 console.log("");
@@ -149,14 +154,28 @@ for (const [name, index] of panels) {
   // so no column of pixels is lost to rounding.
   const left = Math.round((tw * index) / 3);
   const right = Math.round((tw * (index + 1)) / 3);
-  const out = join(PREPARED_DIR, `${name}.jpg`);
-  const info = await sharp(triptychPath)
+
+  const lifted = await sharp(triptychPath)
     .extract({ left, top: 0, width: right - left, height: th })
-    .keepIccProfile()
-    .jpeg(JPEG_OPTS)
-    .toFile(out);
+    .modulate({ brightness: CARD_BRIGHTEN })
+    .gamma(CARD_GAMMA)
+    .toBuffer();
+
+  // Only stretch the range when even the brightest pixels are still dim —
+  // normalising an already-bright panel would blow out the highlights.
+  const stats = await sharp(lifted).stats();
+  const brightest = Math.max(...stats.channels.map((c) => c.max));
+  const needsNormalise = brightest < 0.6 * 255;
+
+  let pipeline = sharp(lifted).keepIccProfile();
+  if (needsNormalise) pipeline = pipeline.normalise();
+
+  const out = join(PREPARED_DIR, `${name}.jpg`);
+  const info = await pipeline.jpeg(JPEG_OPTS).toFile(out);
+
   console.log(
-    `  ✓ ${name.padEnd(24)} ${String(info.width).padStart(5)}x${String(info.height).padEnd(5)}  ← service-cards-triptych.jpg (panel ${index + 1}/3)`
+    `  ✓ ${name.padEnd(24)} ${String(info.width).padStart(5)}x${String(info.height).padEnd(5)}  ← panel ${index + 1}/3, brightness ×${CARD_BRIGHTEN}, gamma ${CARD_GAMMA}` +
+      `, brightest ${Math.round((brightest / 255) * 100)}%${needsNormalise ? " → normalised" : ""}`
   );
 }
 

@@ -317,10 +317,17 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                         fill
                         placeholderLabel="SERVICE_CARD_IMAGE"
                         sizes="(max-width: 768px) 100vw, 33vw"
-                        className="opacity-30 group-hover:opacity-45 transition-opacity duration-500"
+                        className="opacity-[0.55] group-hover:opacity-70 transition-opacity duration-500"
                         aria-hidden
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-near_black via-near_black/70 to-near_black/20" />
+                      {/* Dark at the bottom where the text sits, open at the top
+                          so the texture actually reads. */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-near_black/85 via-near_black/45 to-near_black/10" />
+                      {/* Scrim behind the text block only. Against the brightest
+                          part of these textures the description measures 2.67:1
+                          without it; with it and ivory/70 it clears AA at 5.1:1,
+                          and the top of the card keeps its texture. */}
+                      <div className="absolute inset-x-0 bottom-0 top-[38%] bg-[linear-gradient(to_bottom,transparent_0,rgba(36,32,32,0.4)_3rem)]" />
                     </div>
                   )}
                   <div className="absolute top-0 left-0 right-0 h-px bg-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left z-20" aria-hidden="true" />
@@ -335,7 +342,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                       </p>
                     )}
                     <h3 className="font-cormorant text-ivory text-2xl mb-3">{service.title}</h3>
-                    <p className="font-jost text-ivory/50 text-sm leading-relaxed flex-1">{service.shortDescription}</p>
+                    <p className="font-jost text-ivory/70 text-sm leading-relaxed flex-1">{service.shortDescription}</p>
                     <Link
                       href={`/services#${service.id}`}
                       className="mt-6 inline-flex items-center gap-2 font-jost text-xs text-gold tracking-[0.18em] uppercase group-hover:text-gold_light transition-colors duration-300"
