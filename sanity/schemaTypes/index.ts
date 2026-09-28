@@ -10,6 +10,9 @@ import { testimonial } from "./testimonial";
 import { portfolioItem } from "./portfolioItem";
 import { faqItem } from "./faqItem";
 import { value } from "./value";
+import { guide } from "./guide";
+import { bustleStyle } from "./bustleStyle";
+import { landingPage } from "./landingPage";
 
 export const schemaTypes = [
   // Singletons (one of each)
@@ -26,4 +29,7 @@ export const schemaTypes = [
   portfolioItem,
   faqItem,
   value,
+  guide,
+  bustleStyle,
+  landingPage,
 ];

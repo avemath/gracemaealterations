@@ -39,6 +39,28 @@ export const siteSettings = defineType({
       initialValue: true,
     }),
     defineField({
+      name: "instagramPosts",
+      title: "Instagram row (home page)",
+      description: "Curated posts. Images are uploaded here; nothing is embedded from Instagram.",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          fields: [
+            {
+              name: "image",
+              title: "Image",
+              type: "image",
+              options: { hotspot: true },
+            },
+            { name: "permalink", title: "Post URL", type: "url" },
+            { name: "alt", title: "Alt text", type: "string" },
+          ],
+          preview: { select: { title: "alt", media: "image" } },
+        },
+      ],
+    }),
+    defineField({
       name: "trustItems",
       title: "Trust strip (home page)",
       description: "Short credential lines shown under the hero.",

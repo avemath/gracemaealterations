@@ -6,7 +6,7 @@ import SiteChrome from "@/components/layout/SiteChrome";
 import StickyMobileCTA from "@/components/layout/StickyMobileCTA";
 import StickyDesktopCTA from "@/components/layout/StickyDesktopCTA";
 import MotionProvider from "@/components/layout/MotionProvider";
-import { getMergedSite, getMergedServices } from "@/lib/sanity.queries";
+import { getMergedSite, getMergedServices, getPublishedGuides } from "@/lib/sanity.queries";
 import { SITE_URL } from "@/lib/metadata";
 
 /** First dollar figure in a range like "$75 – $450+", or null when quoted. */
@@ -68,7 +68,12 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [site, services] = await Promise.all([getMergedSite(), getMergedServices()]);
+  const [site, services, guides] = await Promise.all([
+    getMergedSite(),
+    getMergedServices(),
+    getPublishedGuides(),
+  ]);
+  const guideLinks = (guides ?? []).map((guide) => ({ title: guide.title, slug: guide.slug }));
 
   // ── STRUCTURED DATA (one @graph) ─────────────────────────────
   // Street address intentionally omitted: home based, appointment only.
@@ -175,6 +180,7 @@ export default async function RootLayout({
             instagramUrl: site.instagramUrl,
             email: site.email,
             googleReviewUrl: GBP_URL || undefined,
+            guides: guideLinks,
             limitedMode: site.limitedMode,
             reopensLabel: site.reopensLabel,
           }}
