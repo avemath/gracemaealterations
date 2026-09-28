@@ -189,7 +189,7 @@ export default function BeforeAfterSlider({ beforeImage, afterImage, label, desc
       </div>
 
       {description && (
-        <p className="mt-3 font-jost text-charcoal/55 text-xs leading-relaxed">{description}</p>
+        <p className="mt-3 font-jost text-charcoal/75 text-xs leading-[1.65]">{description}</p>
       )}
     </div>
   );

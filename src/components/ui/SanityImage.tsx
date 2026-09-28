@@ -35,9 +35,30 @@ export default function SanityImage({
   if (image?.asset) {
     // Base URL only: the loader appends w, q, auto and fit, so the file is
     // compressed once rather than by Sanity and then again by Next.
+    //
+    // A crop set in Studio has to become a rect in the URL. Without one the
+    // builder only computes a rectangle when asked for a fixed target box,
+    // which this component never does, so the cropped-away area would still
+    // be visible. The hotspot stays in CSS as object-position.
     let src: string;
-    try { src = urlFor(image).fit("max").url(); }
-    catch { return <ImagePlaceholder label={placeholderLabel} aspectRatio={placeholderRatio} className={className} />; }
+    try {
+      const crop = image.crop;
+      const dimensions = image.asset.metadata?.dimensions;
+      let builder = urlFor(image).fit("max");
+
+      if (crop && dimensions && (crop.top || crop.bottom || crop.left || crop.right)) {
+        builder = builder.rect(
+          Math.round(crop.left * dimensions.width),
+          Math.round(crop.top * dimensions.height),
+          Math.round(dimensions.width * (1 - crop.left - crop.right)),
+          Math.round(dimensions.height * (1 - crop.top - crop.bottom))
+        );
+      }
+
+      src = builder.url();
+    } catch {
+      return <ImagePlaceholder label={placeholderLabel} aspectRatio={placeholderRatio} className={className} />;
+    }
 
     const lqip = image.asset.metadata?.lqip;
     const blur = lqip ? { placeholder: "blur" as const, blurDataURL: lqip } : {};

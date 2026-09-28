@@ -345,7 +345,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
             >
               <Link
                 href="/portfolio"
-                className="inline-flex items-center gap-2 font-jost text-xs text-gold tracking-[0.18em] uppercase hover:text-gold_dark transition-colors duration-300"
+                className="inline-flex items-center gap-2 font-jost text-xs text-gold_ink tracking-[0.18em] uppercase hover:text-gold_dark transition-colors duration-300"
               >
                 View All <ArrowRight />
               </Link>
@@ -432,7 +432,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               </p>
               <Link
                 href="/about"
-                className="inline-flex items-center gap-2 font-jost text-xs text-gold tracking-[0.18em] uppercase hover:text-gold_dark transition-colors duration-300 group"
+                className="inline-flex items-center gap-2 font-jost text-xs text-gold_ink tracking-[0.18em] uppercase hover:text-gold_dark transition-colors duration-300 group"
                 aria-label="Read Grace's story"
               >
                 Read Grace&rsquo;s story
