@@ -129,7 +129,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
   return (
     <>
       {/* ── HERO ──────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative min-h-screen overflow-hidden bg-ivory linen-overlay" aria-label="Hero section">
+      <section ref={heroRef} className="relative lg:min-h-screen overflow-hidden bg-ivory linen-overlay" aria-label="Hero section">
 
         {/* One portrait for both layouts: full width under the copy on mobile,
             a full-height column on the right from lg up. Rendering it twice
@@ -164,8 +164,11 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
 
         {/* Content layer */}
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 w-full">
-          <div className="min-h-screen flex items-center">
-            <div className="w-full lg:max-w-[520px] py-32 lg:py-0">
+          {/* Full-height and vertically centred beside the portrait on desktop.
+              On a phone the copy sits straight under the photo: a min-h-screen
+              block there left half a screen of empty ivory. */}
+          <div className="lg:min-h-screen flex items-center">
+            <div className="w-full lg:max-w-[520px] pt-10 pb-14 lg:py-0">
 
               <p data-reveal
               className="section-label mb-5"
