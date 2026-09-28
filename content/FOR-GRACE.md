@@ -11,7 +11,7 @@ Everything below is in the Studio at **gracemaealterations.com/studio**. Nothing
 3. Your availability is written once, in one place, and appears everywhere it is needed. If you change that sentence, it changes across the whole site.
 4. The contact form asks three questions first: tailoring, bridal waitlist, or bridal party. Then it only shows the fields that matter for that answer. People can attach up to five photos instead of two.
 5. Every page now loads with the words already on it. Before, the text was invisible until the page finished loading, which was bad for phones and for Google.
-6. The services page has a "See typical prices" list under each service, plus a typical timeline. Prices are blank until you fill them in, and blank rows read "quoted at fitting" rather than showing a made up number.
+6. The services page shows a price range and a typical timeline for each service. There is no itemised price list: every garment is quoted at the fitting, so the site never promises a number you would have to honour.
 7. The portfolio now has a caption under every photo saying what was actually done, instead of the same word repeated.
 8. Text and buttons are darker where they need to be, so they pass accessibility standards and are readable in sunlight.
 9. There are draft guides, bustle explanations and two extra pages written and waiting. None of them are on the site until you switch them on.
@@ -25,29 +25,6 @@ Everything below is in the Studio at **gracemaealterations.com/studio**. Nothing
 ## Numbers you need to fill in
 
 Nothing below shows a made up number today. Each one is blank, and the site quietly hides or rewords itself until you fill it in.
-
-### Bridal price table, 7 rows
-
-Each is at: **Content, then Services, then Bridal Alterations, then Price table**. Fill in the "From" box on each row.
-
-- Bridal hem, single layer, then From
-- Bridal hem, multi-layer or horsehair, then From
-- Bustle, per style (American / French / Austrian), then From
-- Take in bodice / side seams, then From
-- Add bra cups, then From
-- Corset-back conversion, then From
-- Straps added or adjusted, then From
-
-### Tailoring price table, 6 rows
-
-Each is at: **Content, then Services, then Everyday Tailoring, then Price table**. Fill in the "From" box on each row.
-
-- Pant hem, then From
-- Skirt or dress hem, then From
-- Waist taken in or let out, then From
-- Sleeve shortened, then From
-- Zipper replaced, then From
-- Seam repair, then From
 
 ### Three real gowns, three real quotes, 3 rows
 
