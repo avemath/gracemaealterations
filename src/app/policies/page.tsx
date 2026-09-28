@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PortableText, type PortableTextBlock } from "@portabletext/react";
+import { notFound } from "next/navigation";
 import { getPolicies } from "@/lib/sanity.queries";
 import { pageMetadata } from "@/lib/metadata";
 
@@ -13,7 +14,8 @@ export const metadata: Metadata = pageMetadata({
 
 export default async function PoliciesPage() {
   const policies = await getPolicies();
-  const sections = policies?.sections ?? [];
+  if (!policies) notFound();
+  const sections = policies.sections ?? [];
 
   return (
     <>
@@ -21,9 +23,9 @@ export default async function PoliciesPage() {
         <div className="max-w-3xl mx-auto px-6 lg:px-12 pt-36 lg:pt-44 pb-14">
           <p className="section-label text-gold mb-4">Good to know</p>
           <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-ivory">
-            {policies?.heading ?? "Policies"}
+            {policies.heading ?? "Policies"}
           </h1>
-          {policies?.intro && (
+          {policies.intro && (
             <p className="font-jost text-ivory/75 text-base leading-[1.65] max-w-[65ch] mt-6">
               {policies.intro}
             </p>
