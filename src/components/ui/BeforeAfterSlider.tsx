@@ -91,7 +91,9 @@ export default function BeforeAfterSlider({ beforeImage, afterImage, label, desc
               alt={afterImage?.alt ?? "After alteration"}
               fill
               className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              // The largest image above the fold on /portfolio, so the LCP.
+              priority
             />
           ) : (
             /* Placeholder: dark ivory panel */
@@ -116,7 +118,9 @@ export default function BeforeAfterSlider({ beforeImage, afterImage, label, desc
               alt={beforeImage?.alt ?? "Before alteration"}
               fill
               className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              // The largest image above the fold on /portfolio, so the LCP.
+              priority
             />
           ) : (
             /* Placeholder: blush panel */

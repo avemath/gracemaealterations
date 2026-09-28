@@ -310,9 +310,11 @@ export async function getTestimonials(): Promise<SanityTestimonial[] | null> {
   }`);
 }
 
+// No lqip in this projection: 26 inline blur data URIs were most of the
+// portfolio page's HTML.
 export async function getPortfolioItems(): Promise<SanityPortfolioItem[] | null> {
   return safeFetch(`*[_type == "portfolioItem"] | order(order asc) {
-    _id, image{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
+    _id, image{ asset->{ _id, url, metadata { dimensions } }, alt, hotspot, crop },
     label, caption, featured, type, order,
     "slug": select(caseStudy == true => slug.current, null)
   }`);

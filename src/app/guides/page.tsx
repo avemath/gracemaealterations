@@ -4,12 +4,20 @@ import { getPublishedGuides } from "@/lib/sanity.queries";
 import { pageMetadata } from "@/lib/metadata";
 import SanityImage from "@/components/ui/SanityImage";
 
-export const metadata: Metadata = pageMetadata({
-  path: "/guides",
-  title: "Wedding Dress Alteration Guides | Grace Mae | Pittsburgh",
-  description:
-    "Timelines, bustle types and what to bring to a fitting, written by a Pittsburgh bridal seamstress.",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const guides = (await getPublishedGuides()) ?? [];
+  return {
+    ...pageMetadata({
+      path: "/guides",
+      title: "Wedding Dress Alteration Guides | Grace Mae | Pittsburgh",
+      description:
+        "Timelines, bustle types and what to bring to a fitting, written by a Pittsburgh bridal seamstress.",
+    }),
+    // A placeholder page should not be indexed; this lifts itself once a
+    // guide is published.
+    ...(guides.length === 0 && { robots: { index: false, follow: true } }),
+  };
+}
 
 export default async function GuidesPage() {
   const guides = (await getPublishedGuides()) ?? [];

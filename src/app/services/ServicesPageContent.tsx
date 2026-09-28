@@ -4,7 +4,6 @@ import { useRef } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import SanityImage from "@/components/ui/SanityImage";
-import RevealText from "@/components/ui/RevealText";
 import CTABanner from "@/components/sections/CTABanner";
 import PriceTable from "@/components/ui/PriceTable";
 import ExampleQuotes from "@/components/sections/ExampleQuotes";
@@ -103,12 +102,10 @@ export default function ServicesPageContent({ services, page, availability }: Pr
         <div className="relative z-20 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-14 pt-36 lg:pt-44">
           <div
             >
-            <p className="section-label text-gold_dark mb-4">{page.heroLabel}</p>
-            <RevealText onMount delay={0.2}>
+            <p className="section-label text-gold_ink mb-4">{page.heroLabel}</p>
               <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-charcoal mb-5">
               Bridal alterations &amp; tailoring in Pittsburgh
             </h1>
-            </RevealText>
             <div className="w-12 h-px bg-gold" aria-hidden="true" />
           </div>
         </div>
@@ -130,6 +127,7 @@ export default function ServicesPageContent({ services, page, availability }: Pr
                   className="font-cormorant text-gold_ink/25 font-light leading-none mb-3"
                   style={{ fontSize: "5rem" }}
                   aria-hidden="true"
+                  data-decorative
                 >
                   0{i + 1}
                 </p>
@@ -256,7 +254,7 @@ export default function ServicesPageContent({ services, page, availability }: Pr
         <div className="max-w-5xl mx-auto">
           <div data-reveal
             >
-            <p className="section-label text-gold/70 mb-4">{page.pricingLabel}</p>
+            <p className="section-label text-gold mb-4">{page.pricingLabel}</p>
             <h2 id="pricing-heading" className="font-cormorant italic text-[clamp(2rem,3.5vw,3.25rem)] leading-[1.1] text-ivory mb-4">
               {page.pricingHeading}
             </h2>

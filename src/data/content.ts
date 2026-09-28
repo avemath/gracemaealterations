@@ -1,9 +1,11 @@
 /**
  * ============================================================
- * CONTENT.TS — Single Source of Truth
+ * CONTENT.TS: Single Source of Truth
  * ============================================================
- * Update ALL site content here. You should never need to
- * touch a component file to update text, prices, or images.
+ * Static fallback copy. Live copy comes from Sanity; these values
+ * are used field by field (or list by list) only when Sanity is
+ * empty or unreachable, so keep them in step with the published
+ * Sanity documents.
  * ============================================================
  */
 
@@ -12,24 +14,24 @@ export const SITE = {
   name: "Grace Mae",
   businessName: "Grace Mae Alterations",
   tagline: "Sewn with precision.",
-  subTagline: "Every stitch tailored to you — and only you.",
+  subTagline: "Every stitch tailored to you, and only you.",
   location: "Pittsburgh, PA",
   email: "inquiries@gracemaealterations.com",
   instagram: "@gracemaealterations",
   instagramUrl: "https://instagram.com/gracemaealterations",
-  availability: "Available by Appointment",
+  availability: "By Appointment. Bridal reopens early 2027",
   responseTime: "I reply to every message within 2 business days, usually sooner.",
-  bookingNote: "Now scheduling Spring & Summer 2026 consultations",
-  phone: "",                    // e.g. "(412) 555-0000" — blank hides the call/text row
-  isAcceptingClients: true,     // ← Set to false to put the WHOLE contact form into Waitlist mode
+  bookingNote: "Home with our new baby and taking on smaller projects. Bridal reopens early 2027.",
+  phone: "",                    // keep blank: the site does not list a phone number
+  isAcceptingClients: true,     // Set to false to put the WHOLE contact form into Waitlist mode
 
   // ── Limited availability ────────────────────────────────────
   // Per-service version of the switch above: the site stays open for
   // everything except the services listed in waitlistServices.
   // Toggle with: npm run availability:limited / npm run availability:open
-  limitedMode: false,
-  waitlistServices: [] as string[],   // e.g. ["bridal"]
-  reopensLabel: "",                   // e.g. "early 2027"
+  limitedMode: true,
+  waitlistServices: ["bridal"] as string[],
+  reopensLabel: "early 2027",
   limitedNote:
     "I'm home with our new baby, so for now I'm taking everyday tailoring and small repairs only. Bridal fittings reopen in early 2027. If your wedding is in 2027, join the waitlist and you'll get first pick of fitting dates, in the order you joined. If your date is sooner, tell me anyway and I'll give you an honest answer, plus a referral if I can't take it.",
   trustItems: [
@@ -52,21 +54,21 @@ export const TRUST_STATS = [
 
 // ── BIO / ABOUT ───────────────────────────────────────────────
 export const BIO = {
-  // Paragraph 1: Origin — IUP Fashion Design, Costume Shop
+  // Paragraph 1: Origin, IUP Fashion Design, Costume Shop
   paragraph1:
-    "My path to alterations started at Indiana University of Pennsylvania, where I earned my Bachelor's degree in Fashion and Apparel Design in 2024. Throughout college I worked in the university's Costume Shop as an Alterations Assistant — fitting, pinning, and tailoring costumes for theater and dance productions each season. The work was detailed, deadline-driven, and taught me to handle everything from delicate chiffon to structured performance wear with equal care.",
+    "My path to alterations started at Indiana University of Pennsylvania, where I earned my Bachelor's degree in Fashion and Apparel Design in 2024. Throughout college I worked in the university's Costume Shop as an Alterations Assistant, fitting, pinning, and tailoring costumes for theater and dance productions each season. The work was detailed, deadline-driven, and taught me to handle everything from delicate chiffon to structured performance wear with equal care.",
 
   // Paragraph 2: David's Bridal, Lead Specialist, going independent
   paragraph2:
-    "After graduating, I joined David's Bridal as a Lead Alterations Specialist, working directly with brides to make sure their gowns fit perfectly for their wedding day. High-stakes work under real deadlines — it deepened my technical skills and my understanding of what it means to show up for someone during one of the most important moments of their life. When I stepped away to build my own business, I brought that knowledge with me and left behind the volume pressures that kept me from doing the work the way I know it should be done.",
+    "After graduating, I joined David's Bridal as a Lead Alterations Specialist, working directly with brides to make sure their gowns fit perfectly for their wedding day. High-stakes work under real deadlines. It deepened my technical skills and my understanding of what it means to show up for someone during one of the most important moments of their life. When I stepped away to build my own business, I brought that knowledge with me and left behind the volume pressures that kept me from doing the work the way I know it should be done.",
 
-  // Paragraph 3: Philosophy — care, Pittsburgh focus, Master's degree
+  // Paragraph 3: Philosophy, care, Pittsburgh focus, Master's degree
   paragraph3:
-    "Going independent means every client gets my full attention — not a fraction of it. I work by appointment only, give honest timelines, and take pride in garments that leave here better than they arrived. In 2025 I also completed a Master's degree in Human Resources and Employment Relations — because running a client-first business means being as intentional about the relationship as the craft itself. I'm based in Pittsburgh, and when you bring something to me, you're trusting me with something that matters.",
+    "Going independent means every client gets my full attention, not a fraction of it. I work by appointment only, give honest timelines, and take pride in garments that leave here better than they arrived. In 2025 I also completed a Master's degree in Human Resources and Employment Relations, because running a client-first business means being as intentional about the relationship as the craft itself. I'm based in Pittsburgh, and when you bring something to me, you're trusting me with something that matters.",
 
   pullQuote: "Deadlines that are real. Craftsmanship that shows.",
   independenceQuote:
-    "When I worked in a corporate shop, the pressure was to move fast, book more, and never slow down. I got very good at working quickly — but I missed the part of this craft that actually matters: giving a garment the attention it deserves, and giving a client the time to feel comfortable. Going independent let me do both. I don't overbook. I don't rush. And I don't work for a quota. I work for the people who trust me with something that matters to them.",
+    "When I worked in a corporate shop, the pressure was to move fast, book more, and never slow down. I got very good at working quickly, but I missed the part of this craft that actually matters: giving a garment the attention it deserves, and giving a client the time to feel comfortable. Going independent let me do both. I don't overbook. I don't rush. And I don't work for a quota. I work for the people who trust me with something that matters to them.",
 };
 
 // ── VALUES ────────────────────────────────────────────────────
@@ -74,7 +76,7 @@ export const VALUES = [
   {
     title: "Honest Timelines",
     description:
-      "I will never overcommit and underdeliver. Every timeline I give you is one I can keep — because your event date is not negotiable.",
+      "I will never overcommit and underdeliver. Every timeline I give you is one I can keep, because your event date is not negotiable.",
   },
   {
     title: "Precision Craft",
@@ -96,7 +98,7 @@ export const SERVICES = [
     shortDescription:
       "From sweeping cathedral trains to intricate lace bodices, bridal work is where precision is non-negotiable.",
     description:
-      "Your wedding dress is the most important garment you'll ever wear — and it deserves to fit as if it was made for you alone. With extensive bridal alteration experience including time at David's Bridal, I understand exactly what it takes to transform an off-the-rack gown into something that feels completely custom. Every fitting is unhurried, every stitch deliberate.",
+      "Your wedding dress is the most important garment you'll ever wear, and it deserves to fit as if it was made for you alone. With extensive bridal alteration experience including time at David's Bridal, I understand exactly what it takes to transform an off-the-rack gown into something that feels completely custom. Every fitting is unhurried, every stitch deliberate.",
     services: [
       "Hem adjustments (standard, cathedral, horsehair)",
       "Bustle addition (American, French, Austrian)",
@@ -118,7 +120,7 @@ export const SERVICES = [
     shortDescription:
       "Well-fitting clothes change how you carry yourself. I make sure everything you wear feels like it was made for you.",
     description:
-      "Off-the-rack clothes are made for a statistical average that fits almost nobody perfectly. Tailoring changes that. Whether it's a pair of trousers you love but can never get right, a dress that's close but not quite, or a jacket that needs to come in through the waist — I handle it cleanly, quickly, and affordably.",
+      "Off-the-rack clothes are made for a statistical average that fits almost nobody perfectly. Tailoring changes that. Whether it's a pair of trousers you love but can never get right, a dress that's close but not quite, or a jacket that needs to come in through the waist, I handle it cleanly, quickly, and affordably.",
     services: [
       "Pants and trouser hemming",
       "Dress and skirt alterations",
@@ -136,7 +138,7 @@ export const SERVICES = [
     id: "custom",
     title: "Custom & Repairs",
     shortDescription:
-      "Vintage restoration, costume construction, and garments that need more than a simple hem — I take on the complicated work.",
+      "Vintage restoration, costume construction, and garments that need more than a simple hem: I take on the complicated work.",
     description:
       "Some garments deserve more than a quick fix. Vintage pieces carry history and require a careful hand. Costumes require creativity under construction constraints. Special occasion wear demands the same level of attention as bridal work. I take on these projects with the same care I give every garment that comes through my door.",
     services: [
@@ -165,7 +167,7 @@ export const TESTIMONIALS = [
   },
   {
     quote:
-      "I've been to other seamstresses before and the difference is night and day. Grace Mae actually listened to what I wanted, explained exactly what she was going to do, and delivered ahead of schedule. Worth every penny.",
+      "I've been to other seamstresses before and the difference is night and day. Grace actually listened to what I wanted, explained exactly what she was going to do, and delivered ahead of schedule. Worth every penny.",
     name: "Danielle M.",
     occasion: "Mother of the Bride, June 2024",
   },
@@ -184,7 +186,7 @@ export const PORTFOLIO_ITEMS = [
   {
     id: 1,
     src: "/images/portfolio/portfolio-1.jpg",
-    alt: "Before and after bridal gown alteration — full length",
+    alt: "Before and after bridal gown alteration, full length",
     label: "Bridal Gown",
     type: "bridal",
     // SHOT GUIDE: Before/after full-length shot of a wedding dress on a dress form
@@ -208,7 +210,7 @@ export const PORTFOLIO_ITEMS = [
   {
     id: 4,
     src: "/images/portfolio/portfolio-4.jpg",
-    alt: "Full bridal fitting — bride in altered wedding gown",
+    alt: "Full bridal fitting, bride in altered wedding gown",
     label: "Bridal Fitting",
     type: "bridal",
     // SHOT GUIDE: Bride standing in fitted gown, ideally back view showing closure
@@ -224,7 +226,7 @@ export const PORTFOLIO_ITEMS = [
   {
     id: 6,
     src: "/images/portfolio/portfolio-6.jpg",
-    alt: "Vintage gown restoration — full-length after",
+    alt: "Vintage gown restoration, full-length after",
     label: "Vintage Restoration",
     type: "custom",
     // SHOT GUIDE: Restored vintage garment on dress form, styled elegantly
@@ -232,7 +234,7 @@ export const PORTFOLIO_ITEMS = [
   {
     id: 7,
     src: "/images/portfolio/portfolio-7.jpg",
-    alt: "Bridesmaid dress alterations — group of dresses on forms",
+    alt: "Bridesmaid dress alterations, group of dresses on forms",
     label: "Bridesmaid Dresses",
     type: "bridal",
     // SHOT GUIDE: 3-4 matching bridesmaid dresses on forms, uniformly hemmed
@@ -240,7 +242,7 @@ export const PORTFOLIO_ITEMS = [
   {
     id: 8,
     src: "/images/portfolio/portfolio-8.jpg",
-    alt: "Tailored trousers hemming detail — cuff and break",
+    alt: "Tailored trousers hemming detail, cuff and break",
     label: "Trouser Tailoring",
     type: "tailoring",
     // SHOT GUIDE: Close-up of trouser hem/break, ideally with cuff detail
@@ -256,7 +258,7 @@ export const PORTFOLIO_ITEMS = [
   {
     id: 10,
     src: "/images/portfolio/portfolio-10.jpg",
-    alt: "Special occasion dress alteration — mother of bride gown",
+    alt: "Special occasion dress alteration, mother of bride gown",
     label: "Special Occasion",
     type: "custom",
     // SHOT GUIDE: Elegant special occasion gown, fitted and styled
@@ -264,15 +266,15 @@ export const PORTFOLIO_ITEMS = [
   {
     id: 11,
     src: "/images/portfolio/portfolio-11.jpg",
-    alt: "Fabric and sewing detail — hands at work on bridal fabric",
+    alt: "Fabric and sewing detail, hands at work on bridal fabric",
     label: "Craft Detail",
     type: "custom",
-    // SHOT GUIDE: Hands-at-work shot — needle, thread, and fabric close-up
+    // SHOT GUIDE: Hands-at-work shot: needle, thread, and fabric close-up
   },
   {
     id: 12,
     src: "/images/portfolio/portfolio-12.jpg",
-    alt: "Wedding dress hem alteration — floor-length with floral detail",
+    alt: "Wedding dress hem alteration, floor-length with floral detail",
     label: "Hem & Finish",
     type: "bridal",
     // SHOT GUIDE: Beautiful hem close-up on finished gown, showing clean finish
@@ -284,12 +286,12 @@ export const FAQ = [
   {
     question: "How far in advance should I book?",
     answer:
-      "For bridal alterations, I recommend booking as soon as you have your dress — ideally 3 to 6 months before your wedding date. This allows time for multiple fittings without rushing. For everyday tailoring, 2–3 weeks is typically sufficient, though I always recommend calling ahead to confirm availability.",
+      "Bridal fittings are on a waitlist until early 2027, so if your wedding is in 2027, join the waitlist as soon as you have your dress. Ideally fittings start 3 to 6 months before your wedding date, which allows time for multiple fittings without rushing. For everyday tailoring, 2–3 weeks is typically sufficient, though I always recommend getting in touch early to confirm availability.",
   },
   {
     question: "Do you work on garments that weren't purchased from a bridal shop?",
     answer:
-      "Absolutely. I work on all wedding dresses regardless of where they were purchased — including online purchases, heirloom gowns, vintage finds, and secondhand dresses. Every garment is evaluated individually at a consultation.",
+      "Absolutely. I work on all wedding dresses regardless of where they were purchased, including online purchases, heirloom gowns, vintage finds, and secondhand dresses. Every garment is evaluated individually at a consultation.",
   },
   {
     question: "How many fittings will I need?",
@@ -299,12 +301,12 @@ export const FAQ = [
   {
     question: "Do you offer rush services?",
     answer:
-      "Rush services are available on a case-by-case basis depending on my current schedule and the complexity of the work. Rush jobs (under 2 weeks for bridal, under 1 week for tailoring) do carry an additional fee. Please contact me as early as possible if you have a tight deadline — the sooner you reach out, the more options we have.",
+      "Rush services are available on a case-by-case basis depending on my current schedule and the complexity of the work. Rush jobs (under 2 weeks for bridal, under 1 week for tailoring) do carry an additional fee. Please contact me as early as possible if you have a tight deadline. The sooner you reach out, the more options we have.",
   },
   {
     question: "What should I bring to my first fitting?",
     answer:
-      "Bring the garment you need altered, any undergarments or shapewear you plan to wear with it (this matters significantly for fit), and the shoes you'll be wearing if a hem adjustment is needed. For bridal fittings, bring anything you're planning to wear underneath — the right foundation garments can change the fit dramatically.",
+      "Bring the garment you need altered, any undergarments or shapewear you plan to wear with it (this matters significantly for fit), and the shoes you'll be wearing if a hem adjustment is needed. For bridal fittings, bring anything you're planning to wear underneath: the right foundation garments can change the fit dramatically.",
   },
   {
     question: "Are you taking new clients?",
@@ -347,8 +349,8 @@ export const PROCESS_STEPS: { title: string; body: string; note?: string }[] = [
   { title: "Free Consultation", body: "We look at the garment together. I assess what needs to be done and give you an honest, itemized quote. No commitment required." },
   { title: "First Fitting",    body: "I pin and mark every adjustment directly on you, so we both see exactly what changes before a single seam is cut." },
   { title: "The Work",         body: "I complete your alterations with full attention. For complex bridal gowns this may involve multiple stages of careful work." },
-  { title: "Progress Check",   body: "For intricate bridal alterations, we do a mid-point fitting to verify fit and make fine adjustments before final finishing.", note: "Bridal" },
-  { title: "Pickup",           body: "Your garment is finished, pressed, and ready. We do a final try-on together — we don't say goodbye until it's perfect." },
+  { title: "Progress Check",   body: "For intricate bridal alterations, we do a mid-point fitting to verify fit and make fine adjustments before final touches.", note: "Bridal" },
+  { title: "Pickup",           body: "Your garment is finished, pressed, and ready. We do a final try-on together, and we don't say goodbye until it's perfect." },
 ];
 
 export const ABOUT_TEXT = {
@@ -370,14 +372,14 @@ export const SERVICES_TEXT = {
   pricingLabel: "Transparency First",
   pricingHeading: "How Pricing Works",
   ctaHeadline: "Ready to get started?",
-  ctaSubhead: "Book your consultation — no commitment, just a conversation.",
+  ctaSubhead: "Book your consultation. No commitment, just a conversation.",
   ctaButton: "Book a Consultation",
 };
 
 export const PRICING_CARDS: { title: string; body: string }[] = [
   {
     title: "Consultation First",
-    body: "Every project starts with a consultation so I can assess the garment, understand your needs, and give you an accurate quote — not a ballpark.",
+    body: "Every project starts with a consultation so I can assess the garment, understand your needs, and give you an accurate quote, not a ballpark.",
   },
   {
     title: "No Surprise Charges",
@@ -385,7 +387,7 @@ export const PRICING_CARDS: { title: string; body: string }[] = [
   },
   {
     title: "Complexity & Timeline",
-    body: "Pricing reflects fabric type, alteration complexity, and your timeline. Rush requests may carry an additional fee — always communicated upfront.",
+    body: "Pricing reflects fabric type, alteration complexity, and your timeline. Rush requests may carry an additional fee, always communicated upfront.",
   },
 ];
 
@@ -396,7 +398,7 @@ export const PORTFOLIO_TEXT = {
   featuredSectionLabel: "Featured Transformation",
   featuredHeading: "Drag to see the difference.",
   featuredBody:
-    "Every alteration starts with a garment that almost fits and ends with one that feels made for you. Use the slider to compare the before and after — or scroll down to browse the full portfolio.",
+    "Every alteration starts with a garment that almost fits and ends with one that feels made for you. Use the slider to compare the before and after, or scroll down to browse the full portfolio.",
   ctaHeadline: "Your dress deserves to fit perfectly.",
   ctaSubhead: "Book a consultation in Pittsburgh today.",
   ctaButton: "Get in Touch",
@@ -407,7 +409,7 @@ export const CONTACT_TEXT = {
   heroHeading: "Let's Talk About Your Garment",
   waitlistBannerBold: "Bridal fittings are on a waitlist right now.",
   waitlistBannerText:
-    "Fill out the form below to join my waitlist — I'll reach out as soon as a spot opens up.",
+    "Fill out the form below to join my waitlist. I'll reach out as soon as a spot opens up.",
   successHeading: "Thank you.",
   successMessage:
     "Your message has been received. Check your inbox: I've sent a confirmation with next steps. I reply to every message within 2 business days, usually sooner.",

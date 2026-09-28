@@ -27,11 +27,16 @@ export function pageMetadata({ title, description, path }: PageMeta): Metadata {
       title,
       description,
       url,
+      // Setting openGraph here replaces the root block, images included. A
+      // route with its own opengraph-image file overrides this; the rest
+      // (guides, landing pages) fall back to the home share image.
+      images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: ["/opengraph-image"],
     },
   };
 }

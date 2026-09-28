@@ -235,7 +235,7 @@ export default function ProcessSteps({
         <div data-reveal
               className="text-center mb-14 lg:mb-20"
             >
-          <p className="section-label text-gold/70 mb-4">{sectionLabel}</p>
+          <p className="section-label text-gold mb-4">{sectionLabel}</p>
           <h2
             id="process-heading"
             className="font-cormorant italic text-ivory text-4xl lg:text-5xl mb-5"
@@ -266,6 +266,7 @@ export default function ProcessSteps({
                         : "rgba(201,168,76,0.45)",
                     }}
                     aria-hidden="true"
+                    data-decorative
                   >
                     {String(i + 1).padStart(2, "0")}
                   </p>
@@ -277,7 +278,7 @@ export default function ProcessSteps({
                       aria-hidden="true"
                     />
                     {step.note && (
-                      <span className="font-jost text-[0.65rem] tracking-[0.18em] uppercase text-gold/70 border border-gold/35 px-1.5 py-0.5">
+                      <span className="font-jost text-[0.65rem] tracking-[0.18em] uppercase text-gold border border-gold/35 px-1.5 py-0.5">
                         {step.note}
                       </span>
                     )}
@@ -286,7 +287,7 @@ export default function ProcessSteps({
                   <h3 className="font-cormorant italic text-ivory text-xl leading-snug">
                     {step.title}
                   </h3>
-                  <p className="font-jost text-ivory/45 text-sm leading-relaxed">
+                  <p className="font-jost text-ivory/60 text-sm leading-relaxed">
                     {step.body}
                   </p>
                 </div>
@@ -437,17 +438,17 @@ export default function ProcessSteps({
                     aria-hidden="true"
                   />
                   <div className="flex items-center gap-3 mb-2">
-                    <p className="font-cormorant text-gold/30 text-3xl font-light leading-none" aria-hidden="true">
+                    <p className="font-cormorant text-gold/30 text-3xl font-light leading-none" aria-hidden="true" data-decorative>
                       {String(i + 1).padStart(2, "0")}
                     </p>
                     {step.note && (
-                      <span className="font-jost text-[0.65rem] tracking-[0.18em] uppercase text-gold/70 border border-gold/35 px-1.5 py-0.5">
+                      <span className="font-jost text-[0.65rem] tracking-[0.18em] uppercase text-gold border border-gold/35 px-1.5 py-0.5">
                         {step.note}
                       </span>
                     )}
                   </div>
                   <h3 className="font-cormorant italic text-ivory text-xl mb-2">{step.title}</h3>
-                  <p className="font-jost text-ivory/45 text-sm leading-relaxed">{step.body}</p>
+                  <p className="font-jost text-ivory/60 text-sm leading-relaxed">{step.body}</p>
                 </div>
               ))}
             </div>
