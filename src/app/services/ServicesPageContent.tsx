@@ -75,16 +75,18 @@ export default function ServicesPageContent({ services, page, availability }: Pr
         <div
           className="absolute inset-0 z-10 pointer-events-none"
           style={{
-            backdropFilter: "blur(10px)",
-            WebkitBackdropFilter: "blur(10px)",
-            maskImage: "linear-gradient(to right, black 0%, black 40%, transparent 75%)",
-            WebkitMaskImage: "linear-gradient(to right, black 0%, black 40%, transparent 75%)",
+            backdropFilter: "blur(5px)",
+            WebkitBackdropFilter: "blur(5px)",
+            // Only the strip under the heading is softened now; the lace and
+            // pearls on the right stay sharp.
+            maskImage: "linear-gradient(to right, black 0%, black 25%, transparent 58%)",
+            WebkitMaskImage: "linear-gradient(to right, black 0%, black 25%, transparent 58%)",
           }}
           aria-hidden="true"
         />
         <div
           className="absolute inset-0 z-10 pointer-events-none"
-          style={{ background: "linear-gradient(to right, rgba(250,247,242,0.82) 0%, rgba(250,247,242,0.82) 35%, rgba(250,247,242,0.3) 65%, rgba(250,247,242,0) 100%)" }}
+          style={{ background: "linear-gradient(to right, rgba(250,247,242,0.82) 0%, rgba(250,247,242,0.78) 32%, rgba(250,247,242,0.22) 58%, rgba(250,247,242,0) 76%)" }}
           aria-hidden="true"
         />
 
