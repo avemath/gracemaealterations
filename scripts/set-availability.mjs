@@ -10,8 +10,10 @@
  * siteSettings.isAcceptingClients is deliberately left alone: that switch is
  * all-or-nothing and turning it off would put every service on the waitlist.
  *
- * Patches the published document and its draft, and updates the two FAQ items
- * that quote the reopening date.
+ * Patches the published document and its draft, and updates the FAQ items
+ * whose answers depend on whether bridal is open.
+ *
+ * Add --dry-run to see exactly which fields would change, without writing.
  */
 
 import { createClient } from "@sanity/client";
@@ -55,8 +57,10 @@ const dataset =
   env.NEXT_PUBLIC_SANITY_DATASET ?? process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production";
 const token = env.SANITY_API_TOKEN ?? process.env.SANITY_API_TOKEN ?? process.env.SANITY_WRITE_TOKEN;
 
-if (!token) {
-  console.error("\n❌  SANITY_API_TOKEN is not set — add it to site/.env.local.\n");
+const dryRun = process.argv.includes("--dry-run");
+
+if (!token && !dryRun) {
+  console.error("\n❌  SANITY_API_TOKEN is not set. Add it to site/.env.local, or run with --dry-run.\n");
   process.exit(1);
 }
 
@@ -103,7 +107,15 @@ const settings = mode === "limited" ? LIMITED : OPEN;
 
 // ── FAQ copy that quotes the reopening date ──────────────────────────────────
 
+// Shared by both modes: how far ahead to start bridal fittings.
+const BOOKING_LEAD =
+  "Fittings ideally start 3 to 6 months before your wedding date, which leaves time for several fittings without rushing. For everyday tailoring, 2–3 weeks is usually plenty. Send a request and I'll confirm what's possible.";
+
 const FAQ_LIMITED = {
+  "faq-booking": {
+    question: "How far in advance should I book?",
+    answer: `Bridal fittings are on a waitlist until ${BRIDAL_REOPENS}, so join as soon as you have your dress. ${BOOKING_LEAD}`,
+  },
   "faq-accepting": {
     question: "Are you taking new clients?",
     answer: `Yes, for everyday tailoring and small repairs. Bridal and larger custom projects reopen ${BRIDAL_REOPENS}. You can join the waitlist now and I'll contact you in order as dates open. If your date is sooner, mention it in your request and I'll tell you honestly whether it's possible.`,
@@ -116,41 +128,54 @@ const FAQ_LIMITED = {
 };
 
 const FAQ_OPEN = {
+  "faq-booking": {
+    question: "How far in advance should I book?",
+    answer: `For bridal alterations, get in touch as soon as you have your dress. ${BOOKING_LEAD}`,
+  },
   "faq-accepting": {
     question: "Are you taking new clients?",
     answer:
-      "Yes — I'm currently accepting new clients for both bridal and everyday tailoring. I work by appointment only, so reach out through the contact form or email to check availability and schedule your first consultation.",
+      "Yes, I'm currently accepting new clients for both bridal and everyday tailoring. I work by appointment only, so send a request through the contact form or by email and I'll find you a first fitting.",
   },
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
+/** Only the fields whose value would actually change. */
+function changedFields(doc, fields) {
+  return Object.fromEntries(
+    Object.entries(fields).filter(([k, v]) => JSON.stringify(doc?.[k]) !== JSON.stringify(v))
+  );
+}
+
 async function patchDocAndDraft(docId, fields) {
   const draftId = `drafts.${docId}`;
   const published = await client.getDocument(docId);
-  if (published) {
-    await client.patch(docId).set(fields).commit();
-    console.log(`  ✓ patched  ${docId}`);
-  } else {
+  if (!published) {
     console.log(`  ! skipped  ${docId} does not exist`);
     return;
   }
-  const draft = await client.getDocument(draftId);
-  if (draft) {
-    await client.patch(draftId).set(fields).commit();
-    console.log(`  ✓ patched  ${draftId}`);
+  for (const [id, doc] of [[docId, published], [draftId, await client.getDocument(draftId)]]) {
+    if (!doc) continue;
+    const diff = changedFields(doc, fields);
+    const keys = Object.keys(diff);
+    if (keys.length === 0) {
+      console.log(`  ✓ ${id} already up to date`);
+      continue;
+    }
+    for (const k of keys) {
+      console.log(`  ${dryRun ? "→" : "✎"} ${id}.${k}\n      before: ${JSON.stringify(doc[k])}\n      after:  ${JSON.stringify(diff[k])}`);
+    }
+    if (!dryRun) await client.patch(id).set(diff).commit();
   }
 }
 
 // ── Run ───────────────────────────────────────────────────────────────────────
 
-console.log(`\n🗓   Setting availability: ${mode.toUpperCase()}  (${projectId}/${dataset})\n`);
+console.log(`\n🗓   Setting availability: ${mode.toUpperCase()}  (${projectId}/${dataset})${dryRun ? ", dry run" : ""}\n`);
 
 console.log("📋  Site Settings");
 await patchDocAndDraft("siteSettings", settings);
-for (const [k, v] of Object.entries(settings)) {
-  console.log(`      ${k}: ${JSON.stringify(v)}`);
-}
 
 console.log("\n❓  FAQ");
 if (mode === "limited") {
@@ -162,24 +187,28 @@ if (mode === "limited") {
   if (existing) {
     await patchDocAndDraft("faq-bridal-reopen", reopenItem);
   } else {
-    await client.createOrReplace({
-      _id: "faq-bridal-reopen",
-      _type: "faqItem",
-      ...reopenItem,
-    });
-    console.log("  ✓ created  faq-bridal-reopen");
+    if (!dryRun) {
+      await client.createOrReplace({
+        _id: "faq-bridal-reopen",
+        _type: "faqItem",
+        ...reopenItem,
+      });
+    }
+    console.log(`  ${dryRun ? "→ would create" : "✓ created"}  faq-bridal-reopen`);
   }
 } else {
   for (const [id, fields] of Object.entries(FAQ_OPEN)) await patchDocAndDraft(id, fields);
   for (const id of ["faq-bridal-reopen", "drafts.faq-bridal-reopen"]) {
     if (await client.getDocument(id)) {
-      await client.delete(id);
-      console.log(`  ✓ removed  ${id}  (only applies while bridal is waitlisted)`);
+      if (!dryRun) await client.delete(id);
+      console.log(`  ${dryRun ? "→ would remove" : "✓ removed"}  ${id}  (only applies while bridal is waitlisted)`);
     }
   }
 }
 
 console.log(
-  `\n✅  ${mode === "limited" ? "Limited availability is live." : "All services are open again."}` +
-    "\n    isAcceptingClients was left untouched on purpose.\n"
+  dryRun
+    ? "\nDry run: nothing was written. Run again without --dry-run to apply.\n"
+    : `\n✅  ${mode === "limited" ? "Limited availability is live." : "All services are open again."}` +
+        "\n    isAcceptingClients was left untouched on purpose.\n"
 );
