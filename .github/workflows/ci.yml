@@ -7,7 +7,10 @@ on:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # Only a newer push to the same PR makes a run pointless. On main every
+  # commit is kept: two quick merges once let the older commit's run cancel
+  # the newer one, leaving main's head untested.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   test:

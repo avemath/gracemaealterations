@@ -79,18 +79,12 @@ Each is at: **Content, then Testimonials, then the client**. All five boxes are 
 
 ## Wording to tidy in Studio
 
-These are live on the site now and disagree with each other or with the house style.
+Two small things are still live and worth a minute:
 
-- **Response time. Please do this one first.** The site no longer promises a reply time anywhere in its own wording, but three boxes in Studio still do. One says "2 business days" and two say "within 24 hours". Replace the promise in each with "I read every message myself and reply as soon as I can.":
-  - **Content, then Site Settings, then Response Time Note**
-  - **Content, then Home Page, then Process steps, then the first step**
-  - **Content, then Contact Page, then Success message**
+- **"I'm currently fully booked."** At **Content, then Contact Page, then Waitlist banner bold**. It only shows if the whole site is ever switched to waitlist, but tailoring is open, so it would say the wrong thing today. Something like "Bookings are paused for now." works in every case.
+- **Bustle photo captions.** Two bustle photos in the portfolio share the caption "Bustle set, train secured for the reception", but they are different gowns. At **Content, then Portfolio Items**, give each its own line (the style of bustle, or the gown).
 
-  Or ask me to run `npm run copy:response-time`, which does all three in one go.
-- **"Calling ahead".** The FAQ "How far in advance should I book?" suggested calling ahead, but there is no phone number, and it told brides to book while bridal is a waitlist. The availability switch now sets this answer too, so it always matches whether bridal is open.
-- **Long dashes.** Several paragraphs use a long dash (the About story, some service descriptions, several FAQ answers, the process steps). A comma or full stop reads cleaner and matches the rest of the site. I can clear all 21 in one go with `npm run copy:tidy-dashes`, so leave these to me unless you'd rather word them yourself.
-- **"I'm currently fully booked."** At **Content, then Contact Page, then Waitlist banner bold**. It only shows if the whole site is ever switched to waitlist, but tailoring is open, so it would say the wrong thing today.
-- **Bustle photo captions.** The two bustle photos in the portfolio share one caption, but they are different gowns. At **Content, then Portfolio Items**.
+Already sorted, no action needed: the reply-time promise, the "calling ahead" FAQ answer, and the long dashes. The site no longer promises a reply time, and the booking FAQ now follows the availability switch.
 
 ---
 
