@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { urlFor } from "@/lib/sanity.image";
+import { sanityLoader } from "@/lib/sanity.loader";
 import type { SanityImage as SanityImageType } from "@/lib/sanity.queries";
 
 interface Props {
@@ -13,7 +14,7 @@ interface Props {
 }
 
 function getSrc(img: SanityImageType): string | null {
-  try { return urlFor(img).auto("format").quality(85).url(); }
+  try { return urlFor(img).fit("max").url(); }
   catch { return null; }
 }
 
@@ -86,11 +87,11 @@ export default function BeforeAfterSlider({ beforeImage, afterImage, label, desc
           {afterSrc ? (
             <Image
               src={afterSrc}
+              loader={sanityLoader}
               alt={afterImage?.alt ?? "After alteration"}
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
-              priority
             />
           ) : (
             /* Placeholder: dark ivory panel */
@@ -111,11 +112,11 @@ export default function BeforeAfterSlider({ beforeImage, afterImage, label, desc
           {beforeSrc ? (
             <Image
               src={beforeSrc}
+              loader={sanityLoader}
               alt={beforeImage?.alt ?? "Before alteration"}
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
-              priority
             />
           ) : (
             /* Placeholder: blush panel */

@@ -65,7 +65,6 @@ export default function ServicesPageContent({ services, page, availability }: Pr
             <SanityImage
               image={page.heroImage}
               fill
-              priority
               placeholderLabel="SERVICES_HERO_IMAGE"
               placeholderRatio="landscape"
               sizes="100vw"

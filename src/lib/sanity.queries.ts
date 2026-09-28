@@ -26,6 +26,7 @@ export interface SanityImage {
     url?: string;
     metadata?: {
       dimensions?: { width: number; height: number; aspectRatio: number };
+      lqip?: string;
     };
   };
   alt?: string;
@@ -209,7 +210,7 @@ export async function getSiteSettings(): Promise<SanitySiteSettings | null> {
 
 export async function getHomePage(): Promise<SanityHomePage | null> {
   return safeFetch(`*[_type == "homePage"][0]{
-    heroImage{ asset->, alt, hotspot },
+    heroImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
     trustStats,
     heroSectionLabel, heroCredentialText,
     servicesLabel, servicesHeading,
@@ -224,9 +225,9 @@ export async function getHomePage(): Promise<SanityHomePage | null> {
 
 export async function getAboutPage(): Promise<SanityAboutPage | null> {
   return safeFetch(`*[_type == "aboutPage"][0]{
-    heroImage{ asset->, alt, hotspot },
-    secondaryImage{ asset->, alt, hotspot },
-    portraitImage{ asset->, alt, hotspot },
+    heroImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
+    secondaryImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
+    portraitImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
     heroLabel, storyLabel, storyHeading,
     paragraph1, paragraph2, paragraph3, pullQuote,
     valuesLabel, valuesHeading,
@@ -237,7 +238,7 @@ export async function getAboutPage(): Promise<SanityAboutPage | null> {
 
 export async function getServicesPage(): Promise<SanityServicesPage | null> {
   return safeFetch(`*[_type == "servicesPage"][0]{
-    heroImage{ asset->, alt, hotspot },
+    heroImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
     heroLabel, heroHeading,
     pricingLabel, pricingHeading,
     pricingCards[]{ title, body },
@@ -247,7 +248,7 @@ export async function getServicesPage(): Promise<SanityServicesPage | null> {
 
 export async function getContactPage(): Promise<SanityContactPage | null> {
   return safeFetch(`*[_type == "contactPage"][0]{
-    image{ asset->, alt, hotspot },
+    image{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
     heroLabel, heroHeading,
     waitlistBannerBold, waitlistBannerText,
     successHeading, successMessage, waitlistSuccessMessage
@@ -259,8 +260,8 @@ export async function getPortfolioPage(): Promise<SanityPortfolioPage | null> {
     heroLabel, heroHeading, heroSubtext,
     featuredSectionLabel, featuredHeading, featuredBody,
     featuredLabel, featuredDescription,
-    beforeImage{ asset->, alt, hotspot },
-    afterImage{ asset->, alt, hotspot },
+    beforeImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
+    afterImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
     ctaHeadline, ctaSubhead, ctaButton
   }`);
 }
@@ -270,7 +271,7 @@ export async function getServices(): Promise<SanityService[] | null> {
     _id, title, "id": slug.current, icon,
     shortDescription, description, services,
     priceRange, priceNote, freeConsult,
-    cardImage{ asset->, alt, hotspot }
+    cardImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot }
   }`);
 }
 
@@ -280,7 +281,7 @@ export async function getTestimonials(): Promise<SanityTestimonial[] | null> {
 
 export async function getPortfolioItems(): Promise<SanityPortfolioItem[] | null> {
   return safeFetch(`*[_type == "portfolioItem"] | order(order asc) {
-    _id, image{ asset->, alt, hotspot }, label, caption, featured, type, order
+    _id, image{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot }, label, caption, featured, type, order
   }`);
 }
 

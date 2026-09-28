@@ -78,7 +78,6 @@ export default function AboutPageContent({ site, about, values }: Props) {
             <SanityImage
               image={about.heroImage}
               fill
-              priority
               placeholderLabel="ABOUT_HERO_IMAGE"
               placeholderRatio="landscape"
               alt={about.heroImage?.alt ?? `${site.name} — Pittsburgh seamstress at work`}
@@ -157,7 +156,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
                     <SanityImage
                       image={about.portraitImage ?? about.secondaryImage}
                       fill
-                      sizes="(max-width: 1024px) 100vw, 40vw"
+                      sizes="(min-width:1024px) 40vw, 100vw"
                       placeholderLabel="ABOUT_PORTRAIT_IMAGE"
                       placeholderRatio="square"
                     />

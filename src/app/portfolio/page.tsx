@@ -1,19 +1,9 @@
 import type { Metadata } from "next";
+import { pageMetadata, PAGE_META } from "@/lib/metadata";
 import { getMergedPortfolioItems, getMergedPortfolioPage, getMergedSite } from "@/lib/sanity.queries";
 import PortfolioPageContent from "./PortfolioPageContent";
 
-export const metadata: Metadata = {
-  title: { absolute: "Alterations Portfolio | Grace Mae | Pittsburgh, PA" },
-  description:
-    "Before and after bridal, bridesmaid and tailoring work by Grace Mae, Pittsburgh seamstress.",
-  alternates: { canonical: "https://gracemaealterations.com/portfolio" },
-  openGraph: {
-    title: "Alterations Portfolio | Grace Mae | Pittsburgh, PA",
-    description:
-      "Before and after bridal, bridesmaid and tailoring work by Grace Mae, Pittsburgh seamstress.",
-    url: "https://gracemaealterations.com/portfolio",
-  },
-};
+export const metadata: Metadata = pageMetadata(PAGE_META.portfolio);
 
 
 export default async function PortfolioPage() {
