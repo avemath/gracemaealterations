@@ -9,10 +9,24 @@ export const siteSettings = defineType({
     defineField({ name: "ownerName", title: "Your Name", type: "string", initialValue: "Grace Mae" }),
     defineField({ name: "businessName", title: "Business Name", type: "string", initialValue: "Grace Mae Alterations" }),
     defineField({ name: "tagline", title: "Tagline (hero headline)", type: "string", initialValue: "Sewn with precision." }),
-    defineField({ name: "subTagline", title: "Sub-tagline (below headline)", type: "string", initialValue: "Every stitch tailored to you — and only you." }),
+    defineField({ name: "subTagline", title: "Sub-tagline (below headline)", type: "string", initialValue: "Every stitch tailored to you, and only you." }),
     defineField({ name: "email", title: "Contact Email", type: "string", initialValue: "inquiries@gracemaealterations.com" }),
     defineField({ name: "instagram", title: "Instagram Handle (e.g. @gracemae)", type: "string", initialValue: "@gracemaealterations" }),
     defineField({ name: "instagramUrl", title: "Instagram Full URL", type: "url", initialValue: "https://instagram.com/gracemaealterations" }),
+    defineField({
+      name: "googleBusinessUrl",
+      title: "Google Business Profile link",
+      description:
+        "The share link for your profile on Google (on your profile, Share, then Copy link). Tells Google the website and the profile are the same business.",
+      type: "url",
+    }),
+    defineField({
+      name: "googleReviewUrl",
+      title: "Google review link",
+      description:
+        "On your Google Business Profile, choose Ask for reviews and copy the link. Once it's here, a Leave a Google review link appears in the footer and on care cards.",
+      type: "url",
+    }),
     defineField({ name: "location", title: "Location (e.g. Pittsburgh, PA)", type: "string", initialValue: "Pittsburgh, PA" }),
     defineField({ name: "availability", title: "Availability Note", type: "string", initialValue: "Available by Appointment" }),
     defineField({ name: "responseTime", title: "Response Time Note", type: "string", initialValue: "I read every message myself and reply as soon as I can." }),

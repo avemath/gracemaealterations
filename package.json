@@ -18,7 +18,8 @@
     "lighthouse": "node scripts/run-lighthouse.mjs",
     "copy:response-time": "node scripts/set-response-time.mjs",
     "copy:tidy-dashes": "node scripts/tidy-dashes.mjs",
-    "copy:fixes": "node scripts/copy-fixes.mjs"
+    "copy:fixes": "node scripts/copy-fixes.mjs",
+    "content:publish": "node scripts/publish-drafts.mjs"
   },
   "dependencies": {
     "@sanity/image-url": "^1.2.0",
