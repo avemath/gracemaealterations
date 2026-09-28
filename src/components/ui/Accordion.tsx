@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 interface AccordionItem {
   question: string;
@@ -48,23 +48,23 @@ function AccordionSingle({
           </span>
         </button>
       </h3>
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.35, ease: "easeInOut" }}
-            className="overflow-hidden"
-          >
-            <div id={panelId} role="region" aria-labelledby={triggerId}>
-              <p className="font-jost text-charcoal/75 text-sm leading-[1.65] pb-5 pr-8 max-w-[65ch]">
-                {answer}
-              </p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* The panel is always in the HTML, hidden when closed, so the answers
+          are in the server render for search engines and aria-controls
+          always points at a real element. */}
+      <motion.div
+        id={panelId}
+        role="region"
+        aria-labelledby={triggerId}
+        hidden={!isOpen}
+        initial={false}
+        animate={isOpen ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
+        transition={{ duration: 0.35, ease: "easeInOut" }}
+        className="overflow-hidden"
+      >
+        <p className="font-jost text-charcoal/75 text-sm leading-[1.65] pb-5 pr-8 max-w-[65ch]">
+          {answer}
+        </p>
+      </motion.div>
     </div>
   );
 }

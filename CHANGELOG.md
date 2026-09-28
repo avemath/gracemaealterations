@@ -2,6 +2,12 @@
 
 Newest first. Grace facing notes live in `site/content/FOR-GRACE.md`.
 
+## Audit, September 2026
+
+- `fix: contact form keeps focus, resizes photos, restores bridal intake`: the live form dropped every character after the first (the field component was declared inside render, so each keystroke remounted the input). Vercel logs show 76 visits to /contact and no submissions in the previous 30 days. Photos are now resized in the browser so five of them fit under Vercel's 4.5 MB request limit. The bridal branch has a short optional intake again. Dead API paths removed.
+- `fix: reveals for late-mounted content, contrast, performance, tidy`: filtering the portfolio remounted the grid, and the new tiles were never revealed, so they stayed invisible. RevealObserver now watches for elements added after load. Scanning with reduced motion exposed contrast failures that had been hidden behind opacity 0: 70% gold labels and 45% ivory body copy on near-black. Before/after slider images are priority (portfolio LCP), grid images get real `sizes`, lqip is gone from the grid query, and ProcessSteps is its own chunk. RevealText, RevealImage and TestimonialsSection are removed, and the content.ts fallbacks are back in step with Sanity. The scrolled navbar used #C9A84C text on ivory (about 2.2:1) and now uses gold_ink. FAQ answers are always in the server HTML. /guides is noindex until a guide is published, /studio is noindex, pages without their own share image fall back to the home one, and the site sends nosniff, Referrer-Policy, X-Frame-Options and Permissions-Policy headers without X-Powered-By.
+- `ci: GitHub Actions, reveal and visual tests`: lint, build and Playwright on every push and PR. There are new specs for scroll reveals, reduced motion, no-JS rendering, and full-page captures of the five main routes at 390 and 1440.
+
 ## Site upgrade, follow-ups
 
 - `docs: handoff checklist for Grace`: plain language handoff covering what changed, every number still to fill in with its Studio location, the drafts awaiting review, and how to reopen bridal.

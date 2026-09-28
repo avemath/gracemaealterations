@@ -16,6 +16,9 @@ Everything below is in the Studio at **gracemaealterations.com/studio**. Nothing
 8. Text and buttons are darker where they need to be, so they pass accessibility standards and are readable in sunlight.
 9. There are draft guides, bustle explanations and two extra pages written and waiting. None of them are on the site until you switch them on.
 10. There is still no phone number anywhere, by design. The contact form is the only way in.
+11. The contact form was broken for a while: typing in any box kept only the first letter. That is fixed. If anyone mentioned they could not get through, this is why.
+12. Bridal requests ask a few optional questions again: dress size ordered, usual street size, what they think the dress needs, and whether they have shoes and undergarments yet. The answers appear in your email under "The Dress".
+13. Photos people attach are shrunk on their phone before sending, so five photos always go through. They are still plenty sharp to judge a hem.
 
 ---
 
@@ -71,6 +74,18 @@ Each is at: **Content, then Testimonials, then the client**. All five boxes are 
 - Testimonial 1: Dress designer, Alterations done, Venue, Month married, Photo
 - Testimonial 2: Dress designer, Alterations done, Venue, Month married, Photo
 - Testimonial 3: Dress designer, Alterations done, Venue, Month married, Photo
+
+---
+
+## Wording to tidy in Studio
+
+These are live on the site now and disagree with each other or with the house style.
+
+- **Response time.** The Contact information panel says you reply within 2 business days, but two other places say "within 24 hours": **Content, then Home Page, then Process steps, then the first step**, and **Content, then Contact Page, then Success message**. Pick one and use it in all three.
+- **"Calling ahead".** The FAQ "How far in advance should I book?" suggests calling ahead, but there is no phone number, and it tells brides to book as soon as they have their dress while bridal is a waitlist. At **Content, then FAQ**.
+- **Long dashes.** Several paragraphs use a long dash (the About story, some service descriptions, several FAQ answers, the process steps). A comma, colon or full stop reads cleaner and matches the rest of the site.
+- **"I'm currently fully booked."** At **Content, then Contact Page, then Waitlist banner bold**. It only shows if the whole site is ever switched to waitlist, but tailoring is open, so it would say the wrong thing today.
+- **Bustle photo captions.** The two bustle photos in the portfolio share one caption, but they are different gowns. At **Content, then Portfolio Items**.
 
 ---
 
