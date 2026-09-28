@@ -2,6 +2,13 @@
 
 Newest first. Grace facing notes live in `site/content/FOR-GRACE.md`.
 
+## Bustle explorer shows the pull, September 2026
+
+- `feat: bustle explorer shows which way the fabric is pulled`:
+  - A side view sits beside the back view (phones switch between them). From the side you see the loop lift off the floor and travel up the outside to the hip hook (American), the fabric roll down the back and tuck under to a tie inside (French), the cord gather the train up the back into swags (Austrian), the train fold under at the hem (ballroom), and the train unhook at the waist (detachable).
+  - Every pickup point travels along a gold arrow that shows only the way still to go; hooks are solid dots, hidden ties dashed rings, and the part tucked inside the skirt is drawn as a see-through outline.
+  - A three-step caption says what is happening at each moment, and the move is slower so it can be followed.
+
 ## Care cards, September 2026
 
 - `feat: care cards with QR codes and drafted care notes`:
