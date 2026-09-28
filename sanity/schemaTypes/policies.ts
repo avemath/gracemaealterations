@@ -18,6 +18,13 @@ export const policies = defineType({
       rows: 2,
     }),
     defineField({
+      name: "published",
+      title: "Published",
+      description: "Off until the draft copy has been reviewed. While off, /policies is not on the site and the footer link is hidden.",
+      type: "boolean",
+      initialValue: false,
+    }),
+    defineField({
       name: "sections",
       title: "Sections",
       type: "array",
@@ -33,7 +40,13 @@ export const policies = defineType({
               of: [{ type: "block", styles: [{ title: "Normal", value: "normal" }] }],
             },
           ],
-          preview: { select: { title: "heading" } },
+          preview: {
+    select: { title: "heading", published: "published" },
+    prepare: ({ title, published }) => ({
+      title: title ?? "Policies",
+      subtitle: published ? "Published" : "Draft, not on the site",
+    }),
+  },
         },
       ],
     }),

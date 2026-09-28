@@ -16,6 +16,7 @@ interface SiteData {
   reopensLabel?: string;
   googleReviewUrl?: string;
   guides?: { title: string; slug: string }[];
+  hasPolicies?: boolean;
 }
 
 interface Props {
@@ -49,6 +50,7 @@ export default function SiteChrome({ children, site }: Props) {
         instagramUrl={site.instagramUrl}
         googleReviewUrl={site.googleReviewUrl}
         guides={site.guides}
+        hasPolicies={site.hasPolicies}
       />
     </>
   );

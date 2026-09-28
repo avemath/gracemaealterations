@@ -35,6 +35,8 @@ interface FooterProps {
   googleReviewUrl?: string;
   /** Published guides only; the column is hidden when empty. */
   guides?: GuideLink[];
+  /** Hidden until the policies singleton is published. */
+  hasPolicies?: boolean;
 }
 
 const columnHeading = "font-jost font-medium text-ivory text-xs tracking-[0.22em] uppercase mb-4";
@@ -51,6 +53,7 @@ export default function Footer({
   instagramUrl,
   googleReviewUrl,
   guides = [],
+  hasPolicies = false,
 }: FooterProps) {
   const year = new Date().getFullYear();
 
@@ -108,13 +111,15 @@ export default function Footer({
 
           {/* Policies */}
           <div>
-            <h2 className={columnHeading}>Policies</h2>
+            <h2 className={columnHeading}>{hasPolicies ? "Policies" : "Elsewhere"}</h2>
             <ul className="space-y-2">
-              <li>
-                <Link href="/policies" className={linkClass}>
-                  Policies
-                </Link>
-              </li>
+              {hasPolicies && (
+                <li>
+                  <Link href="/policies" className={linkClass}>
+                    Policies
+                  </Link>
+                </li>
+              )}
               <li>
                 <a
                   href={instagramUrl}

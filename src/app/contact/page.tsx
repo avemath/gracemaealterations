@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import { pageMetadata, PAGE_META } from "@/lib/metadata";
-import { getMergedSite, getMergedFaq, getMergedContactPage } from "@/lib/sanity.queries";
+import { getMergedSite, getMergedFaq, getMergedContactPage, getPolicies } from "@/lib/sanity.queries";
 import ContactPageContent from "./ContactPageContent";
 
 export const metadata: Metadata = pageMetadata(PAGE_META.contact);
 
 
 export default async function ContactPage() {
-  const [site, faq, page] = await Promise.all([
+  const [site, faq, page, policies] = await Promise.all([
     getMergedSite(),
     getMergedFaq(),
     getMergedContactPage(),
+    getPolicies(),
   ]);
 
   return (
@@ -18,6 +19,7 @@ export default async function ContactPage() {
       site={site}
       faq={faq}
       contactImage={page.image ?? null}
+      hasPolicies={!!policies}
       availability={{
         limitedMode: site.limitedMode,
         waitlistServices: site.waitlistServices,

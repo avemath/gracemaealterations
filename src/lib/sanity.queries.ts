@@ -1,4 +1,5 @@
 import { sanityClient } from "./sanity.client";
+import { stripDraft, stripDraftBlocks } from "./draft";
 import {
   SITE,
   TRUST_STATS,
@@ -375,8 +376,23 @@ const GUIDE_FIELDS = `
   seo
 `;
 
+function cleanGuide(guide: SanityGuide): SanityGuide {
+  return {
+    ...guide,
+    summary: stripDraft(guide.summary),
+    body: stripDraftBlocks(guide.body),
+    timelineSteps: guide.timelineSteps?.map((step) => ({
+      ...step,
+      detail: stripDraft(step.detail),
+    })),
+  };
+}
+
 export async function getPublishedGuides(): Promise<SanityGuide[] | null> {
-  return safeFetch(`*[_type == "guide" && published == true] | order(order asc) { ${GUIDE_FIELDS} }`);
+  const guides = await safeFetch<SanityGuide[]>(
+    `*[_type == "guide" && published == true] | order(order asc) { ${GUIDE_FIELDS} }`
+  );
+  return guides ? guides.map(cleanGuide) : null;
 }
 
 export async function getGuide(slug: string): Promise<SanityGuide | null> {
@@ -386,18 +402,26 @@ export async function getGuide(slug: string): Promise<SanityGuide | null> {
       `*[_type == "guide" && published == true && slug.current == $slug][0]{ ${GUIDE_FIELDS} }`,
       { slug },
       { next: { revalidate: 60 } }
-    );
+    ).then((guide: SanityGuide | null) => (guide ? cleanGuide(guide) : null));
   } catch {
     return null;
   }
 }
 
 export async function getPublishedBustleStyles(): Promise<SanityBustleStyle[] | null> {
-  return safeFetch(`*[_type == "bustleStyle" && published == true] | order(order asc) {
+  return safeFetch<SanityBustleStyle[]>(`*[_type == "bustleStyle" && published == true] | order(order asc) {
     _id, name, "slug": slug.current,
     image{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot },
     alsoCalled, typicalPoints, bestFor, fabricNotes, priceFrom
-  }`);
+  }`).then((styles) =>
+    styles
+      ? styles.map((style) => ({
+          ...style,
+          bestFor: stripDraft(style.bestFor),
+          fabricNotes: stripDraft(style.fabricNotes),
+        }))
+      : null
+  );
 }
 
 const LANDING_FIELDS = `
@@ -405,8 +429,23 @@ const LANDING_FIELDS = `
   sections[]{ heading, body }, seo
 `;
 
+function cleanLandingPage(page: SanityLandingPage): SanityLandingPage {
+  return {
+    ...page,
+    intro: stripDraft(page.intro),
+    sections: page.sections?.map((section) => ({
+      ...section,
+      heading: stripDraft(section.heading),
+      body: stripDraft(section.body),
+    })),
+  };
+}
+
 export async function getPublishedLandingPages(): Promise<SanityLandingPage[] | null> {
-  return safeFetch(`*[_type == "landingPage" && published == true]{ ${LANDING_FIELDS} }`);
+  const pages = await safeFetch<SanityLandingPage[]>(
+    `*[_type == "landingPage" && published == true]{ ${LANDING_FIELDS} }`
+  );
+  return pages ? pages.map(cleanLandingPage) : null;
 }
 
 export async function getLandingPage(slug: string): Promise<SanityLandingPage | null> {
@@ -416,7 +455,7 @@ export async function getLandingPage(slug: string): Promise<SanityLandingPage | 
       `*[_type == "landingPage" && published == true && slug.current == $slug][0]{ ${LANDING_FIELDS} }`,
       { slug },
       { next: { revalidate: 60 } }
-    );
+    ).then((page: SanityLandingPage | null) => (page ? cleanLandingPage(page) : null));
   } catch {
     return null;
   }
@@ -476,8 +515,21 @@ export interface SanityPolicies {
   sections?: SanityPolicySection[];
 }
 
+/** Returns null until the singleton is published, which 404s the route. */
 export async function getPolicies(): Promise<SanityPolicies | null> {
-  return safeFetch(`*[_type == "policies"][0]{ heading, intro, sections[]{ heading, body } }`);
+  const doc = await safeFetch<SanityPolicies>(
+    `*[_type == "policies" && published == true][0]{ heading, intro, sections[]{ heading, body } }`
+  );
+  if (!doc) return null;
+  return {
+    ...doc,
+    intro: stripDraft(doc.intro),
+    sections: doc.sections?.map((section) => ({
+      ...section,
+      heading: stripDraft(section.heading),
+      body: stripDraftBlocks(section.body),
+    })),
+  };
 }
 
 // ── MERGED DATA FETCHERS (Sanity → fallback to content.ts) ────
@@ -568,7 +620,9 @@ export async function getMergedServicesPage() {
     pricingCards: p?.pricingCards?.length ? p.pricingCards : PRICING_CARDS,
     // Rows without a real total never reach the client, so placeholder copy
     // cannot appear even in the serialised props.
-    exampleQuotes: (p?.exampleQuotes ?? []).filter((q) => typeof q.price === "number"),
+    exampleQuotes: (p?.exampleQuotes ?? [])
+      .filter((q) => typeof q.price === "number")
+      .map((q) => ({ ...q, gown: stripDraft(q.gown), work: stripDraft(q.work) })),
     exampleQuotesCaption: p?.exampleQuotesCaption ?? "",
     ctaHeadline: p?.ctaHeadline ?? SERVICES_TEXT.ctaHeadline,
     ctaSubhead: p?.ctaSubhead ?? SERVICES_TEXT.ctaSubhead,

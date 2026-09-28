@@ -122,6 +122,7 @@ interface Props {
   faq: SanityFaqItem[];
   contactImage: SanityImageType | null;
   availability: Availability;
+  hasPolicies: boolean;
   text: ContactText;
 }
 
@@ -132,6 +133,7 @@ export default function ContactPageContent({
   faq,
   contactImage,
   availability,
+  hasPolicies,
   text,
 }: Props) {
   const { limitedMode, waitlistServices, reopensLabel, limitedNote } = availability;
@@ -629,11 +631,16 @@ export default function ContactPageContent({
                                 </p>
                               )}
                               <p className="mt-6 font-jost text-charcoal/75 text-xs leading-[1.65]">
-                                {site.responseTime} By sending this you agree to my{" "}
-                                <Link href="/policies" className="text-gold_ink underline">
-                                  policies
-                                </Link>
-                                .
+                                {site.responseTime}
+                                {hasPolicies && (
+                                  <>
+                                    {" "}By sending this you agree to my{" "}
+                                    <Link href="/policies" className="text-gold_ink underline">
+                                      policies
+                                    </Link>
+                                    .
+                                  </>
+                                )}
                               </p>
                             </div>
                           </div>

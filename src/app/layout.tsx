@@ -7,7 +7,12 @@ import StickyMobileCTA from "@/components/layout/StickyMobileCTA";
 import StickyDesktopCTA from "@/components/layout/StickyDesktopCTA";
 import MotionProvider from "@/components/layout/MotionProvider";
 import RevealObserver from "@/components/layout/RevealObserver";
-import { getMergedSite, getMergedServices, getPublishedGuides } from "@/lib/sanity.queries";
+import {
+  getMergedSite,
+  getMergedServices,
+  getPublishedGuides,
+  getPolicies,
+} from "@/lib/sanity.queries";
 import { SITE_URL } from "@/lib/metadata";
 
 /** First dollar figure in a range like "$75 – $450+", or null when quoted. */
@@ -69,10 +74,11 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [site, services, guides] = await Promise.all([
+  const [site, services, guides, policies] = await Promise.all([
     getMergedSite(),
     getMergedServices(),
     getPublishedGuides(),
+    getPolicies(),
   ]);
   const guideLinks = (guides ?? []).map((guide) => ({ title: guide.title, slug: guide.slug }));
 
@@ -188,6 +194,7 @@ export default async function RootLayout({
             email: site.email,
             googleReviewUrl: GBP_URL || undefined,
             guides: guideLinks,
+            hasPolicies: !!policies,
             limitedMode: site.limitedMode,
             reopensLabel: site.reopensLabel,
           }}

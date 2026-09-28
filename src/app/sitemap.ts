@@ -5,6 +5,7 @@ import {
   getPublishedGuides,
   getCaseStudies,
   getPublishedLandingPages,
+  getPolicies,
 } from "@/lib/sanity.queries";
 
 const ROUTES = [
@@ -40,13 +41,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   );
   // Published content only: drafts are excluded by the queries themselves.
-  const [guides, caseStudies, landingPages] = await Promise.all([
+  const [guides, caseStudies, landingPages, policies] = await Promise.all([
     getPublishedGuides(),
     getCaseStudies(),
     getPublishedLandingPages(),
+    getPolicies(),
   ]);
 
   const dynamicEntries: MetadataRoute.Sitemap = [];
+
+  if (policies) {
+    dynamicEntries.push({
+      url: `${SITE_URL}/policies`,
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.3,
+    });
+  }
 
   if ((guides ?? []).length > 0) {
     dynamicEntries.push({
