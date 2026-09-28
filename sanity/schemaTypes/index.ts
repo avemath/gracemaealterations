@@ -13,6 +13,7 @@ import { value } from "./value";
 import { guide } from "./guide";
 import { bustleStyle } from "./bustleStyle";
 import { landingPage } from "./landingPage";
+import { careCard } from "./careCard";
 
 export const schemaTypes = [
   // Singletons (one of each)
@@ -32,4 +33,5 @@ export const schemaTypes = [
   guide,
   bustleStyle,
   landingPage,
+  careCard,
 ];

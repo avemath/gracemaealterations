@@ -90,6 +90,22 @@ Two notes on these:
 
 ---
 
+## Care cards: a little card that goes home with every finished piece
+
+When you finish a garment, you can send it home with a small printed card. The client scans its QR code and gets a page just for their piece: how to look after it, your before and after, and a button to leave you a Google review. It takes about two minutes.
+
+1. In the Studio, open **Care Cards** and press the **+** to make a new one.
+2. Fill in **Garment** (for example "wedding gown") and, if you can, **Fabric** ("silk crepe with a lace overlay") and **What I did**. The client's first name and the photos are optional.
+3. Press **Draft care notes**. A first version appears in a few seconds, written as you. Read it and change anything that isn't how you'd say it. You can also just type your own.
+4. Press **Publish**.
+5. Under **Card link**, press **Print the card**. Print it on heavy cardstock, trim along the dashed line, and tuck it in the garment bag.
+
+Anyone with the card can open that page, but nobody can find it any other way, and Google never sees it. Keep the photos to ones you'd be happy to share. To take a page down, switch **Page is live** off.
+
+"Draft care notes" needs the site's Anthropic key to be set up. Until then the button says so, and you can type the notes yourself.
+
+---
+
 ## How to flip bridal back on
 
 When you are ready to take bridal again, you have two choices.

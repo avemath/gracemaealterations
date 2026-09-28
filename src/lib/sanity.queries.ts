@@ -708,3 +708,39 @@ export async function getMergedValues() {
   if (v && v.length > 0) return v;
   return VALUES.map((v, i) => ({ _id: String(i), ...v }));
 }
+
+// ── Care cards ────────────────────────────────────────────────
+// One per finished garment, opened from the QR code on a printed card.
+
+export interface SanityCareCard {
+  code: string;
+  garment: string;
+  fabric?: string | null;
+  workDone?: string | null;
+  clientFirstName?: string | null;
+  completedOn?: string | null;
+  careNotes?: { heading?: string; body?: string }[] | null;
+  beforeImage?: SanityImage | null;
+  afterImage?: SanityImage | null;
+}
+
+const IMAGE_FIELDS = `asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop`;
+
+/** Published, live cards only. The code is the only way in. */
+export async function getCareCard(code: string): Promise<SanityCareCard | null> {
+  if (!sanityClient || !/^[a-z0-9]{6,20}$/.test(code)) return null;
+  try {
+    return await sanityClient.fetch<SanityCareCard | null>(
+      `*[_type == "careCard" && code == $code && active != false && !(_id in path("drafts.**"))][0]{
+        code, garment, fabric, workDone, clientFirstName, completedOn,
+        careNotes[]{ heading, body },
+        beforeImage{ ${IMAGE_FIELDS} },
+        afterImage{ ${IMAGE_FIELDS} }
+      }`,
+      { code },
+      { next: { revalidate: 60 } }
+    );
+  } catch {
+    return null;
+  }
+}
