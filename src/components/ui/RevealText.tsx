@@ -29,7 +29,7 @@ export default function RevealText({
     <div className={`overflow-hidden ${className}`}>
       {onMount ? (
         <motion.div
-          initial={{ y: "110%" }}
+          initial={false}
           animate={{ y: "0%" }}
           transition={transition}
         >
@@ -37,7 +37,7 @@ export default function RevealText({
         </motion.div>
       ) : (
         <motion.div
-          initial={{ y: "110%" }}
+          initial={false}
           whileInView={{ y: "0%" }}
           viewport={{ once: true, margin: "-60px" }}
           transition={transition}

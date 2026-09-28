@@ -91,7 +91,7 @@ export default function ServicesPageContent({ services, page, availability }: Pr
         />
 
         <div className="relative z-20 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-14 pt-36 lg:pt-44">
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <p className="section-label text-gold_dark mb-4">{page.heroLabel}</p>
             <RevealText onMount delay={0.2}>
               <h1 className="font-cormorant italic text-charcoal text-5xl lg:text-7xl mb-5">{page.heroHeading}</h1>
@@ -112,7 +112,7 @@ export default function ServicesPageContent({ services, page, availability }: Pr
           >
             <div className="max-w-5xl mx-auto">
               <motion.div
-                initial={{ opacity: 0, y: 24 }}
+                initial={false}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.6 }}
@@ -202,7 +202,7 @@ export default function ServicesPageContent({ services, page, availability }: Pr
       <section className="bg-near_black py-14 lg:py-20 px-6" aria-labelledby="pricing-heading">
         <div className="max-w-5xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6 }}
@@ -218,7 +218,7 @@ export default function ServicesPageContent({ services, page, availability }: Pr
                 <motion.div
                   key={i}
                   className="bg-near_black p-8 lg:p-10 border-t border-ivory/10 md:border-t-0"
-                  initial={{ opacity: 0, y: 16 }}
+                  initial={false}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.5, delay: i * 0.1 }}

@@ -303,7 +303,7 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
       <section className="relative flex items-end overflow-hidden bg-near_black" style={{ minHeight: "40vh" }} aria-label="Contact hero">
         <div className="absolute inset-0 bg-gradient-to-br from-near_black via-near_black to-charcoal/60 pointer-events-none" aria-hidden="true" />
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-14 pt-36 lg:pt-44">
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <p className="section-label text-gold/70 mb-4">{text.heroLabel}</p>
             <h1 className="font-cormorant italic text-ivory text-5xl lg:text-6xl mb-5">
               {text.heroHeading}
@@ -335,7 +335,7 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
           <div className="grid grid-cols-1 lg:grid-cols-[5fr_7fr] gap-16 lg:gap-24">
 
             {/* ── Left: Info ────────────────────────────────────── */}
-            <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
+            <motion.div initial={false} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
               <h2 className="font-cormorant italic text-charcoal text-3xl mb-8">Contact Information</h2>
               <ul className="space-y-7 mb-10" role="list">
                 <li className="flex items-start gap-4">
@@ -391,13 +391,13 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
             </motion.div>
 
             {/* ── Right: Form ───────────────────────────────────── */}
-            <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.15 }}>
+            <motion.div initial={false} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.15 }}>
               <h2 className="font-cormorant italic text-charcoal text-3xl mb-8">
                 {formHeading}
               </h2>
 
               {status === "success" ? (
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-20">
+                <motion.div initial={false} animate={{ opacity: 1, y: 0 }} className="text-center py-20">
                   <div className="w-12 h-px bg-gold mx-auto mb-8" aria-hidden="true" />
                   <h3 className="font-cormorant italic text-charcoal text-4xl mb-4">{text.successHeading}</h3>
                   <p className="font-jost text-charcoal/60 text-sm leading-relaxed max-w-sm mx-auto">
@@ -683,11 +683,11 @@ export default function ContactPageContent({ site, faq, contactImage, availabili
       {/* ── FAQ ────────────────────────────────────────────────── */}
       <section className="bg-blush py-14 lg:py-20 px-6" aria-labelledby="faq-heading">
         <div className="max-w-3xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.6 }} className="mb-10">
+          <motion.div initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.6 }} className="mb-10">
             <p className="section-label mb-4">Common Questions</p>
             <h2 id="faq-heading" className="font-cormorant italic text-charcoal text-4xl lg:text-5xl">Frequently Asked</h2>
           </motion.div>
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }}>
+          <motion.div initial={false} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }}>
             <Accordion items={faq} />
           </motion.div>
         </div>

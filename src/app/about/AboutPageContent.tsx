@@ -111,7 +111,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
           <motion.p
             className="section-label text-gold_light mb-4"
             style={{ textShadow: "0 1px 4px rgba(0,0,0,0.5)" }}
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            initial={false} animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             {about.heroLabel}
@@ -133,7 +133,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
 
             <motion.div
-              initial={{ opacity: 0, y: 24 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.7 }}
@@ -168,7 +168,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
                 </RevealImage>
                 <motion.div
                   className="absolute -bottom-3 -right-3 w-full h-full border border-gold/25 pointer-events-none"
-                  initial={{ opacity: 0 }}
+                  initial={false}
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.95, duration: 0.5 }}
@@ -190,7 +190,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
         <div className="max-w-7xl mx-auto">
           <motion.div
             className="mb-8"
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6 }}
@@ -203,7 +203,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
               <motion.div
                 key={value._id}
                 custom={i}
-                initial="hidden"
+                initial={false}
                 whileInView="visible"
                 variants={valBlock}
                 viewport={{ once: true, margin: "-60px" }}
@@ -238,7 +238,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
       <section className="bg-near_black py-16 lg:py-24 px-6" aria-labelledby="independent-heading">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7 }}
