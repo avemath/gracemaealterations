@@ -113,6 +113,7 @@ All run from `site/` and need `SANITY_API_TOKEN` in `.env.local`.
 | `npm run images:upload` | Uploads `assets/prepared/` to Sanity and points each page field at the right asset with its hotspot. Reuses an asset when one already exists under the same filename, so re-running is free |
 | `npm run availability:limited` | Turns on limited availability: bridal goes to a waitlist, tailoring and small repairs stay open, and the hero pill, contact page and FAQ update to match |
 | `npm run availability:open` | Reopens everything and restores the normal copy |
+| `npm run availability:limited -- --dry-run` | Either availability command with `-- --dry-run` lists exactly which fields would change and writes nothing |
 | `npm run portfolio:export` | Resolves the portfolio caption table into `content/portfolio-captions.json` for review |
 | `npm run portfolio:apply` | Patches Sanity from that file |
 | `node scripts/portfolio-captions.mjs --fetch` | Downloads every portfolio photo to `/tmp/portfolio/` so captions can be matched to the right image |
