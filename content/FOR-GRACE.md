@@ -19,6 +19,7 @@ Everything below is in the Studio at **gracemaealterations.com/studio**. Nothing
 11. The contact form was broken for a while: typing in any box kept only the first letter. That is fixed. If anyone mentioned they could not get through, this is why.
 12. Bridal requests ask a few optional questions again: dress size ordered, usual street size, what they think the dress needs, and whether they have shoes and undergarments yet. The answers appear in your email under "The Dress".
 13. Photos people attach are shrunk on their phone before sending, so five photos always go through. They are still plenty sharp to judge a hem.
+14. Once it is switched on, people who attach photos can press **Check my photos**. It tells them what the photos show: the kind of garment, the likely fabric (and how sure it is), visible details like buttons or lace, and the train length. It never suggests work, prices or dates, and it never comments on the person. If they choose to send it along, it appears in your email under **Photo Check**, clearly marked as automated. Treat it as their description of the dress, not a diagnosis.
 
 ---
 

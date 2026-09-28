@@ -4,6 +4,7 @@ import {
   BRIDAL_ALTERATION_LABELS,
   SHOES_UNDERGARMENT_LABELS,
 } from "@/lib/contactOptions";
+import { sanitizePhotoCheck, photoCheckLines } from "@/lib/photoCheck";
 
 interface ContactPayload {
   name: string;
@@ -28,6 +29,8 @@ interface ContactPayload {
   shoesUndergarments?: string;
   // Bridal party
   garmentCount?: string;
+  /** The AI photo check, when the client chose to send it along. */
+  photoCheck?: unknown;
 }
 
 // ── Simple in-memory rate limit ──────────────────────────────────────────────
@@ -279,6 +282,20 @@ export async function POST(req: NextRequest) {
         )
       : "";
 
+  const photoCheck = sanitizePhotoCheck(raw.photoCheck);
+  const photoCheckSection =
+    photoCheck?.usable && photoCheckLines(photoCheck).length
+      ? section(
+          "Photo Check",
+          `<p style="font-size:12px;color:#767676;margin:0 0 12px;">An automated read of their photos, which they chose to include. A starting point, not a diagnosis.</p>
+          <table style="width:100%;border-collapse:collapse;">
+            ${photoCheckLines(photoCheck)
+              .map(([label, value]) => row(escapeHtml(label), escapeHtml(value)))
+              .join("")}
+          </table>`
+        )
+      : "";
+
   const garmentNotesSection = garmentDetails
     ? section(
         "Notes",
@@ -311,6 +328,7 @@ export async function POST(req: NextRequest) {
       ${bridalSection}
       ${partySection}
       ${garmentNotesSection}
+      ${photoCheckSection}
 
       <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
         <a href="mailto:${escapeHtml(email)}" style="display:inline-block;background:${GOLD_INK};color:#FAF7F2;text-decoration:none;padding:14px 28px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;">
