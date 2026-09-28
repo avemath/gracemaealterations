@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useFocusTrap } from "@/lib/useFocusTrap";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import SanityImage from "@/components/ui/SanityImage";
 import RevealText from "@/components/ui/RevealText";
 import BeforeAfterSlider from "@/components/ui/BeforeAfterSlider";
@@ -214,6 +215,15 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
                     )}
                     <div className="w-5 h-px bg-gold mt-1.5" aria-hidden="true" />
                   </div>
+                  {item.slug && (
+                    <Link
+                      href={`/portfolio/${item.slug}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="absolute bottom-3 right-3 z-10 font-jost text-[10px] tracking-[0.16em] uppercase text-ivory bg-near_black/70 px-2.5 py-1.5 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity duration-300"
+                    >
+                      Read the case study
+                    </Link>
+                  )}
                   {/* Expand icon */}
                   <div className="absolute top-3 right-3 w-7 h-7 bg-ivory/0 group-hover:bg-ivory/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-400">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">

@@ -1,6 +1,11 @@
 import type { MetadataRoute } from "next";
 import { sanityClient } from "@/lib/sanity.client";
 import { SITE_URL } from "@/lib/metadata";
+import {
+  getPublishedGuides,
+  getCaseStudies,
+  getPublishedLandingPages,
+} from "@/lib/sanity.queries";
 
 const ROUTES = [
   { path: "/", priority: 1.0, type: "homePage" },
@@ -34,5 +39,50 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: route.priority,
     }))
   );
-  return entries;
+  // Published content only: drafts are excluded by the queries themselves.
+  const [guides, caseStudies, landingPages] = await Promise.all([
+    getPublishedGuides(),
+    getCaseStudies(),
+    getPublishedLandingPages(),
+  ]);
+
+  const dynamicEntries: MetadataRoute.Sitemap = [];
+
+  if ((guides ?? []).length > 0) {
+    dynamicEntries.push({
+      url: `${SITE_URL}/guides`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    });
+  }
+
+  for (const guide of guides ?? []) {
+    dynamicEntries.push({
+      url: `${SITE_URL}/guides/${guide.slug}`,
+      lastModified: guide._updatedAt ? new Date(guide._updatedAt) : new Date(),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    });
+  }
+
+  for (const item of caseStudies ?? []) {
+    dynamicEntries.push({
+      url: `${SITE_URL}/portfolio/${item.slug}`,
+      lastModified: item._updatedAt ? new Date(item._updatedAt) : new Date(),
+      changeFrequency: "yearly",
+      priority: 0.6,
+    });
+  }
+
+  for (const page of landingPages ?? []) {
+    dynamicEntries.push({
+      url: `${SITE_URL}/${page.slug}`,
+      lastModified: page._updatedAt ? new Date(page._updatedAt) : new Date(),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    });
+  }
+
+  return [...entries, ...dynamicEntries];
 }
