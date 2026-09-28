@@ -9,6 +9,7 @@ import {
 } from "@/lib/sanity.queries";
 import { pageMetadata, SITE_URL, FALLBACK_OG_IMAGE } from "@/lib/metadata";
 import SanityImage from "@/components/ui/SanityImage";
+import BustleExplorer from "@/components/sections/BustleExplorer";
 
 export const revalidate = 60;
 
@@ -37,8 +38,8 @@ export default async function GuidePage({ params }: { params: { slug: string } }
   if (!guide) notFound();
 
   // The bustle guide renders the bustle style cards.
-  const bustleStyles =
-    guide.slug === "wedding-dress-bustle-types" ? (await getPublishedBustleStyles()) ?? [] : [];
+  const isBustleGuide = guide.slug === "wedding-dress-bustle-types";
+  const bustleStyles = isBustleGuide ? (await getPublishedBustleStyles()) ?? [] : [];
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -95,6 +96,14 @@ export default async function GuidePage({ params }: { params: { slug: string } }
           <div className="relative w-full aspect-[16/7]">
             <SanityImage image={guide.heroImage} fill placeholderLabel="GUIDE_HERO" sizes="100vw" />
           </div>
+        )}
+
+        {isBustleGuide && (
+          <section className="bg-ivory pt-14 lg:pt-20 px-6" aria-label="Try each bustle">
+            <div className="max-w-6xl mx-auto">
+              <BustleExplorer copy={bustleStyles.map((style) => ({ ...style, slug: style.slug ?? "" }))} />
+            </div>
+          </section>
         )}
 
         <section className="bg-ivory py-14 lg:py-20 px-6">
@@ -165,12 +174,6 @@ export default async function GuidePage({ params }: { params: { slug: string } }
                           <div>
                             <dt className="inline font-medium text-charcoal">Fabric: </dt>
                             <dd className="inline">{style.fabricNotes}</dd>
-                          </div>
-                        )}
-                        {typeof style.priceFrom === "number" && (
-                          <div>
-                            <dt className="inline font-medium text-charcoal">From: </dt>
-                            <dd className="inline lining-nums">${style.priceFrom}</dd>
                           </div>
                         )}
                       </dl>

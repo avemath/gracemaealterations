@@ -77,7 +77,9 @@ export const servicesPage = defineType({
     defineField({
       name: "exampleQuotes",
       title: "Three real gowns, three real quotes",
-      description: "Rows without a price stay hidden on the site.",
+      // Not shown on the site: every garment is quoted at the fitting.
+      // Hidden rather than removed so old values don't appear as unknown fields.
+      hidden: true,
       type: "array",
       of: [
         {
@@ -94,6 +96,7 @@ export const servicesPage = defineType({
     defineField({
       name: "exampleQuotesCaption",
       title: "Caption under the example quotes",
+      hidden: true,
       type: "string",
     }),
     defineField({
