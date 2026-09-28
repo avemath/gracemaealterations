@@ -19,6 +19,7 @@ Everything below is in the Studio at **gracemaealterations.com/studio**. Nothing
 11. The contact form was broken for a while: typing in any box kept only the first letter. That is fixed. If anyone mentioned they could not get through, this is why.
 12. Bridal requests ask a few optional questions again: dress size ordered, usual street size, what they think the dress needs, and whether they have shoes and undergarments yet. The answers appear in your email under "The Dress".
 13. Photos people attach are shrunk on their phone before sending, so five photos always go through. They are still plenty sharp to judge a hem.
+14. The services page has an interactive bustle drawing: brides pick American, French, Austrian, ballroom or a detachable train and watch the train lift into it. It ends by saying you choose the bustle at the first fitting, so it never commits you to a style.
 
 ---
 
