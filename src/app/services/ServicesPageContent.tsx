@@ -1,17 +1,16 @@
 "use client";
 
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import SanityImage from "@/components/ui/SanityImage";
 import CTABanner from "@/components/sections/CTABanner";
-import ExampleQuotes from "@/components/sections/ExampleQuotes";
+import BustleExplorer, { type BustleCopy } from "@/components/sections/BustleExplorer";
 import { ctas } from "@/lib/cta";
 import type {
   SanityService,
   SanityImage as SanityImageType,
   SanityPricingCard,
-  SanityExampleQuote,
 } from "@/lib/sanity.queries";
 
 const CHECK_ICON = (
@@ -27,8 +26,6 @@ interface ServicesPageData {
   pricingLabel: string;
   pricingHeading: string;
   pricingCards: SanityPricingCard[];
-  exampleQuotes: SanityExampleQuote[];
-  exampleQuotesCaption: string;
   ctaHeadline: string;
   ctaSubhead: string;
   ctaButton: string;
@@ -45,9 +42,17 @@ interface Props {
   services: SanityService[];
   page: ServicesPageData;
   availability: Availability;
+  bustleCopy?: BustleCopy[];
+  hasBustleGuide?: boolean;
 }
 
-export default function ServicesPageContent({ services, page, availability }: Props) {
+export default function ServicesPageContent({
+  services,
+  page,
+  availability,
+  bustleCopy = [],
+  hasBustleGuide = false,
+}: Props) {
   const { limitedMode, waitlistServices, reopensLabel } = availability;
   const isWaitlisted = (serviceId: string) =>
     limitedMode && waitlistServices.includes(serviceId);
@@ -114,8 +119,8 @@ export default function ServicesPageContent({ services, page, availability }: Pr
       {/* ── SERVICE SECTIONS ──────────────────────────────────── */}
       <div>
         {services.map((service, i) => (
+          <Fragment key={service._id}>
           <section
-            key={service._id}
             id={service.id}
             className={`scroll-mt-20 py-14 lg:py-20 px-6 ${i % 2 === 1 ? "bg-blush" : "bg-ivory"}`}
             aria-labelledby={`${service.id}-heading`}
@@ -221,11 +226,6 @@ export default function ServicesPageContent({ services, page, availability }: Pr
 
                 {service.id === "bridal" && (
                   <>
-                    <ExampleQuotes
-                      quotes={page.exampleQuotes}
-                      caption={page.exampleQuotesCaption}
-                    />
-
                     <div className="mt-12 border-t border-blush pt-8">
                       <h3 className="font-cormorant italic text-charcoal text-2xl mb-3">
                         Bridal party &amp; mother of the bride
@@ -243,6 +243,53 @@ export default function ServicesPageContent({ services, page, availability }: Pr
               </div>
             </div>
           </section>
+
+          {service.id === "bridal" && (
+            <section
+              id="bustles"
+              className="scroll-mt-20 bg-ivory border-t border-blush py-14 lg:py-20 px-6"
+              aria-labelledby="bustles-heading"
+            >
+              <div className="max-w-6xl mx-auto">
+                <p className="section-label mb-3">Bustles, explained</p>
+                <h2 id="bustles-heading" className="font-cormorant italic text-charcoal text-[clamp(2rem,4vw,3rem)] leading-tight mb-4">
+                  What happens to your train after the ceremony
+                </h2>
+                <p className="font-jost text-charcoal/75 text-base leading-[1.7] max-w-[62ch] mb-10 lg:mb-14">
+                  A bustle lifts the train off the floor so you can walk, dance and hug everyone
+                  without anyone stepping on it. Pick a style and a train length, then bustle it.
+                </p>
+                <BustleExplorer
+                  copy={bustleCopy}
+                  footer={
+                    <div className="border border-gold/25 bg-gold/5 p-5">
+                      <p className="font-jost text-charcoal/75 text-sm leading-[1.65]">
+                        There is nothing to decide yet. I choose the bustle at your first fitting,
+                        with the dress on you, and show whoever will bustle you on the day how it works.
+                      </p>
+                      <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+                        <Link
+                          href="/contact?service=bridal"
+                          className="font-jost text-xs text-gold_ink tracking-[0.18em] uppercase py-2 hover:text-gold_dark transition-colors duration-300"
+                        >
+                          {isWaitlisted("bridal") ? secondary.label : "Book a bridal fitting"}
+                        </Link>
+                        {hasBustleGuide && (
+                          <Link
+                            href="/guides/wedding-dress-bustle-types"
+                            className="font-jost text-xs text-gold_ink tracking-[0.18em] uppercase py-2 hover:text-gold_dark transition-colors duration-300"
+                          >
+                            Read the bustle guide
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  }
+                />
+              </div>
+            </section>
+          )}
+          </Fragment>
         ))}
       </div>
 

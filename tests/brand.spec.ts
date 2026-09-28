@@ -56,3 +56,12 @@ test("the stats bar shows big gold figures and counts the garments up", async ({
   await bar.scrollIntoViewIfNeeded();
   await expect(counter).toHaveText(/^[1-9]\d*\+$/, { timeout: 5000 });
 });
+
+test("footer contact links sit on their own lines", async ({ page }) => {
+  await page.goto("/");
+  const footer = page.locator("footer");
+  const email = await footer.locator('a[href^="mailto:"]').boundingBox();
+  const request = await footer.getByRole("link", { name: "Send a request" }).boundingBox();
+  expect(email && request).toBeTruthy();
+  expect(request!.y).toBeGreaterThanOrEqual(email!.y + email!.height - 1);
+});

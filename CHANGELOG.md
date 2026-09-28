@@ -10,6 +10,29 @@ Newest first. Grace facing notes live in `site/content/FOR-GRACE.md`.
   - The QR opens `/care/<code>`: "Caring for your wedding gown", the date, the before and after slider when both photos are there, what was done, the care notes, and "If you loved how it turned out" with the Google review button (once the review link is in Site Settings), an Instagram tag and a link back to the contact form.
   - Codes are random and unguessable, pages are noindex and out of the sitemap, unknown codes are a plain 404, and switching "Page is live" off takes a page down.
 
+## Photo check, September 2026
+
+- `feat: optional photo check on the contact form`:
+  - After attaching photos, a customer can press "Check my photos" for a quick, factual read of what they show: the garment, the likely fabric with how sure it is and why (sheen, drape, texture), layers, visible details and closures, train length, and neutral observations of how the garment sits. It also lists what photos can't show, such as fiber content.
+  - It describes, never advises: no suggested work, prices or dates, no opinions on style, and nothing about the person wearing it. On bridal requests it can point at checklist items that relate to something visible; the customer taps the ones that match.
+  - The customer chooses whether it goes with the request. Grace sees it in her email under "Photo Check", labelled as automated.
+  - Uses the Anthropic API with structured output, so the answer always has the same shape, and server-side refusal fallback. Six checks per connection per hour, same-site requests only, up to three photos. Hidden entirely until `ANTHROPIC_API_KEY` is set.
+
+## Bustle explorer and the sewn timeline, September 2026
+
+- `feat: interactive bustle explorer; the phone timeline is sewn`:
+  - A drawing of a gown from the back, on the services page (right after bridal) and at the top of the bustle guide. Pick American, French, Austrian, ballroom or a detachable train, and a sweep, chapel or cathedral train, then bustle it: the train lifts into that style. A slider moves it by hand. Gold dots are hooks on top, dashed rings are ties underneath. It plays once when it comes into view, never under reduced motion, and the drawing's accessible name always says which style and whether it is bustled.
+  - The copy for each style comes from the Studio's Bustle Styles once they are published, and falls back to the same wording until then.
+  - On phones, the process timeline is now sewn: a running stitch follows the scroll, a needle leads it, and each step's dot fills in as the thread passes it.
+
+## Cleanup and drafts, September 2026
+
+- `chore: price leftovers out, Google links in Studio, drafts ready to publish`:
+  - The hidden "Three real gowns, three real quotes" block and the bustle "Price from" boxes are gone from the site and hidden in Studio, in line with quoting every garment at the fitting.
+  - The footer's "Leave a Google review" link read from a blank constant in the code, and Studio had no field for it, so it could never appear. Site Settings now has a Google Business Profile link and a Google review link. The profile link also goes into the structured data, so Google ties the site to the profile.
+  - `npm run content:publish` puts the three guides, five bustle styles and two landing pages live after review. It takes out the [DRAFT] markers and fixes what the review found: British spellings, and a promised referral Grace may not be able to give. Policies stay off until Grace confirms them.
+  - FOR-GRACE has a short "Only you can do these" list.
+
 ## Price list removed, September 2026
 
 - `feat: drop the itemised price list from services`: the "See typical prices" list under each service had no prices in it, so every row read "quoted at fitting". Every garment is priced at the fitting, so the list is gone and each service shows only its price range, note and typical timeline. The Studio field is hidden, not deleted, so nothing is lost.

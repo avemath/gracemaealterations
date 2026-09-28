@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getCareCard, getMergedSite, getSiteSettings } from "@/lib/sanity.queries";
+import { getCareCard, getMergedSite } from "@/lib/sanity.queries";
 import SanityImage from "@/components/ui/SanityImage";
 import BeforeAfterSlider from "@/components/ui/BeforeAfterSlider";
 
@@ -21,11 +21,11 @@ function finishedLabel(date?: string | null) {
 }
 
 export default async function CarePage({ params }: { params: { code: string } }) {
-  const [card, site, settings] = await Promise.all([getCareCard(params.code), getMergedSite(), getSiteSettings()]);
+  const [card, site] = await Promise.all([getCareCard(params.code), getMergedSite()]);
   if (!card) notFound();
 
   // The review link lives in Site Settings once Grace has a Google profile.
-  const reviewUrl = (settings as { googleReviewUrl?: string } | null)?.googleReviewUrl;
+  const reviewUrl = site.googleReviewUrl;
   const finished = finishedLabel(card.completedOn);
   const notes = (card.careNotes ?? []).filter((n) => n.heading || n.body);
   const hasBoth = !!(card.beforeImage && card.afterImage);
