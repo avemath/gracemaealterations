@@ -84,9 +84,9 @@ export default function Navbar({
           {/* Logo / Name */}
           <Link
             href="/"
-            className={`font-cormorant italic text-xl lg:text-2xl transition-colors duration-300 tracking-wide ${showBg ? "text-gold hover:text-gold_dark" : "text-gold_light hover:text-ivory"}`}
+            className={`font-cormorant italic text-xl lg:text-2xl transition-colors duration-300 tracking-wide ${showBg ? "text-gold_ink hover:text-charcoal" : "text-gold_light hover:text-ivory"}`}
             style={showBg ? undefined : { textShadow: "0 1px 3px rgba(0,0,0,0.55)" }}
-            aria-label={`${businessName} — home`}
+            aria-label={`${businessName}, home`}
           >
             {siteName}
           </Link>
@@ -100,7 +100,7 @@ export default function Navbar({
                 aria-current={pathname === link.href ? "page" : undefined}
                 className={`relative font-jost font-medium text-xs tracking-[0.18em] uppercase transition-colors duration-300 group ${
                   showBg
-                    ? pathname === link.href ? "text-gold_dark" : "text-gold hover:text-gold_dark"
+                    ? pathname === link.href ? "text-charcoal" : "text-gold_ink hover:text-charcoal"
                     : pathname === link.href ? "text-gold_light" : "text-ivory hover:text-gold_light"
                 }`}
                 style={showBg ? undefined : { textShadow: "0 1px 3px rgba(0,0,0,0.55)" }}
@@ -109,7 +109,7 @@ export default function Navbar({
                 {/* Sliding underline */}
                 <span
                   className={`absolute -bottom-0.5 left-0 h-px transition-all duration-300 ${
-                    showBg ? "bg-gold" : "bg-ivory"
+                    showBg ? "bg-gold_ink" : "bg-ivory"
                   } ${pathname === link.href ? "w-full" : "w-0 group-hover:w-full"}`}
                   aria-hidden="true"
                 />
@@ -130,7 +130,7 @@ export default function Navbar({
             {(["origin-center", "", "origin-center"] as const).map((origin, idx) => (
               <motion.span
                 key={idx}
-                className={`w-6 h-px block ${origin} transition-colors duration-500 ${showBg ? "bg-gold" : "bg-ivory"}`}
+                className={`w-6 h-px block ${origin} transition-colors duration-500 ${showBg ? "bg-gold_ink" : "bg-ivory"}`}
                 animate={
                   idx === 1
                     ? menuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }

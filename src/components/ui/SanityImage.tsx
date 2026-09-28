@@ -62,7 +62,9 @@ export default function SanityImage({
 
     const lqip = image.asset.metadata?.lqip;
     const blur = lqip ? { placeholder: "blur" as const, blurDataURL: lqip } : {};
-    const resolvedAlt = alt ?? image.alt ?? placeholderLabel;
+    // Never fall back to the placeholder label: "CONTACT_IMAGE" is worse
+    // than an empty alt for a screen reader.
+    const resolvedAlt = alt ?? image.alt ?? "";
 
     // Crop around the editor's hotspot instead of the centre of the frame.
     const hotspot = image.hotspot;

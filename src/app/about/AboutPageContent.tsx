@@ -3,8 +3,6 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import SanityImage from "@/components/ui/SanityImage";
-import RevealImage from "@/components/ui/RevealImage";
-import RevealText from "@/components/ui/RevealText";
 import CTABanner from "@/components/sections/CTABanner";
 import type { SanityImage as SanityImageType, SanityValue } from "@/lib/sanity.queries";
 
@@ -73,7 +71,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
               fill
               placeholderLabel="ABOUT_HERO_IMAGE"
               placeholderRatio="landscape"
-              alt={about.heroImage?.alt ?? `${site.name} — Pittsburgh seamstress at work`}
+              alt={about.heroImage?.alt ?? `${site.name}, Pittsburgh seamstress at work`}
               sizes="100vw"
             />
           </motion.div>
@@ -106,11 +104,9 @@ export default function AboutPageContent({ site, about, values }: Props) {
             >
             {about.heroLabel}
           </p>
-          <RevealText onMount delay={0.35}>
             <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-ivory">
               {site.name}
             </h1>
-          </RevealText>
         </div>
       </section>
 
@@ -122,11 +118,9 @@ export default function AboutPageContent({ site, about, values }: Props) {
             <div data-reveal
             >
               <p className="section-label mb-4">{about.storyLabel}</p>
-              <RevealText delay={0.1}>
                 <h2 id="story-heading" className="font-cormorant italic text-[clamp(2rem,3.5vw,3.25rem)] leading-[1.1] text-charcoal mb-6">
                   {about.storyHeading}
                 </h2>
-              </RevealText>
               <div className="w-12 h-px bg-gold mb-8" aria-hidden="true" />
               <p className="font-jost text-charcoal/75 text-sm leading-relaxed mb-6">{about.paragraph1}</p>
               <p className="font-jost text-charcoal/75 text-sm leading-relaxed mb-6">{about.paragraph2}</p>
@@ -135,7 +129,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
 
             <div className="relative lg:sticky lg:top-28">
               <div className="relative">
-                <RevealImage delay={0.2}>
+                <div className="overflow-hidden">
                   {/* Fixed square so the hotspot actually crops — a portrait
                       asset would otherwise render at its own 2:3 and show her
                       full torso. */}
@@ -148,7 +142,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
                       placeholderRatio="square"
                     />
                   </div>
-                </RevealImage>
+                </div>
                 <div data-reveal
               className="absolute -bottom-3 -right-3 w-full h-full border border-gold/25 pointer-events-none"
               aria-hidden="true"
@@ -182,6 +176,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
                   variants={valNum}
                   className="font-cormorant text-gold_ink/40 text-5xl font-light mb-2 leading-none"
                   aria-hidden="true"
+                  data-decorative
                 >
                   0{i + 1}
                 </motion.p>
@@ -208,20 +203,18 @@ export default function AboutPageContent({ site, about, values }: Props) {
         <div className="max-w-4xl mx-auto text-center">
           <div data-reveal
             >
-            <p className="section-label text-gold/70 mb-6">{about.independenceLabel}</p>
+            <p className="section-label text-gold mb-6">{about.independenceLabel}</p>
             <div className="w-12 h-px bg-gold mx-auto mb-10" aria-hidden="true" />
-            <RevealText delay={0.15}>
               <h2
                 id="independent-heading"
                 className="font-cormorant italic text-ivory text-4xl lg:text-5xl xl:text-6xl leading-tight mb-10"
               >
                 {about.independenceHeading}
               </h2>
-            </RevealText>
             <blockquote className="font-cormorant italic text-ivory/65 text-xl lg:text-2xl max-w-2xl mx-auto leading-relaxed">
               &ldquo;{about.independenceQuote}&rdquo;
             </blockquote>
-            <p className="font-jost font-medium text-gold text-xs tracking-[0.22em] uppercase mt-10">— {site.name}</p>
+            <p className="font-jost font-medium text-gold text-xs tracking-[0.22em] uppercase mt-10">{site.name}</p>
           </div>
         </div>
       </section>

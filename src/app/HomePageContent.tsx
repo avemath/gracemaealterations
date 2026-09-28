@@ -3,12 +3,10 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import SanityImage from "@/components/ui/SanityImage";
-import RevealImage from "@/components/ui/RevealImage";
-import RevealText from "@/components/ui/RevealText";
 import Button from "@/components/ui/Button";
 import CTABanner from "@/components/sections/CTABanner";
-import ProcessSteps from "@/components/sections/ProcessSteps";
 import CountUp from "@/components/ui/CountUp";
 import AvailabilityPill from "@/components/ui/AvailabilityPill";
 import InstagramRow, { type InstagramPost } from "@/components/sections/InstagramRow";
@@ -21,6 +19,11 @@ import type {
   SanityPortfolioItem,
   SanityProcessStep,
 } from "@/lib/sanity.queries";
+
+// Split into its own chunk so its hydration (a 472 line scroll-driven SVG
+// section well below the fold) no longer runs inside the page's main long
+// task. Still server rendered, so the HTML and SEO copy are unchanged.
+const ProcessSteps = dynamic(() => import("@/components/sections/ProcessSteps"));
 
 interface HomePageText {
   heroSectionLabel: string;
@@ -143,7 +146,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               priority
               placeholderLabel="HERO_PORTRAIT_IMAGE"
               placeholderRatio="portrait"
-              alt={heroImage?.alt ?? `${site.name} — Pittsburgh bridal seamstress`}
+              alt={heroImage?.alt ?? `${site.name}, Pittsburgh bridal seamstress`}
               sizes="(min-width:1024px) 48vw, 100vw"
             />
           </motion.div>
@@ -178,11 +181,9 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                 className="mb-6"
               />
 
-              <RevealText onMount delay={0.18}>
                 <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-charcoal">
                   {site.tagline}
                 </h1>
-              </RevealText>
 
               <div data-reveal
               className="w-12 h-px bg-gold my-8"
@@ -249,7 +250,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
           <div data-reveal
               className="text-center mb-14"
             >
-            <p className="section-label text-gold/70 mb-3">{text.servicesLabel}</p>
+            <p className="section-label text-gold mb-3">{text.servicesLabel}</p>
             <h2 id="services-preview-heading" className="font-cormorant italic text-[clamp(2rem,3.5vw,3.25rem)] leading-[1.1] text-ivory">{text.servicesHeading}</h2>
           </div>
 
@@ -289,7 +290,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                     </div>
                     <div className="w-8 h-px bg-gold/40 mb-6" aria-hidden="true" />
                     {isWaitlisted(service.id) && (
-                      <p className="font-jost text-[10px] tracking-[0.2em] uppercase text-gold/80 mb-2">
+                      <p className="font-jost text-[10px] tracking-[0.2em] uppercase text-gold mb-2">
                         Booking for {site.reopensLabel}
                       </p>
                     )}
@@ -305,17 +306,15 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                     <Link
                       href={`/services#${service.id}`}
                       className="mt-6 inline-flex items-center gap-2 font-jost text-xs text-gold tracking-[0.18em] uppercase group-hover:text-gold_light transition-colors duration-300"
-                      aria-label={
-                        isWaitlisted(service.id)
-                          ? `Join the waitlist for ${service.title}`
-                          : `Learn more about ${service.title}`
-                      }
                     >
                       <span>
                         {isWaitlisted(service.id) ? "Join the Waitlist" : "Learn More"}
                         {/* Keeps the link text specific for screen readers and
-                            link-text audits without changing the card design. */}
-                        <span className="sr-only"> about {service.title}</span>
+                            link-text audits without changing the card design.
+                            No aria-label: it would replace this text outright. */}
+                        <span className="sr-only">
+                          {isWaitlisted(service.id) ? ` for ${service.title}` : ` about ${service.title}`}
+                        </span>
                       </span>
                       {/* Was an infinite Framer loop on every card: three
                           perpetual animations competing with hydration. */}
@@ -405,13 +404,13 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
             <div className="relative">
-              <RevealImage>
+              <div className="overflow-hidden">
                 <SanityImage
                   image={aboutSecondaryImage}
                   placeholderLabel="ABOUT_SECONDARY_IMAGE"
                   placeholderRatio="tall"
                 />
-              </RevealImage>
+              </div>
               <div data-reveal
               className="absolute -bottom-3 -right-3 w-full h-full border border-gold/30 pointer-events-none"
               aria-hidden="true"

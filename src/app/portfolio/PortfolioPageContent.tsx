@@ -5,7 +5,6 @@ import { useFocusTrap } from "@/lib/useFocusTrap";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import SanityImage from "@/components/ui/SanityImage";
-import RevealText from "@/components/ui/RevealText";
 import BeforeAfterSlider from "@/components/ui/BeforeAfterSlider";
 import CTABanner from "@/components/sections/CTABanner";
 import type { SanityPortfolioItem } from "@/lib/sanity.queries";
@@ -103,10 +102,8 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-14 pt-36 lg:pt-44">
           <div
             >
-            <p className="section-label text-gold/70 mb-4">{portfolioPageData.heroLabel}</p>
-            <RevealText onMount delay={0.2}>
+            <p className="section-label text-gold mb-4">{portfolioPageData.heroLabel}</p>
               <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-ivory mb-5">{portfolioPageData.heroHeading}</h1>
-            </RevealText>
             <div className="w-12 h-px bg-gold mb-5" aria-hidden="true" />
             <p className="font-jost text-ivory/50 text-base max-w-lg leading-relaxed">
               {portfolioPageData.heroSubtext}
@@ -203,6 +200,7 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
                     placeholderLabel={`PORTFOLIO_IMAGE_${i + 1}`}
                     placeholderRatio={i % 3 === 1 ? "landscape" : "portrait"}
                     alt={item.image?.alt ?? item.label}
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                   />
                   {/* Hover overlay */}
                   <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/50 transition-all duration-500" aria-hidden="true" />
