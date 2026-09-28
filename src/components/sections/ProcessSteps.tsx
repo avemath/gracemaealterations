@@ -183,6 +183,9 @@ export default function ProcessSteps({
 
   // ── Mobile line ref ────────────────────────────────────────────
   const mobileLineRef = useRef<HTMLDivElement>(null);
+  const mobileTrackRef = useRef<HTMLDivElement>(null);
+  const mobileNeedleRef = useRef<HTMLDivElement>(null);
+  const mobileDotRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // ── Scroll handler ─────────────────────────────────────────────
   useMotionValueEvent(scrollYProgress, "change", (raw) => {
@@ -218,8 +221,23 @@ export default function ProcessSteps({
       if (el) el.style.opacity = v >= thresholds[i] ? "1" : "0";
     });
 
-    if (mobileLineRef.current) {
-      mobileLineRef.current.style.height = `${v * 100}%`;
+    // Mobile: a running stitch sews down the timeline, the needle leads it,
+    // and each step's dot fills in as the thread passes through it.
+    const track = mobileTrackRef.current;
+    if (mobileLineRef.current && track) {
+      const reach = v * track.offsetHeight;
+      mobileLineRef.current.style.height = `${reach}px`;
+      const needle = mobileNeedleRef.current;
+      if (needle) {
+        needle.style.transform = `translateY(${reach}px)`;
+        needle.style.opacity = v > 0 && v < 1 ? "1" : "0";
+      }
+      const trackTop = track.getBoundingClientRect().top;
+      mobileDotRefs.current.forEach((dot) => {
+        if (!dot) return;
+        const r = dot.getBoundingClientRect();
+        dot.dataset.sewn = r.top + r.height / 2 - trackTop <= reach ? "true" : "false";
+      });
     }
   });
 
@@ -417,13 +435,31 @@ export default function ProcessSteps({
 
           {/* ── Mobile: vertical timeline ───────────────────── */}
           <div className="md:hidden relative pl-10">
-            <div className="absolute left-3 top-2 bottom-2 w-px bg-gold/10" aria-hidden="true" />
             <div
-              ref={mobileLineRef}
-              className="absolute left-3 top-2 w-px bg-gold/45 origin-top"
-              style={{ height: "0%" }}
+              ref={mobileTrackRef}
+              className="absolute left-3 top-2 bottom-2 w-px bg-gold/10"
               aria-hidden="true"
             />
+            {/* Running stitch: short gold dashes, like thread through cloth */}
+            <div
+              ref={mobileLineRef}
+              className="absolute left-3 top-2 w-px"
+              style={{
+                height: 0,
+                backgroundImage: "repeating-linear-gradient(to bottom, rgba(201,168,76,0.8) 0 7px, transparent 7px 12px)",
+              }}
+              aria-hidden="true"
+            />
+            <div
+              ref={mobileNeedleRef}
+              className="absolute left-3 top-2 -ml-[3px] w-[7px] opacity-0 transition-opacity duration-300"
+              aria-hidden="true"
+            >
+              <svg width="7" height="26" viewBox="0 0 7 26" className="-translate-y-full">
+                <path d="M3.5 0 C5 6 5 18 3.5 26 C2 18 2 6 3.5 0 Z" fill="#E7D9A8" />
+                <ellipse cx="3.5" cy="5" rx="0.9" ry="2.2" fill="#242020" />
+              </svg>
+            </div>
 
             <div className="space-y-10">
               {steps.map((step, i) => (
@@ -432,7 +468,9 @@ export default function ProcessSteps({
               className="relative"
             >
                   <div
-                    className="absolute -left-10 top-1 w-2.5 h-2.5 rounded-full bg-gold/40 ring-4 ring-near_black"
+                    ref={(el) => { mobileDotRefs.current[i] = el; }}
+                    data-sewn="false"
+                    className="absolute -left-10 top-1 w-2.5 h-2.5 rounded-full bg-gold/40 ring-4 ring-near_black transition-[background-color,transform] duration-300 data-[sewn=true]:bg-gold data-[sewn=true]:scale-125"
                     aria-hidden="true"
                   />
                   <div className="flex items-center gap-3 mb-2">
