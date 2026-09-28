@@ -8,11 +8,18 @@ export default defineConfig({
   testDir: "./tests",
   fullyParallel: false,
   workers: 1,
-  reporter: [["list"]],
+  // On CI, also write the HTML report so the screenshots from visual.spec.ts
+  // can be browsed from the uploaded artifact.
+  reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : [["list"]],
+  retries: process.env.CI ? 1 : 0,
   timeout: 60_000,
   use: {
     baseURL: "http://127.0.0.1:3000",
     trace: "off",
+    // Lets a sandbox with a preinstalled Chromium skip the browser download.
+    launchOptions: process.env.PW_CHROMIUM_PATH
+      ? { executablePath: process.env.PW_CHROMIUM_PATH }
+      : {},
   },
   projects: [
     { name: "desktop", use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } } },
