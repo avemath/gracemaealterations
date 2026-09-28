@@ -2,9 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* --font-cormorant and --font-jost are set by next/font in layout.tsx, on
-   <html>. Do not redefine them here: a :root declaration overrides next/font's
-   generated family names, and every heading silently falls back to Georgia. */
+/* The site's type is Georgia for headings and the system sans-serif for body
+   copy. Cormorant Garamond and Jost were tried in September 2026 and dropped:
+   the light italic was harder to read. The variable names are historical;
+   the font-cormorant and font-jost classes use these stacks. No web fonts
+   are downloaded. */
+:root {
+  --font-cormorant: Georgia, "Times New Roman", serif;
+  --font-jost: sans-serif;
+}
 
 @media (prefers-reduced-motion: reduce) {
   html {
