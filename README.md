@@ -117,6 +117,7 @@ All run from `site/` and need `SANITY_API_TOKEN` in `.env.local`.
 | `npm run portfolio:apply` | Patches Sanity from that file |
 | `node scripts/portfolio-captions.mjs --fetch` | Downloads every portfolio photo to `/tmp/portfolio/` so captions can be matched to the right image |
 | `node scripts/seed-sanity.mjs` | Populates a fresh dataset from `src/data/content.ts` |
+| `npm run copy:response-time` | Replaces any promised reply time in the three Studio fields that carry it with "I read every message myself and reply as soon as I can." Add `-- --dry-run` to preview |
 | `node scripts/make-icons.mjs` | Rebuilds the favicon, app icon and Apple touch icon (gold Cormorant "G" on near-black) into `src/app/` |
 
 **Replacing a photo that is already in Sanity:** uploads dedupe on the original
