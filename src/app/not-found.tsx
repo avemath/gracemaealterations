@@ -38,7 +38,7 @@ export default function NotFound() {
         This page has come undone.
       </h1>
 
-      <p className="font-jost text-charcoal/50 text-sm leading-relaxed max-w-xs mb-12">
+      <p className="font-jost text-charcoal/75 text-sm leading-relaxed max-w-xs mb-12">
         The link may have moved or no longer exists. Let&rsquo;s get you back to the right place.
       </p>
 
@@ -50,7 +50,7 @@ export default function NotFound() {
           <Link
             key={link.href}
             href={link.href}
-            className="font-jost text-xs tracking-[0.18em] uppercase text-charcoal/40 hover:text-gold transition-colors duration-300"
+            className="font-jost text-xs tracking-[0.18em] uppercase text-charcoal/75 hover:text-gold_ink transition-colors duration-300"
           >
             {link.label}
           </Link>

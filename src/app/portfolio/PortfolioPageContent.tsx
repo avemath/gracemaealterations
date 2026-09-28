@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useFocusTrap } from "@/lib/useFocusTrap";
 import { motion, AnimatePresence } from "framer-motion";
 import SanityImage from "@/components/ui/SanityImage";
 import RevealText from "@/components/ui/RevealText";
@@ -58,6 +59,10 @@ export default function PortfolioPageContent({ items, portfolioPageData }: Props
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const filteredRef = useRef<SanityPortfolioItem[]>(items);
+  // Focus goes back to the thumbnail that opened the dialog.
+  const thumbRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const closeLightbox = useCallback(() => setLightboxIndex(null), []);
+  const lightboxRef = useFocusTrap<HTMLDivElement>(lightboxIndex !== null, closeLightbox);
 
   const filtered = activeFilter === "all" ? items : items.filter((i) => i.type === activeFilter);
   filteredRef.current = filtered;
@@ -68,7 +73,6 @@ export default function PortfolioPageContent({ items, portfolioPageData }: Props
   // Keyboard navigation for lightbox
   const handleKey = useCallback((e: KeyboardEvent) => {
     if (lightboxIndex === null) return;
-    if (e.key === "Escape") setLightboxIndex(null);
     if (e.key === "ArrowLeft")
       setLightboxIndex((i) => (i !== null && i > 0 ? i - 1 : i));
     if (e.key === "ArrowRight")
@@ -98,7 +102,7 @@ export default function PortfolioPageContent({ items, portfolioPageData }: Props
           <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <p className="section-label text-gold/70 mb-4">{portfolioPageData.heroLabel}</p>
             <RevealText onMount delay={0.2}>
-              <h1 className="font-cormorant italic text-ivory text-5xl lg:text-7xl mb-5">{portfolioPageData.heroHeading}</h1>
+              <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-ivory mb-5">{portfolioPageData.heroHeading}</h1>
             </RevealText>
             <div className="w-12 h-px bg-gold mb-5" aria-hidden="true" />
             <p className="font-jost text-ivory/50 text-base max-w-lg leading-relaxed">
@@ -121,7 +125,7 @@ export default function PortfolioPageContent({ items, portfolioPageData }: Props
                 className={`px-5 py-2 font-jost text-xs tracking-[0.16em] uppercase transition-all duration-300 rounded-none ${
                   activeFilter === f.value
                     ? "bg-gold text-ivory"
-                    : "border border-blush text-charcoal/50 hover:border-gold/40 hover:text-charcoal"
+                    : "border border-blush text-charcoal/75 hover:border-gold/40 hover:text-charcoal"
                 }`}
               >
                 {f.label}
@@ -156,7 +160,7 @@ export default function PortfolioPageContent({ items, portfolioPageData }: Props
                 {portfolioPageData.featuredHeading}
               </h2>
               <div className="w-10 h-px bg-gold mb-6" aria-hidden="true" />
-              <p className="font-jost text-charcoal/60 text-sm leading-relaxed">
+              <p className="font-jost text-charcoal/75 text-sm leading-relaxed">
                 {portfolioPageData.featuredBody}
               </p>
             </div>
@@ -182,6 +186,7 @@ export default function PortfolioPageContent({ items, portfolioPageData }: Props
               {filtered.map((item, i) => (
                 <motion.div
                   key={item._id}
+                  ref={(el) => { thumbRefs.current[i] = el; }}
                   className="group relative overflow-hidden cursor-pointer break-inside-avoid mb-3 lg:mb-4"
                   initial={false}
                   animate={{ opacity: 1, y: 0 }}
@@ -222,7 +227,7 @@ export default function PortfolioPageContent({ items, portfolioPageData }: Props
 
           {filtered.length === 0 && (
             <div className="text-center py-24">
-              <p className="font-cormorant italic text-charcoal/35 text-2xl">No items in this category yet.</p>
+              <p className="font-cormorant italic text-charcoal/75 text-2xl">No items in this category yet.</p>
             </div>
           )}
         </div>
@@ -236,16 +241,18 @@ export default function PortfolioPageContent({ items, portfolioPageData }: Props
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
+            ref={lightboxRef}
             className="fixed inset-0 z-50 flex items-center justify-center bg-near_black/96 p-4 lg:p-8"
-            onClick={() => setLightboxIndex(null)}
+            onClick={closeLightbox}
             role="dialog"
             aria-modal="true"
             aria-label={`Lightbox: ${lightboxItem.label}`}
           >
-            {/* Close */}
+            {/* Close, first in tab order */}
             <button
-              className="absolute top-5 right-5 text-ivory/60 hover:text-ivory transition-colors z-10 p-2"
-              onClick={() => setLightboxIndex(null)}
+              type="button"
+              className="absolute top-5 right-5 w-11 h-11 flex items-center justify-center text-ivory hover:text-gold transition-colors z-10"
+              onClick={closeLightbox}
               aria-label="Close lightbox"
             >
               <CloseIcon />
@@ -254,7 +261,8 @@ export default function PortfolioPageContent({ items, portfolioPageData }: Props
             {/* Prev */}
             {lightboxIndex > 0 && (
               <button
-                className="absolute left-4 lg:left-6 text-ivory/50 hover:text-ivory transition-colors z-10 p-2"
+                type="button"
+                className="absolute left-4 lg:left-6 w-11 h-11 flex items-center justify-center text-ivory hover:text-gold transition-colors z-10"
                 onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex - 1); }}
                 aria-label="Previous image"
               >
@@ -265,7 +273,8 @@ export default function PortfolioPageContent({ items, portfolioPageData }: Props
             {/* Next */}
             {lightboxIndex < filtered.length - 1 && (
               <button
-                className="absolute right-4 lg:right-6 text-ivory/50 hover:text-ivory transition-colors z-10 p-2"
+                type="button"
+                className="absolute right-4 lg:right-6 w-11 h-11 flex items-center justify-center text-ivory hover:text-gold transition-colors z-10"
                 onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex + 1); }}
                 aria-label="Next image"
               >

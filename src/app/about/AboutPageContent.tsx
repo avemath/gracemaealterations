@@ -117,10 +117,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
             {about.heroLabel}
           </motion.p>
           <RevealText onMount delay={0.35}>
-            <h1
-              className="font-cormorant italic text-ivory leading-none"
-              style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}
-            >
+            <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-ivory">
               {site.name}
             </h1>
           </RevealText>
@@ -140,14 +137,14 @@ export default function AboutPageContent({ site, about, values }: Props) {
             >
               <p className="section-label mb-4">{about.storyLabel}</p>
               <RevealText delay={0.1}>
-                <h2 id="story-heading" className="font-cormorant italic text-charcoal text-4xl lg:text-5xl mb-6">
+                <h2 id="story-heading" className="font-cormorant italic text-[clamp(2rem,3.5vw,3.25rem)] leading-[1.1] text-charcoal mb-6">
                   {about.storyHeading}
                 </h2>
               </RevealText>
               <div className="w-12 h-px bg-gold mb-8" aria-hidden="true" />
-              <p className="font-jost text-charcoal/65 text-sm leading-relaxed mb-6">{about.paragraph1}</p>
-              <p className="font-jost text-charcoal/65 text-sm leading-relaxed mb-6">{about.paragraph2}</p>
-              <p className="font-jost text-charcoal/65 text-sm leading-relaxed">{about.paragraph3}</p>
+              <p className="font-jost text-charcoal/75 text-sm leading-relaxed mb-6">{about.paragraph1}</p>
+              <p className="font-jost text-charcoal/75 text-sm leading-relaxed mb-6">{about.paragraph2}</p>
+              <p className="font-jost text-charcoal/75 text-sm leading-relaxed">{about.paragraph3}</p>
             </motion.div>
 
             <div className="relative lg:sticky lg:top-28">
@@ -195,7 +192,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6 }}
           >
-            <h2 id="values-heading" className="font-cormorant_sc text-gold tracking-[0.25em] uppercase text-lg">{about.valuesLabel}</h2>
+            <h2 id="values-heading" className="section-label text-base">{about.valuesLabel}</h2>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14">
@@ -211,7 +208,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
               >
                 <motion.p
                   variants={valNum}
-                  className="font-cormorant text-gold/40 text-5xl font-light mb-2 leading-none"
+                  className="font-cormorant text-gold_ink/40 text-5xl font-light mb-2 leading-none"
                   aria-hidden="true"
                 >
                   0{i + 1}
@@ -225,7 +222,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
                 <motion.h3 variants={valText} className="font-cormorant text-charcoal text-2xl mb-3">
                   {value.title}
                 </motion.h3>
-                <motion.p variants={valText} className="font-jost text-charcoal/60 text-sm leading-relaxed">
+                <motion.p variants={valText} className="font-jost text-charcoal/75 text-sm leading-relaxed">
                   {value.description}
                 </motion.p>
               </motion.div>
@@ -256,7 +253,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
             <blockquote className="font-cormorant italic text-ivory/65 text-xl lg:text-2xl max-w-2xl mx-auto leading-relaxed">
               &ldquo;{about.independenceQuote}&rdquo;
             </blockquote>
-            <p className="font-cormorant_sc text-gold text-sm tracking-widest mt-10">— {site.name}</p>
+            <p className="font-jost font-medium text-gold text-xs tracking-[0.22em] uppercase mt-10">— {site.name}</p>
           </motion.div>
         </div>
       </section>

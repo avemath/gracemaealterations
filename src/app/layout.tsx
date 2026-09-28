@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Cormorant_SC, Jost } from "next/font/google";
+import { Cormorant_Garamond, Jost } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import "@/styles/globals.css";
 import SiteChrome from "@/components/layout/SiteChrome";
@@ -14,13 +14,6 @@ const cormorant = Cormorant_Garamond({
   weight: ["300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
   variable: "--font-cormorant",
-  display: "swap",
-});
-
-const cormorantSC = Cormorant_SC({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-cormorant-sc",
   display: "swap",
 });
 
@@ -172,7 +165,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${cormorantSC.variable} ${jost.variable}`}
+      className={`${cormorant.variable} ${jost.variable}`}
     >
       <head>
         <script
@@ -181,6 +174,12 @@ export default async function RootLayout({
         />
       </head>
       <body className="bg-ivory text-charcoal antialiased">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-ivory focus:text-charcoal focus:px-5 focus:py-3 focus:border focus:border-charcoal focus:font-jost focus:text-sm"
+        >
+          Skip to main content
+        </a>
         <MotionProvider>
         <SiteChrome
           site={{

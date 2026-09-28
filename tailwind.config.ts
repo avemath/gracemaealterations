@@ -16,10 +16,12 @@ const config: Config = {
         near_black: "#242020",
         gold_light: "#D4B86A",
         gold_dark: "#A8882E",
+        // Gold that passes AA as text on ivory (about 5.6:1). #C9A84C is for
+        // hairlines, icons and text on near-black only.
+        gold_ink: "#7A5F1E",
       },
       fontFamily: {
         cormorant: ["var(--font-cormorant)", "Georgia", "serif"],
-        cormorant_sc: ["var(--font-cormorant-sc)", "Georgia", "serif"],
         jost: ["var(--font-jost)", "sans-serif"],
       },
       animation: {

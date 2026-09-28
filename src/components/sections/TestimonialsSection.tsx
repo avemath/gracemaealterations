@@ -40,7 +40,7 @@ export default function TestimonialsSection() {
             >
               {/* Giant background quotation mark */}
               <span
-                className="absolute top-0 left-4 font-cormorant text-gold/20 select-none pointer-events-none leading-none"
+                className="absolute top-0 left-4 font-cormorant text-gold_ink/20 select-none pointer-events-none leading-none"
                 style={{ fontSize: "10rem", lineHeight: 1 }}
                 aria-hidden="true"
               >
@@ -53,7 +53,7 @@ export default function TestimonialsSection() {
                 </p>
                 <div className="w-8 h-px bg-gold mb-4" aria-hidden="true" />
                 <p className="font-jost text-charcoal text-sm font-medium">{t.name}</p>
-                <p className="font-jost text-charcoal/50 text-xs tracking-widest uppercase mt-0.5">
+                <p className="font-jost text-charcoal/75 text-xs tracking-widest uppercase mt-0.5">
                   {t.occasion}
                 </p>
               </div>

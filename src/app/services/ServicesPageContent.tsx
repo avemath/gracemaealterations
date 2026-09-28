@@ -94,7 +94,7 @@ export default function ServicesPageContent({ services, page, availability }: Pr
           <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <p className="section-label text-gold_dark mb-4">{page.heroLabel}</p>
             <RevealText onMount delay={0.2}>
-              <h1 className="font-cormorant italic text-charcoal text-5xl lg:text-7xl mb-5">{page.heroHeading}</h1>
+              <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-charcoal mb-5">{page.heroHeading}</h1>
             </RevealText>
             <div className="w-12 h-px bg-gold" aria-hidden="true" />
           </motion.div>
@@ -118,7 +118,7 @@ export default function ServicesPageContent({ services, page, availability }: Pr
                 transition={{ duration: 0.6 }}
               >
                 <p
-                  className="font-cormorant text-gold/25 font-light leading-none mb-3"
+                  className="font-cormorant text-gold_ink/25 font-light leading-none mb-3"
                   style={{ fontSize: "5rem" }}
                   aria-hidden="true"
                 >
@@ -143,17 +143,17 @@ export default function ServicesPageContent({ services, page, availability }: Pr
 
                 <h2
                   id={`${service.id}-heading`}
-                  className="font-cormorant italic text-charcoal text-4xl lg:text-5xl mb-6"
+                  className="font-cormorant italic text-[clamp(2rem,3.5vw,3.25rem)] leading-[1.1] text-charcoal mb-6"
                 >
                   {service.title}
                 </h2>
                 <div className="mb-12">
-                  <p className="font-jost text-charcoal/65 text-base leading-relaxed max-w-2xl">
+                  <p className="font-jost text-charcoal/75 text-base leading-relaxed max-w-2xl">
                     {service.description}
                   </p>
 
                   {limitedMode && service.id === "custom" && !isWaitlisted(service.id) && (
-                    <p className="font-jost text-charcoal/65 text-base leading-relaxed max-w-2xl mt-4">
+                    <p className="font-jost text-charcoal/75 text-base leading-relaxed max-w-2xl mt-4">
                       Small repairs are open now; larger construction and restoration projects are
                       booking for {reopensLabel}.
                     </p>
@@ -162,7 +162,7 @@ export default function ServicesPageContent({ services, page, availability }: Pr
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
                   <div>
-                    <h3 className="font-cormorant_sc text-charcoal text-sm tracking-[0.2em] uppercase mb-5">
+                    <h3 className="font-jost font-medium text-charcoal text-xs tracking-[0.22em] uppercase mb-5">
                       Includes
                     </h3>
                     <ul className="space-y-3" role="list">
@@ -176,13 +176,13 @@ export default function ServicesPageContent({ services, page, availability }: Pr
                   </div>
 
                   <div className="lg:border-l lg:border-blush lg:pl-16">
-                    <h3 className="font-cormorant_sc text-charcoal text-sm tracking-[0.2em] uppercase mb-5">
+                    <h3 className="font-jost font-medium text-charcoal text-xs tracking-[0.22em] uppercase mb-5">
                       Pricing
                     </h3>
-                    <p className="font-cormorant text-charcoal leading-none mb-2" style={{ fontSize: "3rem" }}>
+                    <p className="font-cormorant font-medium text-charcoal leading-none mb-2 lining-nums text-[1.5rem]">
                       {service.priceRange}
                     </p>
-                    <p className="font-jost text-charcoal/45 text-xs mb-8">{service.priceNote}</p>
+                    <p className="font-jost text-charcoal/75 text-xs mb-8">{service.priceNote}</p>
                     {service.freeConsult && (
                       <div className="border border-gold/25 bg-gold/5 p-5">
                         <p className="font-jost text-charcoal/70 text-xs leading-relaxed">
@@ -208,7 +208,7 @@ export default function ServicesPageContent({ services, page, availability }: Pr
             transition={{ duration: 0.6 }}
           >
             <p className="section-label text-gold/70 mb-4">{page.pricingLabel}</p>
-            <h2 id="pricing-heading" className="font-cormorant italic text-ivory text-4xl lg:text-5xl mb-4">
+            <h2 id="pricing-heading" className="font-cormorant italic text-[clamp(2rem,3.5vw,3.25rem)] leading-[1.1] text-ivory mb-4">
               {page.pricingHeading}
             </h2>
             <div className="w-12 h-px bg-gold mb-12" aria-hidden="true" />

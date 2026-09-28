@@ -55,7 +55,7 @@ export default function StickyMobileCTA({ limitedMode = false, reopensLabel = ""
             style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
           >
             {limitedMode && reopensLabel && (
-              <p className="font-jost text-[10px] tracking-[0.16em] uppercase text-charcoal/50 text-center mb-2">
+              <p className="font-jost text-[10px] tracking-[0.16em] uppercase text-charcoal/75 text-center mb-2">
                 Bridal booking reopens {reopensLabel}
               </p>
             )}
