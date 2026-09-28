@@ -36,7 +36,10 @@ export const service = defineType({
     defineField({
       name: "priceTable",
       title: "Typical prices",
-      description: "Leave 'From' empty for anything you quote at the fitting.",
+      // No longer shown on the site: every price is quoted per garment at the
+      // fitting. Hidden rather than removed so the old rows don't show up in
+      // the Studio as unknown fields.
+      hidden: true,
       type: "array",
       of: [
         {
