@@ -2,10 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --font-cormorant: "Cormorant Garamond", Georgia, serif;
-  --font-jost: "Jost", sans-serif;
-}
+/* --font-cormorant and --font-jost are set by next/font in layout.tsx, on
+   <html>. Do not redefine them here: a :root declaration overrides next/font's
+   generated family names, and every heading silently falls back to Georgia. */
 
 @media (prefers-reduced-motion: reduce) {
   html {

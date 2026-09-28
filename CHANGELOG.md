@@ -2,7 +2,14 @@
 
 Newest first. Grace facing notes live in `site/content/FOR-GRACE.md`.
 
-## Polish, September 2026
+## Brand fonts, September 2026
+
+- `fix: brand fonts finally load; tighter mobile hero; honest count-up`:
+  - Since April, `globals.css` redefined `--font-cormorant` and `--font-jost` on `:root` with the plain family names. That overrode the names next/font generates, so no brand font ever matched and every heading fell back to Georgia (Times on phones without it). Cormorant Garamond and Jost now load.
+  - The mobile hero no longer forces the copy block to a full screen of height, which had left half a screen of empty ivory between the portrait and the headline.
+  - The trust strip's count-up keeps the real figure when it is already on screen at load, skips the animation under reduced motion, and always gives screen readers the real number.
+  - `npm run copy:tidy-dashes` takes the 21 em dashes out of the live Sanity copy, choosing a full stop or a comma for each.
+
 
 - `feat: branded icons, light share cards, triage-ready enquiry emails`:
   - The favicon was still the stock Vercel triangle from the starter template. It is now a gold Cormorant "G" on near-black, with a 512 px app icon and an Apple touch icon, all rebuilt by `scripts/make-icons.mjs`.
