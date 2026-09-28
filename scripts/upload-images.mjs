@@ -72,7 +72,6 @@ const VERSIONS = {};
  * if nothing references it any more.
  */
 const RETIRED = [
-  "grace-portrait-studio.jpg",
   "grace-portrait-studio-v2.jpg",
   "card-bridal.jpg",
   "card-tailoring.jpg",
@@ -113,9 +112,10 @@ const SINGLETON_SLOTS = [
   {
     docId: "aboutPage",
     field: "heroImage",
-    file: "atelier-workroom.jpg",
-    hotspot: { x: 0.68, y: 0.4 },
-    alt: "Sunlit bridal alterations workroom with gowns on a rack and a cutting table",
+    file: "studio-machine.jpg",
+    reuseOnly: true,
+    hotspot: { x: 0.5, y: 0.45 },
+    alt: "Antique sewing machine, thread wall and dress form in the studio",
     note: "About hero — full width, 72vh, title over the blurred bottom-left corner",
   },
   {
@@ -137,10 +137,10 @@ const SINGLETON_SLOTS = [
   {
     docId: "contactPage",
     field: "image",
-    file: "studio-machine.jpg",
-    hotspot: { x: 0.45, y: 0.55 },
-    alt: "Antique sewing machine, thread wall and dress form in the studio",
-    note: "Contact sidebar — landscape box, max-h-96",
+    file: "grace-portrait-studio.jpg",
+    hotspot: { x: 0.5, y: 0.32 },
+    alt: "Grace Mae in her Pittsburgh alterations studio",
+    note: "Contact sidebar — square portrait, clipped to max-h-96",
   },
 ];
 

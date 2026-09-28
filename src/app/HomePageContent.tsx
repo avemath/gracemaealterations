@@ -133,7 +133,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
 
         {/* Desktop: portrait image covers right half of viewport */}
         <motion.div
-          className="hidden lg:block absolute inset-y-0 right-0 w-[48%] z-0 overflow-hidden"
+          className="hidden lg:block absolute inset-y-0 right-0 w-[48%] z-[2] overflow-hidden"
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1.1, delay: 0.3, ease: "easeOut" }}
@@ -151,7 +151,16 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               sizes="48vw"
             />
           </motion.div>
-          <div className="absolute inset-0 bg-gradient-to-r from-ivory via-ivory/25 to-transparent pointer-events-none" />
+          {/* Blends the image's left edge into the ivory column. The default
+              via-25% stop still laid ~20% ivory over her face at 60% across,
+              which read as a white sheen — these stops clear it by 52%. */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                "linear-gradient(to right, #FAF7F2 0%, rgba(250,247,242,0.85) 12%, rgba(250,247,242,0.35) 28%, rgba(250,247,242,0.06) 42%, rgba(250,247,242,0) 52%)",
+            }}
+          />
         </motion.div>
 
         {/* Content layer */}
@@ -225,7 +234,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
 
         {/* Mobile: portrait image below the text, edge-to-edge */}
         <motion.div
-          className="lg:hidden -mt-4 overflow-hidden"
+          className="lg:hidden relative z-[2] -mt-4 overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.5 }}
