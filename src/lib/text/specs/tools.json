@@ -1,0 +1,67 @@
+{
+  "id": "toolsText",
+  "title": "Guides & tools",
+  "description": "The words in the guides and their interactive tools: the \"Your dates\" calculator, the fitting bag checklist, the bustle and trouser hem drawings. Leave a field empty to use the original wording. Words in {curly brackets} are filled in automatically, so keep them as they are.",
+  "groups": [
+    { "name": "dates", "title": "Wedding date messages" }
+  ],
+  "fields": {
+    "datePast": {
+      "group": "dates",
+      "title": "Date has passed",
+      "description": "Shown by the \"Your dates\" calculator and under the wedding date on the contact form.",
+      "long": true,
+      "default": "That date has passed. Check the year?"
+    },
+    "dateRush": {
+      "group": "dates",
+      "title": "Under eight weeks away",
+      "long": true,
+      "default": "That's under eight weeks. Tell me anyway: I'll say honestly whether I can fit it in, and suggest someone if I can't."
+    },
+    "dateBeforeReopen": {
+      "group": "dates",
+      "title": "First fitting falls before bridal reopens",
+      "description": "{reopens} becomes the reopening time from Site Settings, such as \"early 2027\".",
+      "long": true,
+      "default": "Your first fitting would fall before bridal reopens ({reopens}). Send a request anyway and I'll tell you honestly whether I can fit it in, with a referral if I can't."
+    },
+    "dateAroundReopen": {
+      "group": "dates",
+      "title": "First fitting window opens around the reopening",
+      "long": true,
+      "default": "Your first fitting window opens right around when bridal reopens ({reopens}), so it's worth joining the waitlist soon."
+    },
+    "dateDueNow": {
+      "group": "dates",
+      "title": "First fitting is due now (8 to 12 weeks away)",
+      "long": true,
+      "default": "The first fitting is due now, so it's worth booking soon."
+    },
+    "dateGood": {
+      "group": "dates",
+      "title": "Good timing (bridal open)",
+      "description": "{range} becomes the first fitting dates, such as \"Oct 18 to Nov 15, 2026\".",
+      "long": true,
+      "default": "Good timing. Book now and your first fitting lands around {range}."
+    },
+    "dateGoodWaitlist": {
+      "group": "dates",
+      "title": "Good timing (bridal on the waitlist)",
+      "long": true,
+      "default": "Good timing. Join the waitlist now and your first fitting lands around {range}."
+    },
+    "dateEarly": {
+      "group": "dates",
+      "title": "Plenty of time (bridal open)",
+      "long": true,
+      "default": "Plenty of time. Book whenever you're ready; fittings start around {range}."
+    },
+    "dateEarlyWaitlist": {
+      "group": "dates",
+      "title": "Plenty of time (bridal on the waitlist)",
+      "long": true,
+      "default": "Plenty of time. Join the waitlist whenever you're ready; fittings start around {range}."
+    }
+  }
+}

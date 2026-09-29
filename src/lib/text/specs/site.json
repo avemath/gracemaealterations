@@ -1,0 +1,7 @@
+{
+  "id": "siteText",
+  "title": "Site-wide words",
+  "description": "Buttons, labels and small bits of text used across the site. Leave a field empty to use the original wording. Words in {curly brackets} are filled in automatically, so keep them as they are.",
+  "groups": [],
+  "fields": {}
+}

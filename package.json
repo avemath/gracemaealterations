@@ -19,7 +19,8 @@
     "copy:response-time": "node scripts/set-response-time.mjs",
     "copy:tidy-dashes": "node scripts/tidy-dashes.mjs",
     "copy:fixes": "node scripts/copy-fixes.mjs",
-    "content:publish": "node scripts/publish-drafts.mjs"
+    "content:publish": "node scripts/publish-drafts.mjs",
+    "content:text": "node scripts/seed-text.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.129.0",

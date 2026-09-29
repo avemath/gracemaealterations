@@ -3,7 +3,7 @@ import { deskTool } from "sanity/desk";
 import { visionTool } from "@sanity/vision";
 import { schemaTypes } from "./sanity/schemaTypes";
 
-const SINGLETONS = new Set(["siteSettings", "homePage", "aboutPage", "servicesPage", "contactPage", "portfolioPage", "policies"]);
+const SINGLETONS = new Set(["siteSettings", "homePage", "aboutPage", "servicesPage", "contactPage", "portfolioPage", "policies", "siteText", "formsText", "toolsText"]);
 const SINGLETON_ACTIONS = new Set(["publish", "discardChanges", "restore"]);
 
 export default defineConfig({
@@ -59,6 +59,29 @@ export default defineConfig({
               .title("Policies")
               .id("policies")
               .child(S.document().schemaType("policies").documentId("policies")),
+
+            // ── WORDS AROUND THE SITE ─────────────────────────
+            S.listItem()
+              .title("Words around the site")
+              .id("words")
+              .child(
+                S.list()
+                  .title("Words around the site")
+                  .items([
+                    S.listItem()
+                      .title("Site-wide words")
+                      .id("siteText")
+                      .child(S.document().schemaType("siteText").documentId("siteText")),
+                    S.listItem()
+                      .title("Contact form & emails")
+                      .id("formsText")
+                      .child(S.document().schemaType("formsText").documentId("formsText")),
+                    S.listItem()
+                      .title("Guides & tools")
+                      .id("toolsText")
+                      .child(S.document().schemaType("toolsText").documentId("toolsText")),
+                  ])
+              ),
 
             // ── CARE CARDS (one per finished garment) ────────
             S.listItem()

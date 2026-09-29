@@ -13,6 +13,7 @@ import SanityImage from "@/components/ui/SanityImage";
 import BustleExplorer from "@/components/sections/BustleExplorer";
 import FittingChecklist, { type ChecklistItem } from "@/components/sections/FittingChecklist";
 import FittingDates from "@/components/sections/FittingDates";
+import { getText, textDefaults } from "@/lib/text";
 
 export const revalidate = 60;
 
@@ -67,6 +68,7 @@ export default async function GuidePage({ params }: { params: { slug: string } }
   // The timeline guide gets a "Your dates" calculator above its steps.
   const isTimelineGuide = guide.slug === "wedding-dress-alterations-timeline";
   const site = isTimelineGuide ? await getMergedSite() : null;
+  const toolsText = isTimelineGuide ? await getText("tools") : null;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -151,6 +153,7 @@ export default async function GuidePage({ params }: { params: { slug: string } }
                   limitedMode={site.limitedMode}
                   bridalWaitlisted={site.limitedMode && site.waitlistServices.includes("bridal")}
                   reopensLabel={site.reopensLabel}
+                  messages={toolsText ?? textDefaults("tools")}
                 />
               </div>
             )}
