@@ -59,6 +59,14 @@ export const service = defineType({
       description: "One line, e.g. 'Usually within two weeks.'",
       type: "string",
     }),
+    defineField({
+      name: "guides",
+      title: "Helpful guides",
+      description:
+        "The guides listed under this service on the services page, in this order. Only published guides show. Leave empty to keep the usual ones: the three wedding dress guides under bridal, and the trouser hem guide under tailoring.",
+      type: "array",
+      of: [{ type: "reference", to: [{ type: "guide" }] }],
+    }),
     defineField({ name: "order", title: "Display Order (1 = first)", type: "number" }),
   ],
   orderings: [{ title: "Display Order", name: "orderAsc", by: [{ field: "order", direction: "asc" }] }],

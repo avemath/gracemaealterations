@@ -21,7 +21,7 @@ export const homePage = defineType({
       title: "Hero Portrait Image",
       group: "hero",
       type: "image",
-      description: "Portrait photo of you — at your sewing machine, holding fabric, or a headshot. Best ratio: 3:4 (portrait).",
+      description: "Portrait photo of you, at your sewing machine, holding fabric, or a headshot. Best ratio: 3:4 (portrait).",
       options: { hotspot: true },
       fields: [
         defineField({ name: "alt", title: "Alt Text", type: "string" }),
@@ -29,7 +29,7 @@ export const homePage = defineType({
     }),
     defineField({
       name: "heroSectionLabel",
-      title: "Hero — Section Label",
+      title: "Hero: Section Label",
       description: "Small uppercase label above the headline. e.g. 'Pittsburgh Bridal Alterations'",
       group: "hero",
       type: "string",
@@ -37,7 +37,7 @@ export const homePage = defineType({
     }),
     defineField({
       name: "heroCredentialText",
-      title: "Hero — Credential Body Text",
+      title: "Hero: Credential Body Text",
       description: "Italic line below the sub-tagline that establishes your background.",
       group: "hero",
       type: "text",
@@ -72,14 +72,14 @@ export const homePage = defineType({
     // ── Services Preview ────────────────────────────────────────
     defineField({
       name: "servicesLabel",
-      title: "Services Section — Label",
+      title: "Services Section: Label",
       group: "services",
       type: "string",
       initialValue: "What I Do",
     }),
     defineField({
       name: "servicesHeading",
-      title: "Services Section — Heading",
+      title: "Services Section: Heading",
       group: "services",
       type: "string",
       initialValue: "Services",
@@ -88,14 +88,14 @@ export const homePage = defineType({
     // ── Portfolio Preview ────────────────────────────────────────
     defineField({
       name: "portfolioLabel",
-      title: "Portfolio Section — Label",
+      title: "Portfolio Section: Label",
       group: "portfolio",
       type: "string",
       initialValue: "Selected Work",
     }),
     defineField({
       name: "portfolioHeading",
-      title: "Portfolio Section — Heading",
+      title: "Portfolio Section: Heading",
       group: "portfolio",
       type: "string",
       initialValue: "The Work",
@@ -104,7 +104,7 @@ export const homePage = defineType({
     // ── About Teaser ────────────────────────────────────────────
     defineField({
       name: "aboutTeaserLabel",
-      title: "About Teaser — Section Label",
+      title: "About Teaser: Section Label",
       group: "about",
       type: "string",
       initialValue: "The Seamstress",
@@ -113,14 +113,14 @@ export const homePage = defineType({
     // ── Testimonials ────────────────────────────────────────────
     defineField({
       name: "testimonialsLabel",
-      title: "Testimonials — Section Label",
+      title: "Testimonials: Section Label",
       group: "testimonials",
       type: "string",
       initialValue: "Kind Words",
     }),
     defineField({
       name: "testimonialsHeading",
-      title: "Testimonials — Heading",
+      title: "Testimonials: Heading",
       group: "testimonials",
       type: "string",
       initialValue: "What clients say",
@@ -129,21 +129,21 @@ export const homePage = defineType({
     // ── What to Expect (Process Steps) ─────────────────────────
     defineField({
       name: "processLabel",
-      title: "Process Section — Label",
+      title: "Process Section: Label",
       group: "process",
       type: "string",
       initialValue: "No Surprises",
     }),
     defineField({
       name: "processHeading",
-      title: "Process Section — Heading",
+      title: "Process Section: Heading",
       group: "process",
       type: "string",
       initialValue: "What to Expect",
     }),
     defineField({
       name: "processCTA",
-      title: "Process Section — CTA Text",
+      title: "Process Section: CTA Text",
       description: "Small line above the 'Book a Consultation' button at the bottom of this section.",
       group: "process",
       type: "string",
@@ -182,28 +182,28 @@ export const homePage = defineType({
         { _key: "ps2", title: "First Fitting",     body: "I pin and mark every adjustment directly on you, so we both see exactly what changes before a single seam is cut." },
         { _key: "ps3", title: "The Work",          body: "I complete your alterations with full attention. For complex bridal gowns this may involve multiple stages of careful work." },
         { _key: "ps4", title: "Progress Check",    body: "For intricate bridal alterations, we do a mid-point fitting to verify fit and make fine adjustments before final finishing.", note: "Bridal" },
-        { _key: "ps5", title: "Pickup",            body: "Your garment is finished, pressed, and ready. We do a final try-on together — we don't say goodbye until it's perfect." },
+        { _key: "ps5", title: "Pickup",            body: "Your garment is finished, pressed, and ready. We do a final try-on together: we don't say goodbye until it's perfect." },
       ],
     }),
 
     // ── CTA Banner ──────────────────────────────────────────────
     defineField({
       name: "ctaHeadline",
-      title: "CTA Banner — Headline",
+      title: "CTA Banner: Headline",
       group: "cta",
       type: "string",
       initialValue: "Your dress deserves to fit perfectly.",
     }),
     defineField({
       name: "ctaSubhead",
-      title: "CTA Banner — Subheadline",
+      title: "CTA Banner: Subheadline",
       group: "cta",
       type: "string",
       initialValue: "Book a consultation in Pittsburgh today.",
     }),
     defineField({
       name: "ctaButton",
-      title: "CTA Banner — Button Label",
+      title: "CTA Banner: Button Label",
       group: "cta",
       type: "string",
       initialValue: "Get in Touch",

@@ -1,7 +1,12 @@
 /**
- * Guides written as pages in the code rather than in the Studio, usually
- * because they are built around an interactive drawing. The guides index
- * lists them after the Studio's guides, and the sitemap includes them.
+ * Guides with their own page in the code, usually because they are built
+ * around an interactive drawing. The guides index lists them after the
+ * Studio's guides, and the sitemap includes them.
+ *
+ * Their words can still live in the Studio: a Studio guide with the same slug
+ * supplies the title, summary and body (the page reads it), and is never
+ * listed a second time. The title and summary here are what shows until that
+ * guide exists.
  */
 export interface BuiltInGuide {
   title: string;

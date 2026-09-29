@@ -2,6 +2,14 @@
 
 Newest first. Grace facing notes live in `site/content/FOR-GRACE.md`.
 
+## Every word editable in the Studio, September 2026
+
+- `feat: words around the site`: three new Studio documents, Site-wide words (131 fields), Contact form & emails (171) and Guides & tools (133), hold the wording that used to be written into the code: buttons and labels, header, footer and sticky buttons, the home, services, portfolio, about, landing, policies and 404 pages, the contact form, photo check, confirmation emails and care pages, and the guides' tools (Your dates, fitting bag, bustle and trouser hem explorers, calendar file). Each field starts with the original wording, shows it underneath, and falls back to it when left empty. The Studio schema, the site's fallbacks and the seed script all come from one spec per area (`src/lib/text/specs`), so they can't drift apart; `tests/wording.spec.ts` checks the specs.
+- `feat: the trouser hem guide is a Studio guide`, and each service picks its own "Helpful guides".
+- `feat: Studio helpers`: a Start here page, "Open preview" going to the page each document appears on, and warnings (never blocking) for em dashes and missing {placeholders}.
+- `feat: instant updates`: `/api/revalidate` refreshes the site the moment something is published, once a signed Sanity webhook and `SANITY_REVALIDATE_SECRET` are set up.
+- Run `npm run content:text` once to fill the new documents with today's wording (and create the trouser hem guide). It never overwrites anything already changed.
+
 ## Guides, honest dates and prices, September 2026
 
 - `feat: "Your dates" calculator` on the timing guide: enter a wedding date and see when each fitting falls, with an honest one-line read (good timing, plenty of time, due now, under eight weeks, or before bridal reopens) and an "Add these to my calendar" file. The date stays on that device.

@@ -13,14 +13,14 @@ export const contactPage = defineType({
     // ── Hero ─────────────────────────────────────────────────────
     defineField({
       name: "heroLabel",
-      title: "Hero — Section Label",
+      title: "Hero: Section Label",
       group: "hero",
       type: "string",
       initialValue: "Get in Touch",
     }),
     defineField({
       name: "heroHeading",
-      title: "Hero — Heading",
+      title: "Hero: Heading",
       group: "hero",
       type: "string",
       initialValue: "Let's Talk About Your Garment",
@@ -29,7 +29,7 @@ export const contactPage = defineType({
     // ── Status Messages ─────────────────────────────────────────
     defineField({
       name: "waitlistBannerBold",
-      title: "Waitlist Banner — Bold Opening",
+      title: "Waitlist Banner: Bold Opening",
       description: "Shown at the top of the page when the whole site is on a waitlist. Bold portion of the banner text.",
       group: "messages",
       type: "string",
@@ -37,16 +37,16 @@ export const contactPage = defineType({
     }),
     defineField({
       name: "waitlistBannerText",
-      title: "Waitlist Banner — Continuing Text",
+      title: "Waitlist Banner: Continuing Text",
       description: "The rest of the waitlist banner message after the bold part.",
       group: "messages",
       type: "string",
       initialValue:
-        "Fill out the form below to join my waitlist — I'll reach out as soon as a spot opens up.",
+        "Fill out the form below to join my waitlist, I'll reach out as soon as a spot opens up.",
     }),
     defineField({
       name: "successHeading",
-      title: "Success State — Heading",
+      title: "Success State: Heading",
       description: "Large heading shown after the form is submitted successfully.",
       group: "messages",
       type: "string",
@@ -54,7 +54,7 @@ export const contactPage = defineType({
     }),
     defineField({
       name: "successMessage",
-      title: "Success State — Message (normal booking)",
+      title: "Success State: Message (normal booking)",
       description: "Body text shown after a regular booking inquiry is submitted.",
       group: "messages",
       type: "text",
@@ -64,7 +64,7 @@ export const contactPage = defineType({
     }),
     defineField({
       name: "waitlistSuccessMessage",
-      title: "Success State — Message (waitlist)",
+      title: "Success State: Message (waitlist)",
       description: "Body text shown after a waitlist submission.",
       group: "messages",
       type: "text",

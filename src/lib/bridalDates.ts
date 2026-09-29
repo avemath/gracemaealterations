@@ -235,34 +235,46 @@ export function dateFit(wedding: Date, opts: DateFitOptions): DateFit {
   return result("early");
 }
 
+/** The wording for each kind of date, editable in the Studio (Guides & tools). */
+export interface DateMessages {
+  datePast: string;
+  dateRush: string;
+  dateBeforeReopen: string;
+  dateAroundReopen: string;
+  dateDueNow: string;
+  dateGood: string;
+  dateGoodWaitlist: string;
+  dateEarly: string;
+  dateEarlyWaitlist: string;
+}
+
+const fillIn = (template: string, vars: Record<string, string>) =>
+  template.replace(/\{(\w+)\}/g, (m, k: string) => (k in vars ? vars[k] : m));
+
 /**
  * The honest one-line read on a wedding date, shared by the "Your dates"
  * calculator and the contact form so they always say the same thing.
  */
-export function statusText(fit: DateFit, waitlisted: boolean, reopensLabel: string): string {
-  const range = formatRange(fit.firstFitting.from, fit.firstFitting.to);
-  switch (fit.kind) {
-    case "past":
-      return "That date has passed. Check the year?";
-    case "rush":
-      return "That's under eight weeks. Tell me anyway: I'll say honestly whether I can fit it in, and suggest someone if I can't.";
-    case "beforeReopen":
-      return `Your first fitting would fall before bridal reopens (${reopensLabel}). Send a request anyway and I'll tell you honestly whether I can fit it in, with a referral if I can't.`;
-    case "tight":
-      // Still months away, but the window opens before bridal does.
-      if (fit.weeksAway > 12) {
-        return `Your first fitting window opens right around when bridal reopens (${reopensLabel}), so it's worth joining the waitlist soon.`;
-      }
-      return "The first fitting is due now, so it's worth booking soon.";
-    case "good":
-      return waitlisted
-        ? `Good timing. Join the waitlist now and your first fitting lands around ${range}.`
-        : `Good timing. Book now and your first fitting lands around ${range}.`;
-    case "early":
-      return waitlisted
-        ? `Plenty of time. Join the waitlist whenever you're ready; fittings start around ${range}.`
-        : `Plenty of time. Book whenever you're ready; fittings start around ${range}.`;
-  }
+export function statusText(fit: DateFit, waitlisted: boolean, reopensLabel: string, messages: DateMessages): string {
+  const vars = { range: formatRange(fit.firstFitting.from, fit.firstFitting.to), reopens: reopensLabel };
+  const pick = (): string => {
+    switch (fit.kind) {
+      case "past":
+        return messages.datePast;
+      case "rush":
+        return messages.dateRush;
+      case "beforeReopen":
+        return messages.dateBeforeReopen;
+      case "tight":
+        // Still months away, but the window opens before bridal does.
+        return fit.weeksAway > 12 ? messages.dateAroundReopen : messages.dateDueNow;
+      case "good":
+        return waitlisted ? messages.dateGoodWaitlist : messages.dateGood;
+      case "early":
+        return waitlisted ? messages.dateEarlyWaitlist : messages.dateEarly;
+    }
+  };
+  return fillIn(pick(), vars);
 }
 
 // ── Calendar file ─────────────────────────────────────────────
@@ -306,7 +318,33 @@ function slug(text: string): string {
  * An .ics calendar with an all-day event on the day each window opens (or the
  * "by" date for an open-ended step), plus the wedding day itself.
  */
-export function icsFor(plan: FittingWindow[], weddingDate: Date, now: Date = new Date()): string {
+/** The calendar file's wording, editable in the Studio (Guides & tools). */
+export interface CalendarWording {
+  datesCalName: string;
+  datesCalOpens: string;
+  datesCalOpensNote: string;
+  datesCalBy: string;
+  datesCalByNote: string;
+  datesCalWedding: string;
+  datesCalWeddingNote: string;
+}
+
+const CALENDAR_DEFAULTS: CalendarWording = {
+  datesCalName: "Wedding dress fittings",
+  datesCalOpens: "{step} window opens",
+  datesCalOpensNote: "{step}: {range}. Timeline from gracemaealterations.com",
+  datesCalBy: "{step} by today",
+  datesCalByNote: "Aim to have this done by {date}. Timeline from gracemaealterations.com",
+  datesCalWedding: "Wedding day",
+  datesCalWeddingNote: "Congratulations!",
+};
+
+export function icsFor(
+  plan: FittingWindow[],
+  weddingDate: Date,
+  now: Date = new Date(),
+  wording: CalendarWording = CALENDAR_DEFAULTS
+): string {
   const stamp = icsStamp(now);
   const wedding = icsDate(weddingDate);
 
@@ -328,18 +366,23 @@ export function icsFor(plan: FittingWindow[], weddingDate: Date, now: Date = new
     "PRODID:-//Grace Mae Alterations//Your dates//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
-    "X-WR-CALNAME:Wedding dress fittings",
+    `X-WR-CALNAME:${icsText(wording.datesCalName)}`,
     ...plan.flatMap((w, i) =>
       w.openEnded
-        ? event(w.to, `${w.title} by today`, `Aim to have this done by ${formatDate(w.to)}. Timeline from gracemaealterations.com`, `${i}-${slug(w.title)}`)
+        ? event(
+            w.to,
+            fillIn(wording.datesCalBy, { step: w.title }),
+            fillIn(wording.datesCalByNote, { step: w.title, date: formatDate(w.to) }),
+            `${i}-${slug(w.title)}`
+          )
         : event(
             w.from,
-            `${w.title} window opens`,
-            `${w.title}: ${formatRange(w.from, w.to)}. Timeline from gracemaealterations.com`,
+            fillIn(wording.datesCalOpens, { step: w.title }),
+            fillIn(wording.datesCalOpensNote, { step: w.title, range: formatRange(w.from, w.to) }),
             `${i}-${slug(w.title)}`
           )
     ),
-    ...event(weddingDate, "Wedding day", "Congratulations!", "wedding"),
+    ...event(weddingDate, wording.datesCalWedding, wording.datesCalWeddingNote, "wedding"),
     "END:VCALENDAR",
   ];
 

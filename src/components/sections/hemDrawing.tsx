@@ -293,6 +293,7 @@ export function HemDrawing({
   shoe,
   fadingShoe,
   uid,
+  labels,
 }: {
   geo: Geo;
   /** The chosen break, for the label; the drawing itself follows geo. */
@@ -301,6 +302,8 @@ export function HemDrawing({
   /** The shoe being swapped out, fading away on top of the new one. */
   fadingShoe?: { id: ShoeId; opacity: number } | null;
   uid: string;
+  /** The words printed on the drawing, from the Studio (Guides & tools). */
+  labels: { breakLabel: string; noBreak: string; hem: string };
 }) {
   const t = trouser(geo);
   const foldOn = clamp01(geo.e / 7);
@@ -374,7 +377,7 @@ export function HemDrawing({
         />
         <circle cx={f(breakTarget.x)} cy={f(breakTarget.y)} r={2.6} fill={GOLD} />
         <text x={label.x} y={label.y} fill="rgba(250,247,242,0.72)">
-          {brk === "none" ? "NO BREAK" : "BREAK"}
+          {brk === "none" ? labels.noBreak : labels.breakLabel}
         </text>
 
         <path
@@ -385,7 +388,7 @@ export function HemDrawing({
         />
         <circle cx={f(t.hemB.x)} cy={f(t.hemB.y)} r={2.6} fill={GOLD} />
         <text x={f(t.hemB.x + 31)} y={f(t.hemB.y + 4.5)} fill="rgba(250,247,242,0.72)">
-          HEM
+          {labels.hem}
         </text>
       </g>
     </g>

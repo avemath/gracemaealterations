@@ -26,6 +26,11 @@ Everything below is in the Studio at **gracemaealterations.com/studio**. Nothing
 18. There is a new trouser hem guide with a drawing that shows no break, quarter, half and full break over different shoes.
 19. Once it is switched on, people who attach photos can press **Check my photos**. It tells them what the photos show: the kind of garment, the likely fabric (and how sure it is), visible details like buttons or lace, and the train length. It never suggests work, prices or dates, and it never comments on the person. If they choose to send it along, it appears in your email under **Photo Check**, clearly marked as automated. Treat it as their description of the dress, not a diagnosis.
 
+20. **Almost every word on the site is now yours to change.** In the Studio, open **Start here** for a map of where everything lives. The small print (buttons, labels, the contact form, the emails clients get, the guides' tools) is under **Words around the site**, in three documents: Site-wide words, Contact form & emails, and Guides & tools. Each box starts with today's wording and shows the original underneath, so you can always put it back. Leaving a box empty uses the original.
+21. Words in {curly brackets}, like {reopens} or {name}, are filled in by the site. Keep them as they are. The Studio warns you (without stopping you) if one goes missing, or if an em dash sneaks in.
+22. The trouser hem guide's writing is now an ordinary guide under **Guides**, like the others, and each service can choose which guides it lists underneath it (**Services**, then the service, then **Helpful guides**).
+23. In any document's menu, **Open preview** opens the page it appears on. Once you publish, the site updates within a minute or two (instantly, once Avery switches on instant updates).
+
 ---
 
 ## Only you can do these

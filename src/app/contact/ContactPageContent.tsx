@@ -7,7 +7,7 @@ import SanityImage from "@/components/ui/SanityImage";
 import Accordion from "@/components/ui/Accordion";
 import { analytics } from "@/lib/analytics";
 import { preparePhoto } from "@/lib/compressImage";
-import { dateFit, parseDateInput, statusText } from "@/lib/bridalDates";
+import { dateFit, parseDateInput, statusText, type DateMessages } from "@/lib/bridalDates";
 import PhotoCheck from "@/components/contact/PhotoCheck";
 import type { PhotoCheckResult } from "@/lib/photoCheck";
 import {
@@ -17,6 +17,10 @@ import {
   MAX_PHOTO_TOTAL_BYTES,
 } from "@/lib/contactOptions";
 import type { SanityFaqItem, SanityImage as SanityImageType } from "@/lib/sanity.queries";
+// fill from its own file: "@/lib/text" itself would pull every wording spec
+// and the Sanity client into the browser bundle.
+import { fill } from "@/lib/text/fill";
+import type { Text } from "@/lib/text";
 
 // ── Branches ───────────────────────────────────────────────────────────────
 
@@ -30,16 +34,6 @@ function branchFromParam(value: string | null): Branch | null {
   if (value === "custom") return "party";
   return BRANCH_IDS.includes(value as Branch) ? (value as Branch) : null;
 }
-
-const REFERRALS = [
-  "Google",
-  "Instagram",
-  "Bridal shop",
-  "Wedding planner",
-  "The Knot / WeddingWire",
-  "A friend who was a client",
-  "Other",
-];
 
 /** Anything bigger is almost certainly not a phone photo. */
 const MAX_SOURCE_BYTES = 25 * 1024 * 1024;
@@ -65,13 +59,27 @@ type FormData = typeof INITIAL_FORM;
 type FormErrors = Partial<Record<keyof FormData | "files", string>>;
 type AttachmentState = { filename: string; content: string; bytes: number };
 
-function validate(data: FormData): FormErrors {
+function validate(
+  data: FormData,
+  text: Pick<Text<"forms">, "errName" | "errEmailMissing" | "errEmailInvalid">
+): FormErrors {
   const errors: FormErrors = {};
-  if (!data.name.trim()) errors.name = "Please add your name.";
-  if (!data.email.trim()) errors.email = "Please add an email address so I can reply.";
+  if (!data.name.trim()) errors.name = text.errName;
+  if (!data.email.trim()) errors.email = text.errEmailMissing;
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
-    errors.email = "That email address does not look right.";
+    errors.email = text.errEmailInvalid;
   return errors;
+}
+
+/**
+ * Studio wording with a link in the middle: "By sending this you agree to my
+ * {policies}." becomes the words around it plus the link. If Grace deletes the
+ * {placeholder}, the link goes at the end so it is never lost.
+ */
+function withLink(template: string, placeholder: string, link: React.ReactNode) {
+  const [before, ...rest] = template.split(`{${placeholder}}`);
+  if (!rest.length) return <>{template} {link}</>;
+  return <>{before}{link}{rest.join(`{${placeholder}}`)}</>;
 }
 
 // ── Field components ───────────────────────────────────────────────────────
@@ -87,8 +95,8 @@ const fieldClass = (hasError: boolean) =>
     hasError ? "border-red-700 focus:border-red-700" : "border-blush focus:border-gold"
   }`;
 
-function OptionalTag() {
-  return <span className="text-charcoal/75 normal-case tracking-normal">(optional)</span>;
+function OptionalTag({ text }: { text: string }) {
+  return <span className="text-charcoal/75 normal-case tracking-normal">{text}</span>;
 }
 
 function Field({
@@ -100,6 +108,7 @@ function Field({
   type = "text",
   placeholder,
   optional,
+  errorPrefix,
   autoComplete,
   required,
   maxLength,
@@ -109,9 +118,11 @@ function Field({
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string;
+  errorPrefix: string;
   type?: string;
   placeholder?: string;
-  optional?: boolean;
+  /** The "(optional)" tag, when the field may be left empty. */
+  optional?: string;
   autoComplete?: string;
   required?: boolean;
   maxLength?: number;
@@ -119,7 +130,7 @@ function Field({
   return (
     <div className="group">
       <label htmlFor={name} className={labelClass}>
-        {label} {optional && <OptionalTag />}
+        {label} {optional && <OptionalTag text={optional} />}
       </label>
       <input
         id={name}
@@ -137,7 +148,7 @@ function Field({
       />
       {error && (
         <p id={`${name}-error`} className="mt-1.5 font-jost text-xs text-red-700" role="alert">
-          Error: {error}
+          {errorPrefix} {error}
         </p>
       )}
     </div>
@@ -185,6 +196,13 @@ interface ContactText {
   waitlistSuccessMessage: string;
 }
 
+/**
+ * The form's wording from "Contact form & emails". The confirmation emails
+ * (confirm…) and care pages (care…) are left out, since the browser never
+ * needs them.
+ */
+export type ContactFormText = Omit<Text<"forms">, `confirm${string}` | `care${string}`>;
+
 interface Availability {
   limitedMode: boolean;
   waitlistServices: string[];
@@ -209,6 +227,10 @@ interface Props {
   text: ContactText;
   /** True when the AI photo check is configured (ANTHROPIC_API_KEY is set). */
   photoCheckEnabled?: boolean;
+  /** Wording for the note under the wedding date (Studio: Guides & tools). */
+  dateMessages: DateMessages;
+  /** Everything else the form says (Studio: Contact form & emails). */
+  formText: ContactFormText;
 }
 
 // ── Component ──────────────────────────────────────────────────────────────
@@ -221,6 +243,8 @@ export default function ContactPageContent({
   hasPolicies,
   text,
   photoCheckEnabled = false,
+  dateMessages,
+  formText: t,
 }: Props) {
   const { limitedMode, waitlistServices, reopensLabel, limitedNote } = availability;
 
@@ -266,30 +290,23 @@ export default function ContactPageContent({
   const askAboutDate = fit?.kind === "rush" || fit?.kind === "beforeReopen";
 
   const CARDS: { id: Branch; title: string; blurb: string }[] = [
-    {
-      id: "tailoring",
-      title: "Tailoring or a repair",
-      blurb: "Hems, waists, sleeves, zips. Open now, usually done within two weeks.",
-    },
+    { id: "tailoring", title: t.cardTailoringTitle, blurb: t.cardTailoringBlurb },
     {
       id: "bridal",
-      title: limitedMode ? `Bridal (${reopensLabel} waitlist)` : "Bridal",
-      blurb: limitedMode
-        ? "Join the waitlist and you'll get first pick of fitting dates, in the order you joined."
-        : "Hems, bustles, bodice work and fittings for your gown.",
+      title: limitedMode ? fill(t.cardBridalWaitlistTitle, { reopens: reopensLabel }) : t.cardBridalTitle,
+      blurb: limitedMode ? t.cardBridalWaitlistBlurb : t.cardBridalBlurb,
     },
-    {
-      id: "party",
-      title: "Bridal party or special occasion",
-      blurb: "Bridesmaids, mothers, flower girls: one point of contact, one pickup day.",
-    },
+    { id: "party", title: t.cardPartyTitle, blurb: t.cardPartyBlurb },
   ];
 
+  // One answer per line in the Studio; what the client picks is what Grace reads.
+  const referrals = t.referralOptions.split("\n").map((o) => o.trim()).filter(Boolean);
+
   const heading = branchWaitlisted
-    ? "Join the bridal waitlist"
+    ? t.formHeadingBridalWaitlist
     : siteWideWaitlist
-    ? "Join the waitlist"
-    : "Send a request";
+    ? t.formHeadingWaitlist
+    : t.formHeading;
 
   // ── Handlers ─────────────────────────────────────────────────────────────
 
@@ -325,19 +342,19 @@ export default function ContactPageContent({
     try {
       for (const file of files) {
         if (file.size > MAX_SOURCE_BYTES) {
-          problem = `"${file.name}" is too large to attach.`;
+          problem = fill(t.photoTooBig, { file: file.name });
           continue;
         }
         const photo = await preparePhoto(file);
         if (total + photo.bytes > MAX_PHOTO_TOTAL_BYTES) {
-          problem = `"${file.name}" would make the photos too large to send together. Try fewer photos, or email the rest to ${site.email}.`;
+          problem = fill(t.photoTooBigTogether, { file: file.name, email: site.email });
           continue;
         }
         total += photo.bytes;
         added.push({ filename: photo.filename, content: photo.dataUrl, bytes: photo.bytes });
       }
     } catch {
-      problem = "One of those photos could not be read. Please try another.";
+      problem = t.photoUnreadable;
     } finally {
       setAttachments((prev) => [...prev, ...added]);
       if (added.length) setPhotoCheck(null);
@@ -360,7 +377,7 @@ export default function ContactPageContent({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newErrors = validate(formData);
+    const newErrors = validate(formData, t);
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       // On a phone the fields are far above the button: take them there.
@@ -399,9 +416,9 @@ export default function ContactPageContent({
         setAlterationsNeeded([]);
         setPhotoCheck(null);
       } else if (res.status === 413) {
-        setSubmitError("The photos were too large to send.");
+        setSubmitError(t.sendTooLarge);
       } else if (res.status === 429) {
-        setSubmitError("Too many requests from this connection.");
+        setSubmitError(t.sendTooMany);
       }
     } catch {
       setStatus("error");
@@ -415,19 +432,16 @@ export default function ContactPageContent({
     value: formData[name],
     onChange: handleChange,
     error: errors[name],
+    errorPrefix: t.errorPrefix,
   });
 
   const notesLabel =
-    branch === "tailoring"
-      ? "The garment, and what you'd like done"
-      : branch === "bridal"
-      ? "Anything else I should know"
-      : "Notes";
+    branch === "tailoring" ? t.notesLabelTailoring : branch === "bridal" ? t.notesLabelBridal : t.notesLabel;
 
   return (
     <>
       {/* ── HERO ───────────────────────────────────────────────── */}
-      <section className="relative flex items-end overflow-hidden bg-near_black" style={{ minHeight: "40vh" }} aria-label="Contact hero">
+      <section className="relative flex items-end overflow-hidden bg-near_black" style={{ minHeight: "40vh" }} aria-label={t.contactHeroAria}>
         <div className="absolute inset-0 bg-gradient-to-br from-near_black via-near_black to-charcoal/60 pointer-events-none" aria-hidden="true" />
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-14 pt-36 lg:pt-44">
           <div
@@ -451,7 +465,7 @@ export default function ContactPageContent({
       )}
 
       {/* ── CONTACT LAYOUT ─────────────────────────────────────── */}
-      <section className="bg-ivory py-14 lg:py-20 px-6" aria-label="Contact information and form">
+      <section className="bg-ivory py-14 lg:py-20 px-6" aria-label={t.contactSectionAria}>
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[5fr_7fr] gap-16 lg:gap-24">
 
@@ -459,20 +473,20 @@ export default function ContactPageContent({
                 on phones, so the form is the first thing they reach. ── */}
             <div data-reveal className="order-2 lg:order-none"
             >
-              <h2 className="font-cormorant italic text-charcoal text-3xl mb-8">Contact information</h2>
+              <h2 className="font-cormorant italic text-charcoal text-3xl mb-8">{t.infoHeading}</h2>
               <ul className="space-y-7 mb-10" role="list">
                 <li className="flex items-start gap-4">
                   <span className="text-gold_ink mt-0.5 flex-shrink-0"><PinIcon /></span>
                   <div>
-                    <p className="font-jost text-charcoal text-xs tracking-widest uppercase mb-1">Location</p>
-                    <p className="font-jost text-charcoal/75 text-sm">{site.location} · By appointment</p>
+                    <p className="font-jost text-charcoal text-xs tracking-widest uppercase mb-1">{t.infoLocation}</p>
+                    <p className="font-jost text-charcoal/75 text-sm">{fill(t.infoLocationLine, { location: site.location })}</p>
                     <p className="font-jost text-charcoal/75 text-sm">{site.availability}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
                   <span className="text-gold_ink mt-0.5 flex-shrink-0"><MailIcon /></span>
                   <div>
-                    <p className="font-jost text-charcoal text-xs tracking-widest uppercase mb-1">Email</p>
+                    <p className="font-jost text-charcoal text-xs tracking-widest uppercase mb-1">{t.infoEmail}</p>
                     <a href={`mailto:${site.email}`} className="font-jost text-charcoal/75 text-sm hover:text-gold_ink transition-colors duration-300">
                       {site.email}
                     </a>
@@ -481,7 +495,7 @@ export default function ContactPageContent({
                 <li className="flex items-start gap-4">
                   <span className="text-gold_ink mt-0.5 flex-shrink-0"><InstagramIcon /></span>
                   <div>
-                    <p className="font-jost text-charcoal text-xs tracking-widest uppercase mb-1">Instagram</p>
+                    <p className="font-jost text-charcoal text-xs tracking-widest uppercase mb-1">{t.infoInstagram}</p>
                     <a href={site.instagramUrl} target="_blank" rel="noopener noreferrer" className="font-jost text-charcoal/75 text-sm hover:text-gold_ink transition-colors duration-300">
                       {site.instagram}
                     </a>
@@ -524,13 +538,13 @@ export default function ContactPageContent({
                 <>
                   {/* Step 1 */}
                   <h2 className="font-cormorant italic text-charcoal text-3xl mb-2">
-                    What can I help with?
+                    {t.chooseHeading}
                   </h2>
                   <p className="font-jost text-charcoal/75 text-sm leading-[1.65] mb-6">
-                    Pick one, then tell me a little about it.
+                    {t.chooseIntro}
                   </p>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10" role="group" aria-label="Type of request">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10" role="group" aria-label={t.chooseAria}>
                     {CARDS.map((card) => {
                       const selected = branch === card.id;
                       return (
@@ -568,56 +582,56 @@ export default function ContactPageContent({
                       >
                         <h3 className="font-cormorant italic text-charcoal text-2xl mb-8">{heading}</h3>
 
-                        <form onSubmit={handleSubmit} noValidate aria-label="Contact request form">
+                        <form onSubmit={handleSubmit} noValidate aria-label={t.formAria}>
                           <div className="space-y-8">
-                            <Field {...fieldProps("name")} label="Full name" placeholder="Your full name" autoComplete="name" required maxLength={200} />
-                            <Field {...fieldProps("email")} label="Email address" type="email" placeholder="your@email.com" autoComplete="email" required maxLength={320} />
+                            <Field {...fieldProps("name")} label={t.nameLabel} placeholder={t.namePlaceholder} autoComplete="name" required maxLength={200} />
+                            <Field {...fieldProps("email")} label={t.emailLabel} type="email" placeholder={t.emailPlaceholder} autoComplete="email" required maxLength={320} />
 
                             {branch === "bridal" && (
                               <>
                                 <div>
-                                  <Field {...fieldProps("eventDate")} label="Wedding date" type="date" />
+                                  <Field {...fieldProps("eventDate")} label={t.weddingDateLabel} type="date" />
                                   <p
                                     className={`font-jost text-xs leading-[1.6] text-charcoal/75 ${fit ? "mt-2 border-l-2 border-gold pl-3" : "sr-only"}`}
                                     aria-live="polite"
                                     data-testid="date-note"
                                   >
-                                    {fit ? statusText(fit, branchWaitlisted, reopensLabel) : ""}
+                                    {fit ? statusText(fit, branchWaitlisted, reopensLabel, dateMessages) : ""}
                                   </p>
                                 </div>
                                 <Field
                                   {...fieldProps("dressDesigner")}
-                                  label="Dress designer, or where you bought it"
-                                  placeholder="e.g. Allure, or David's Bridal"
+                                  label={t.designerLabel}
+                                  placeholder={t.designerPlaceholder}
                                 />
                                 <Field
                                   {...fieldProps("dressArrival")}
-                                  label="When the dress arrives"
+                                  label={t.arrivalLabel}
                                   type="date"
-                                  optional
+                                  optional={t.optional}
                                 />
-                                <Field {...fieldProps("venue")} label="Venue" placeholder="Where you're getting married" optional />
+                                <Field {...fieldProps("venue")} label={t.venueLabel} placeholder={t.venuePlaceholder} optional={t.optional} />
 
                                 <fieldset className="space-y-8 border-t border-blush pt-8">
                                   <legend className="font-cormorant italic text-charcoal text-xl -mb-2 pr-3">
-                                    About the dress <span className="font-jost not-italic text-xs text-charcoal/75">(all optional)</span>
+                                    {t.aboutDressHeading} <span className="font-jost not-italic text-xs text-charcoal/75">{t.aboutDressOptional}</span>
                                   </legend>
                                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                                     <Field
                                       {...fieldProps("dressSizeOrdered")}
-                                      label="Dress size ordered"
-                                      placeholder="e.g. 10"
+                                      label={t.sizeOrderedLabel}
+                                      placeholder={t.sizeOrderedPlaceholder}
                                     />
                                     <Field
                                       {...fieldProps("currentStreetSize")}
-                                      label="Your usual street size"
-                                      placeholder="e.g. 6"
+                                      label={t.streetSizeLabel}
+                                      placeholder={t.streetSizePlaceholder}
                                     />
                                   </div>
 
                                   <div>
                                     <p id="alterations-label" className="font-jost text-xs tracking-[0.12em] uppercase text-charcoal/75 mb-3">
-                                      What you think it needs
+                                      {t.alterationsLabel}
                                     </p>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6" role="group" aria-labelledby="alterations-label">
                                       {BRIDAL_ALTERATIONS.map((option) => (
@@ -633,7 +647,7 @@ export default function ContactPageContent({
                                             onChange={() => toggleAlteration(option.id)}
                                             className="w-4 h-4 accent-gold_ink"
                                           />
-                                          {option.label}
+                                          {t[option.key]}
                                         </label>
                                       ))}
                                     </div>
@@ -641,7 +655,7 @@ export default function ContactPageContent({
 
                                   <div className="group">
                                     <label htmlFor="shoesUndergarments" className={labelClass}>
-                                      Do you have your shoes and undergarments yet?
+                                      {t.shoesLabel}
                                     </label>
                                     <select
                                       id="shoesUndergarments"
@@ -650,10 +664,10 @@ export default function ContactPageContent({
                                       onChange={handleChange}
                                       className={`${fieldClass(false)} bg-ivory cursor-pointer`}
                                     >
-                                      <option value="">Select one</option>
+                                      <option value="">{t.selectOne}</option>
                                       {SHOES_UNDERGARMENTS.map((option) => (
                                         <option key={option.id} value={option.id}>
-                                          {option.label}
+                                          {t[option.key]}
                                         </option>
                                       ))}
                                     </select>
@@ -664,12 +678,12 @@ export default function ContactPageContent({
 
                             {branch === "party" && (
                               <>
-                                <Field {...fieldProps("eventDate")} label="Event date" type="date" />
+                                <Field {...fieldProps("eventDate")} label={t.eventDateLabel} type="date" />
                                 <Field
                                   {...fieldProps("garmentCount")}
-                                  label="How many garments"
+                                  label={t.garmentCountLabel}
                                   type="number"
-                                  placeholder="e.g. 4"
+                                  placeholder={t.garmentCountPlaceholder}
                                 />
                               </>
                             )}
@@ -687,10 +701,10 @@ export default function ContactPageContent({
                                 className={`${fieldClass(false)} resize-none`}
                                 placeholder={
                                   branch === "tailoring"
-                                    ? "e.g. navy trousers, hem to flat shoes"
+                                    ? t.notesPlaceholderTailoring
                                     : branch === "bridal"
-                                    ? "e.g. fabric, lace or beading, anything you are worried about"
-                                    : "Anything you want me to know"
+                                    ? t.notesPlaceholderBridal
+                                    : t.notesPlaceholder
                                 }
                               />
                             </div>
@@ -698,11 +712,10 @@ export default function ContactPageContent({
                             {/* Photos */}
                             <div>
                               <p className="font-jost text-xs tracking-[0.12em] uppercase text-charcoal/75 mb-1">
-                                Photos <span className="normal-case tracking-normal">(optional)</span>
+                                {t.photosLabel} <span className="normal-case tracking-normal">{t.optional}</span>
                               </p>
                               <p id="photos-hint" className="font-jost text-charcoal/75 text-xs mb-3 leading-[1.65]">
-                                Up to {MAX_PHOTOS} photos. Front, back, and a close-up of anything you
-                                are worried about. Large photos are resized before sending.
+                                {fill(t.photosHint, { max: MAX_PHOTOS })}
                               </p>
 
                               {attachments.length < MAX_PHOTOS && (
@@ -714,9 +727,9 @@ export default function ContactPageContent({
                                     <UploadIcon />
                                   </span>
                                   <span className="font-jost text-charcoal/75 text-xs">
-                                    {preparing ? "Preparing photos" : "Add photos"}
+                                    {preparing ? t.photosPreparing : t.photosAdd}
                                   </span>
-                                  <span className="font-jost text-charcoal/75 text-xs">JPG, PNG, HEIC, WEBP</span>
+                                  <span className="font-jost text-charcoal/75 text-xs">{t.photosTypes}</span>
                                   <input
                                     id="photos"
                                     type="file"
@@ -731,7 +744,7 @@ export default function ContactPageContent({
                               )}
                               {errors.files && (
                                 <p className="mt-2 font-jost text-xs text-red-700" role="alert">
-                                  Error: {errors.files}
+                                  {t.errorPrefix} {errors.files}
                                 </p>
                               )}
                               {attachments.length > 0 && (
@@ -744,7 +757,7 @@ export default function ContactPageContent({
                                         type="button"
                                         onClick={() => removeAttachment(i)}
                                         className="absolute -top-3 -right-3 w-11 h-11 flex items-center justify-center opacity-100 lg:opacity-0 touch:opacity-100 focus-visible:opacity-100 group-hover/thumb:opacity-100 transition-opacity duration-200"
-                                        aria-label={`Remove ${file.filename}`}
+                                        aria-label={fill(t.photoRemove, { file: file.filename })}
                                       >
                                         <span className="w-6 h-6 bg-charcoal text-ivory text-xs flex items-center justify-center rounded-full" aria-hidden="true">
                                           ×
@@ -766,6 +779,7 @@ export default function ContactPageContent({
                                   included={photoCheckIncluded}
                                   onResult={setPhotoCheck}
                                   onIncludedChange={setPhotoCheckIncluded}
+                                  text={t}
                                 />
                               )}
                             </div>
@@ -773,7 +787,7 @@ export default function ContactPageContent({
                             {/* Referral */}
                             <div className="group">
                               <label htmlFor="referralSource" className={labelClass}>
-                                How did you find me?
+                                {t.referralLabel}
                               </label>
                               <select
                                 id="referralSource"
@@ -782,8 +796,8 @@ export default function ContactPageContent({
                                 onChange={handleChange}
                                 className={`${fieldClass(false)} bg-ivory cursor-pointer`}
                               >
-                                <option value="">Select one</option>
-                                {REFERRALS.map((option) => (
+                                <option value="">{t.selectOne}</option>
+                                {referrals.map((option) => (
                                   <option key={option} value={option}>
                                     {option}
                                   </option>
@@ -812,31 +826,37 @@ export default function ContactPageContent({
                                 className="btn-gold w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                               >
                                 {status === "submitting"
-                                  ? "Sending"
+                                  ? t.submitSending
                                   : askAboutDate
-                                  ? "Ask about my date"
+                                  ? t.submitAskDate
                                   : isWaitlist
-                                  ? "Join the waitlist"
-                                  : "Send my request"}
+                                  ? t.submitWaitlist
+                                  : t.submitSend}
                               </button>
                               {status === "error" && (
                                 <p className="mt-4 font-jost text-xs text-red-700" role="alert">
-                                  Error: {submitError || "something went wrong."} Please email me at{" "}
-                                  <a href={`mailto:${site.email}`} className="underline">
-                                    {site.email}
-                                  </a>
-                                  .
+                                  {t.errorPrefix} {submitError || t.sendFailed}{" "}
+                                  {withLink(
+                                    t.sendEmailMe,
+                                    "email",
+                                    <a href={`mailto:${site.email}`} className="underline">
+                                      {site.email}
+                                    </a>
+                                  )}
                                 </p>
                               )}
                               <p className="mt-6 font-jost text-charcoal/75 text-xs leading-[1.65]">
                                 {site.responseTime}
                                 {hasPolicies && (
                                   <>
-                                    {" "}By sending this you agree to my{" "}
-                                    <Link href="/policies" className="text-gold_ink underline">
-                                      policies
-                                    </Link>
-                                    .
+                                    {" "}
+                                    {withLink(
+                                      t.policiesLine,
+                                      "policies",
+                                      <Link href="/policies" className="text-gold_ink underline">
+                                        {t.policiesLink}
+                                      </Link>
+                                    )}
                                   </>
                                 )}
                               </p>
@@ -857,9 +877,9 @@ export default function ContactPageContent({
       <section className="bg-blush py-14 lg:py-20 px-6" aria-labelledby="faq-heading">
         <div className="max-w-3xl mx-auto">
           <div className="mb-10">
-            <p className="section-label mb-4">Common questions</p>
+            <p className="section-label mb-4">{t.faqLabel}</p>
             <h2 id="faq-heading" className="font-cormorant italic text-charcoal text-[clamp(2rem,3.5vw,3.25rem)] leading-[1.1]">
-              Frequently asked
+              {t.faqHeading}
             </h2>
           </div>
           <Accordion items={faq} />

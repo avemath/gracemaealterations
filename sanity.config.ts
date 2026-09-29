@@ -2,8 +2,9 @@ import { defineConfig } from "sanity";
 import { deskTool } from "sanity/desk";
 import { visionTool } from "@sanity/vision";
 import { schemaTypes } from "./sanity/schemaTypes";
+import { StartHere } from "./sanity/components/StartHere";
 
-const SINGLETONS = new Set(["siteSettings", "homePage", "aboutPage", "servicesPage", "contactPage", "portfolioPage", "policies"]);
+const SINGLETONS = new Set(["siteSettings", "homePage", "aboutPage", "servicesPage", "contactPage", "portfolioPage", "policies", "siteText", "formsText", "toolsText"]);
 const SINGLETON_ACTIONS = new Set(["publish", "discardChanges", "restore"]);
 
 export default defineConfig({
@@ -24,6 +25,13 @@ export default defineConfig({
         S.list()
           .title("Content")
           .items([
+            S.listItem()
+              .title("Start here")
+              .id("startHere")
+              .child(S.component(StartHere).title("Start here")),
+
+            S.divider(),
+
             // ── PAGE SETTINGS (one of each) ───────────────────
             S.listItem()
               .title("Site Settings")
@@ -59,6 +67,29 @@ export default defineConfig({
               .title("Policies")
               .id("policies")
               .child(S.document().schemaType("policies").documentId("policies")),
+
+            // ── WORDS AROUND THE SITE ─────────────────────────
+            S.listItem()
+              .title("Words around the site")
+              .id("words")
+              .child(
+                S.list()
+                  .title("Words around the site")
+                  .items([
+                    S.listItem()
+                      .title("Site-wide words")
+                      .id("siteText")
+                      .child(S.document().schemaType("siteText").documentId("siteText")),
+                    S.listItem()
+                      .title("Contact form & emails")
+                      .id("formsText")
+                      .child(S.document().schemaType("formsText").documentId("formsText")),
+                    S.listItem()
+                      .title("Guides & tools")
+                      .id("toolsText")
+                      .child(S.document().schemaType("toolsText").documentId("toolsText")),
+                  ])
+              ),
 
             // ── CARE CARDS (one per finished garment) ────────
             S.listItem()
@@ -120,6 +151,35 @@ export default defineConfig({
   schema: { types: schemaTypes },
 
   document: {
+    // "Open preview" in a document's menu: the page on the live site it shows up
+    // on. It shows the published version, so publish first to see a change.
+    productionUrl: async (prev, { document }) => {
+      const site = "https://gracemaealterations.com";
+      const slug = (document as { slug?: { current?: string } }).slug?.current;
+      const code = (document as { code?: string }).code;
+      const pages: Record<string, string> = {
+        siteSettings: "/",
+        homePage: "/",
+        aboutPage: "/about",
+        servicesPage: "/services",
+        service: "/services",
+        contactPage: "/contact",
+        formsText: "/contact",
+        faqItem: "/contact",
+        portfolioPage: "/portfolio",
+        portfolioItem: "/portfolio",
+        policies: "/policies",
+        testimonial: "/",
+        value: "/about",
+        bustleStyle: "/guides/wedding-dress-bustle-types",
+        toolsText: "/guides",
+        siteText: "/",
+      };
+      if (document._type === "guide" && slug) return `${site}/guides/${slug}`;
+      if (document._type === "landingPage" && slug) return `${site}/${slug}`;
+      if (document._type === "careCard" && code) return `${site}/care/${code}`;
+      return pages[document._type] ? `${site}${pages[document._type]}` : prev;
+    },
     // Singletons: only allow publish/discard/restore — no duplicate creation
     actions: (prev, { schemaType }) =>
       SINGLETONS.has(schemaType)

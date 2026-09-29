@@ -1,5 +1,6 @@
 import SanityImage from "@/components/ui/SanityImage";
 import type { SanityImage as SanityImageType } from "@/lib/sanity.queries";
+import type { TextFor } from "@/lib/cta";
 
 export interface InstagramPost {
   image?: SanityImageType;
@@ -15,10 +16,13 @@ export default function InstagramRow({
   posts,
   handle,
   profileUrl,
+  text,
 }: {
   posts: InstagramPost[];
   handle: string;
   profileUrl: string;
+  /** The Studio's heading, and the description for a photo without its own. */
+  text: TextFor<"insta">;
 }) {
   const shown = posts.filter((post) => post.image?.asset).slice(0, 6);
   if (shown.length === 0) return null;
@@ -28,7 +32,7 @@ export default function InstagramRow({
       <div className="max-w-7xl mx-auto">
         <div className="flex items-baseline justify-between mb-6">
           <h2 id="instagram-heading" className="section-label">
-            From the studio
+            {text.instaHeading}
           </h2>
           <a
             href={profileUrl}
@@ -47,7 +51,7 @@ export default function InstagramRow({
                   <SanityImage
                     image={post.image}
                     fill
-                    alt={post.alt ?? "Instagram post from the studio"}
+                    alt={post.alt ?? text.instaAlt}
                     placeholderLabel={`INSTAGRAM_${i + 1}`}
                     sizes="(min-width:1024px) 16vw, 33vw"
                   />
@@ -56,7 +60,7 @@ export default function InstagramRow({
                 <SanityImage
                   image={post.image}
                   fill
-                  alt={post.alt ?? "Instagram post from the studio"}
+                  alt={post.alt ?? text.instaAlt}
                   placeholderLabel={`INSTAGRAM_${i + 1}`}
                   sizes="(min-width:1024px) 16vw, 33vw"
                 />

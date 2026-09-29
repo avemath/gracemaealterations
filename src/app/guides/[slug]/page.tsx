@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PortableText, type PortableTextBlock } from "@portabletext/react";
+import { PortableText, type PortableTextBlock, type PortableTextComponents } from "@portabletext/react";
 import {
   getGuide,
   getPublishedGuides,
@@ -13,13 +13,29 @@ import SanityImage from "@/components/ui/SanityImage";
 import BustleExplorer from "@/components/sections/BustleExplorer";
 import FittingChecklist, { type ChecklistItem } from "@/components/sections/FittingChecklist";
 import FittingDates from "@/components/sections/FittingDates";
+import { getText, fill } from "@/lib/text";
+import { BUILT_IN_GUIDES } from "@/lib/builtInGuides";
+import { toolText } from "../toolText";
 
 export const revalidate = 60;
 
 export async function generateStaticParams() {
   const guides = (await getPublishedGuides()) ?? [];
-  return guides.map((guide) => ({ slug: guide.slug }));
+  // A guide built into the site (the trouser hem guide) has its own page
+  // folder, which also reads its Studio document. Listing it here too would
+  // give the build two pages for one URL.
+  const builtIn = new Set(BUILT_IN_GUIDES.map((g) => g.slug));
+  return guides.filter((guide) => !builtIn.has(guide.slug)).map((guide) => ({ slug: guide.slug }));
 }
+
+// Guides can use headings; they match the trouser hem guide's.
+const BODY_COMPONENTS: PortableTextComponents = {
+  block: {
+    h2: ({ children }) => (
+      <h2 className="font-cormorant italic text-charcoal text-3xl leading-snug pt-7">{children}</h2>
+    ),
+  },
+};
 
 export async function generateMetadata({
   params,
@@ -67,6 +83,7 @@ export default async function GuidePage({ params }: { params: { slug: string } }
   // The timeline guide gets a "Your dates" calculator above its steps.
   const isTimelineGuide = guide.slug === "wedding-dress-alterations-timeline";
   const site = isTimelineGuide ? await getMergedSite() : null;
+  const text = await getText("tools");
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -106,7 +123,7 @@ export default async function GuidePage({ params }: { params: { slug: string } }
           <div className="max-w-3xl mx-auto px-6 lg:px-12 pt-36 lg:pt-44 pb-14">
             <nav aria-label="Breadcrumb" className="mb-6">
               <Link href="/guides" className="inline-block py-2 section-label text-gold hover:text-gold_light transition-colors">
-                Guides
+                {text.guideBackLink}
               </Link>
             </nav>
             <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-ivory">
@@ -129,7 +146,10 @@ export default async function GuidePage({ params }: { params: { slug: string } }
         {isBustleGuide && (
           <section className="bg-ivory pt-14 lg:pt-20 px-6" aria-label="Try each bustle">
             <div className="max-w-6xl mx-auto">
-              <BustleExplorer copy={bustleStyles.map((style) => ({ ...style, slug: style.slug ?? "" }))} />
+              <BustleExplorer
+                copy={bustleStyles.map((style) => ({ ...style, slug: style.slug ?? "" }))}
+                text={toolText(text, "bustle")}
+              />
             </div>
           </section>
         )}
@@ -137,10 +157,10 @@ export default async function GuidePage({ params }: { params: { slug: string } }
         <section className="bg-ivory py-14 lg:py-20 px-6">
           <div className="max-w-3xl mx-auto">
             {checklist.length > 0 ? (
-              <FittingChecklist items={checklist} />
+              <FittingChecklist items={checklist} text={toolText(text, "bag")} />
             ) : guide.body && guide.body.length > 0 && (
               <div className="font-jost text-charcoal/75 text-base leading-[1.65] max-w-[65ch] space-y-5">
-                <PortableText value={guide.body as PortableTextBlock[]} />
+                <PortableText value={guide.body as PortableTextBlock[]} components={BODY_COMPONENTS} />
               </div>
             )}
 
@@ -151,6 +171,7 @@ export default async function GuidePage({ params }: { params: { slug: string } }
                   limitedMode={site.limitedMode}
                   bridalWaitlisted={site.limitedMode && site.waitlistServices.includes("bridal")}
                   reopensLabel={site.reopensLabel}
+                  text={toolText(text, "date")}
                 />
               </div>
             )}
@@ -197,25 +218,25 @@ export default async function GuidePage({ params }: { params: { slug: string } }
                       <h3 className="font-cormorant italic text-charcoal text-xl">{style.name}</h3>
                       {style.alsoCalled && (
                         <p className="font-jost text-charcoal/75 text-xs mt-1">
-                          Also called: {style.alsoCalled}
+                          {fill(text.bustleAlsoCalled, { names: style.alsoCalled })}
                         </p>
                       )}
                       <dl className="mt-3 space-y-1.5 font-jost text-sm text-charcoal/75 leading-[1.65]">
                         {style.typicalPoints && (
                           <div>
-                            <dt className="inline font-medium text-charcoal">Typical points: </dt>
+                            <dt className="inline font-medium text-charcoal">{text.bustleTypicalPoints}: </dt>
                             <dd className="inline">{style.typicalPoints}</dd>
                           </div>
                         )}
                         {style.bestFor && (
                           <div>
-                            <dt className="inline font-medium text-charcoal">Best for: </dt>
+                            <dt className="inline font-medium text-charcoal">{text.bustleBestFor}: </dt>
                             <dd className="inline">{style.bestFor}</dd>
                           </div>
                         )}
                         {style.fabricNotes && (
                           <div>
-                            <dt className="inline font-medium text-charcoal">Fabric: </dt>
+                            <dt className="inline font-medium text-charcoal">{text.bustleFabric}: </dt>
                             <dd className="inline">{style.fabricNotes}</dd>
                           </div>
                         )}
@@ -227,9 +248,9 @@ export default async function GuidePage({ params }: { params: { slug: string } }
             )}
 
             <p className="mt-14 pt-8 border-t border-blush font-jost text-charcoal/75 text-sm leading-[1.65]">
-              Questions this did not answer?{" "}
+              {text.guideQuestions}{" "}
               <Link href="/contact" className="text-gold_ink underline">
-                Send me a request
+                {text.guideQuestionsLink}
               </Link>
               .
             </p>
