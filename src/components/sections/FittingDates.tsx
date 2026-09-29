@@ -10,8 +10,8 @@ import {
   formatRange,
   icsFor,
   parseDateInput,
+  statusText,
   todayInPittsburgh,
-  type DateFit,
   type TimelineStep,
 } from "@/lib/bridalDates";
 
@@ -23,32 +23,6 @@ interface Props {
 }
 
 const STORAGE_KEY = "gm-wedding-date";
-
-function statusText(fit: DateFit, waitlisted: boolean, reopensLabel: string): string {
-  const range = formatRange(fit.firstFitting.from, fit.firstFitting.to);
-  switch (fit.kind) {
-    case "past":
-      return "That date has passed. Check the year?";
-    case "rush":
-      return "That's under eight weeks. Tell me anyway: I'll say honestly whether I can fit it in, and suggest someone if I can't.";
-    case "beforeReopen":
-      return `Your first fitting would fall before bridal reopens (${reopensLabel}). Send a request anyway and I'll tell you honestly whether I can fit it in, with a referral if I can't.`;
-    case "tight":
-      // Still months away, but the window opens before bridal does.
-      if (fit.weeksAway > 12) {
-        return `Your first fitting window opens right around when bridal reopens (${reopensLabel}), so it's worth joining the waitlist soon.`;
-      }
-      return "The first fitting is due now, so it's worth booking soon.";
-    case "good":
-      return waitlisted
-        ? `Good timing. Join the waitlist now and your first fitting lands around ${range}.`
-        : `Good timing. Book now and your first fitting lands around ${range}.`;
-    case "early":
-      return waitlisted
-        ? `Plenty of time. Join the waitlist whenever you're ready; fittings start around ${range}.`
-        : `Plenty of time. Book whenever you're ready; fittings start around ${range}.`;
-  }
-}
 
 function countdown(days: number): string {
   if (days === 0) return "Today";

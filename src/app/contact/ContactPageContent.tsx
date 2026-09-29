@@ -7,6 +7,7 @@ import SanityImage from "@/components/ui/SanityImage";
 import Accordion from "@/components/ui/Accordion";
 import { analytics } from "@/lib/analytics";
 import { preparePhoto } from "@/lib/compressImage";
+import { dateFit, parseDateInput, statusText } from "@/lib/bridalDates";
 import PhotoCheck from "@/components/contact/PhotoCheck";
 import type { PhotoCheckResult } from "@/lib/photoCheck";
 import {
@@ -254,6 +255,15 @@ export default function ContactPageContent({
   const siteWideWaitlist = !site.isAcceptingClients;
   const branchWaitlisted = branch === "bridal" && limitedMode && waitlistServices.includes("bridal");
   const isWaitlist = siteWideWaitlist || branchWaitlisted;
+
+  // An honest read on the wedding date as soon as it's entered, the same one
+  // the timing guide gives. A date before bridal reopens, or under eight
+  // weeks away, is still welcome: the button just asks rather than joins.
+  const weddingDate = branch === "bridal" ? parseDateInput(formData.eventDate) : null;
+  const fit = weddingDate
+    ? dateFit(weddingDate, { limitedMode, bridalWaitlisted: branchWaitlisted, reopensLabel })
+    : null;
+  const askAboutDate = fit?.kind === "rush" || fit?.kind === "beforeReopen";
 
   const CARDS: { id: Branch; title: string; blurb: string }[] = [
     {
@@ -565,7 +575,16 @@ export default function ContactPageContent({
 
                             {branch === "bridal" && (
                               <>
-                                <Field {...fieldProps("eventDate")} label="Wedding date" type="date" />
+                                <div>
+                                  <Field {...fieldProps("eventDate")} label="Wedding date" type="date" />
+                                  <p
+                                    className={`font-jost text-xs leading-[1.6] text-charcoal/75 ${fit ? "mt-2 border-l-2 border-gold pl-3" : "sr-only"}`}
+                                    aria-live="polite"
+                                    data-testid="date-note"
+                                  >
+                                    {fit ? statusText(fit, branchWaitlisted, reopensLabel) : ""}
+                                  </p>
+                                </div>
                                 <Field
                                   {...fieldProps("dressDesigner")}
                                   label="Dress designer, or where you bought it"
@@ -794,6 +813,8 @@ export default function ContactPageContent({
                               >
                                 {status === "submitting"
                                   ? "Sending"
+                                  : askAboutDate
+                                  ? "Ask about my date"
                                   : isWaitlist
                                   ? "Join the waitlist"
                                   : "Send my request"}
