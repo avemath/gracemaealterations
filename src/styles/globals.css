@@ -148,25 +148,27 @@
 }
 
 /* ── Scroll reveals ──────────────────────────────────────────────────────────
-   The hidden state is armed only when the inline head script has added .js to
-   <html>, so the server HTML and the no-JS experience are fully visible. */
-.js [data-reveal] {
+   The hidden state is armed only once RevealObserver is running and has shown
+   everything already on screen (it adds .reveal-armed to <html>). If the
+   scripts are slow, blocked or fail, nothing is ever hidden. */
+/* Hiding is instant (it only ever happens off screen); only the reveal animates. */
+.reveal-armed [data-reveal] {
   opacity: 0;
   transform: translateY(16px);
-  transition: opacity 600ms ease-out, transform 600ms ease-out;
-  transition-delay: var(--reveal-delay, 0ms);
 }
 
-.js [data-reveal].is-visible {
+.reveal-armed [data-reveal].is-visible {
   opacity: 1;
   transform: none;
+  transition: opacity 600ms ease-out, transform 600ms ease-out;
+  transition-delay: var(--reveal-delay, 0ms);
 }
 
 /* Same specificity as the rule above and declared after it, so reduced motion
    wins without !important. */
 @media (prefers-reduced-motion: reduce) {
-  .js [data-reveal],
-  .js [data-reveal].is-visible {
+  .reveal-armed [data-reveal],
+  .reveal-armed [data-reveal].is-visible {
     opacity: 1;
     transform: none;
     transition: none;
@@ -202,4 +204,58 @@
 ::-webkit-scrollbar-thumb {
   background: #C9A84C;
   border-radius: 3px;
+}
+
+/* ── Windows high contrast (forced colors) ──────────────────────────────────
+   Backgrounds are dropped in this mode, so a chip or card that shows it is
+   selected only by its fill looks identical either way. Outline the chosen
+   one instead. */
+@media (forced-colors: active) {
+  label:has(> input[type="radio"]:checked),
+  label:has(> input[type="checkbox"]:checked),
+  [aria-pressed="true"] {
+    outline: 3px solid Highlight;
+    outline-offset: 2px;
+  }
+}
+
+/* ── Sticky bars ─────────────────────────────────────────────────────────────
+   Keep whatever has keyboard focus (or is scrolled to) clear of the fixed
+   header and the phone's bottom bar. */
+@media (max-width: 1023px) {
+  html {
+    scroll-padding-top: 5rem;
+    scroll-padding-bottom: 7rem;
+  }
+}
+
+/* ── Printing (guides especially) ────────────────────────────────────────────
+   Paper gets the words: no header, footer or floating buttons, dark bands
+   print as plain ink on white, and nothing waits on a scroll reveal. Pages
+   with their own print styles (the care card) layer on top of this. */
+@media print {
+  header[role="banner"],
+  footer[role="contentinfo"],
+  .fixed,
+  [data-no-print] {
+    display: none !important;
+  }
+  body,
+  .bg-near_black,
+  .bg-charcoal,
+  .bg-blush {
+    background: #fff !important;
+  }
+  .bg-near_black *,
+  .bg-charcoal * {
+    color: #1c1c1c !important;
+  }
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  section {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
 }

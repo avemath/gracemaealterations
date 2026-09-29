@@ -2,9 +2,9 @@ import { test, expect, type Page } from "@playwright/test";
 import { hydrated } from "./helpers";
 
 /**
- * Reveals are CSS driven: the inline head script adds .js to <html>, which
- * arms [data-reveal] at opacity 0, and RevealObserver adds .is-visible as each
- * element scrolls in.
+ * Reveals are CSS driven: RevealObserver shows what is already on screen, then
+ * adds .reveal-armed to <html>, which arms [data-reveal] at opacity 0, and adds
+ * .is-visible as each element scrolls in.
  */
 
 /** The last [data-reveal] on the page is always well below the fold. */
@@ -58,7 +58,7 @@ test.describe("scroll reveals", () => {
     await page.goto("/portfolio");
     await hydrated(page, '[role="button"][aria-label^="View "]');
 
-    const filters = page.getByRole("tab");
+    const filters = page.getByRole("group", { name: "Filter by garment type" }).getByRole("button");
     test.skip((await filters.count()) < 2, "no portfolio filters rendered");
     await filters.nth(1).click();
 
@@ -118,4 +118,13 @@ test.describe("without JavaScript", () => {
     );
     expect(hidden).toBe(0);
   });
+});
+
+test("with the scripts blocked, nothing is left hidden", async ({ page }) => {
+  await page.route("**/_next/static/chunks/**", (route) => route.abort());
+  await page.goto("/services");
+  const hidden = await page.evaluate(() =>
+    Array.from(document.querySelectorAll("[data-reveal]")).filter((el) => getComputedStyle(el).opacity === "0").length
+  );
+  expect(hidden).toBe(0);
 });

@@ -49,7 +49,7 @@ export const SITE = {
 export const TRUST_STATS = [
   { value: "B.S. Fashion Design", label: "Indiana University of PA" },
   { value: "500+", label: "Garments Altered" },
-  { value: "Pittsburgh, PA", label: "Proudly Local" },
+  { value: "By appointment", label: "One client at a time" },
 ];
 
 // ── BIO / ABOUT ───────────────────────────────────────────────
@@ -100,7 +100,7 @@ export const SERVICES = [
     description:
       "Your wedding dress is the most important garment you'll ever wear, and it deserves to fit as if it were made for you alone. With extensive bridal alteration experience including time at David's Bridal, I understand exactly what it takes to transform an off-the-rack gown into something that feels completely custom. Every fitting is unhurried, every stitch deliberate.",
     services: [
-      "Hem adjustments (standard, cathedral, horsehair)",
+      "Hem adjustments (plain, lace-edged, horsehair)",
       "Bustle addition (American, French, Austrian)",
       "Taking in or letting out (bodice, waist, hips)",
       "Strap adjustments and additions",
@@ -109,8 +109,8 @@ export const SERVICES = [
       "Veil customization and attachment",
       "Gown and train preservation prep",
     ],
-    priceRange: "$75 – $450+",
-    priceNote: "depending on complexity and fabric",
+    priceRange: "$300 – $900+",
+    priceNote: "for most gowns, depending on fabric, layers and detail",
     freeConsult: "All bridal work includes a complimentary fitting consultation.",
     icon: "bridal",
   },
@@ -130,7 +130,7 @@ export const SERVICES = [
       "Sleeve shortening and tapering",
       "Side seam adjustments",
     ],
-    priceRange: "$20 – $120",
+    priceRange: "$25 – $175",
     priceNote: "most items quoted at consultation",
     icon: "tailoring",
   },
@@ -301,7 +301,7 @@ export const FAQ = [
   {
     question: "Do you offer rush services?",
     answer:
-      "Rush services are available on a case-by-case basis depending on my current schedule and the complexity of the work. Rush jobs (under 2 weeks for bridal, under 1 week for tailoring) do carry an additional fee. Please contact me as early as possible if you have a tight deadline. The sooner you reach out, the more options we have.",
+      "Sometimes. It depends on my schedule and on the work, so put your date in your first message and I'll tell you honestly whether I can fit it in. Rush work carries an extra fee, which I quote up front. If I can't take it, I'll suggest someone who can.",
   },
   {
     question: "What should I bring to my first fitting?",
@@ -337,7 +337,7 @@ export const HOME_TEXT = {
   testimonialsLabel: "Kind Words",
   testimonialsHeading: "What clients say",
   processLabel: "No Surprises",
-  processHeading: "What to Expect",
+  processHeading: "What to expect",
   processCTA: "Ready to begin?",
   ctaHeadline: "Your dress deserves to fit perfectly.",
   ctaSubhead: "Book a consultation in Pittsburgh today.",
@@ -348,7 +348,7 @@ export const PROCESS_STEPS: { title: string; body: string; note?: string }[] = [
   { title: "Reach Out",        body: "Fill out the contact form with a few details about your garment. I read every message myself and reply as soon as I can." },
   { title: "Free Consultation", body: "We look at the garment together. I assess what needs to be done and give you an honest, itemized quote. No commitment required." },
   { title: "First Fitting",    body: "I pin and mark every adjustment directly on you, so we both see exactly what changes before a single seam is cut." },
-  { title: "The Work",         body: "I complete your alterations with full attention. For complex bridal gowns this may involve multiple stages of careful work." },
+  { title: "The alterations",   body: "I complete your alterations with full attention. For complex bridal gowns this may involve multiple stages of careful work." },
   { title: "Progress Check",   body: "For intricate bridal alterations, we do a mid-point fitting to verify fit and make fine adjustments before final touches.", note: "Bridal" },
   { title: "Pickup",           body: "Your garment is finished, pressed, and ready. We do a final try-on together, and we don't say goodbye until it's perfect." },
 ];
@@ -370,7 +370,7 @@ export const SERVICES_TEXT = {
   heroLabel: "What I Offer",
   heroHeading: "Services",
   pricingLabel: "Transparency First",
-  pricingHeading: "How Pricing Works",
+  pricingHeading: "How pricing works",
   ctaHeadline: "Ready to get started?",
   ctaSubhead: "Book your consultation. No commitment, just a conversation.",
   ctaButton: "Book a Consultation",
@@ -379,7 +379,7 @@ export const SERVICES_TEXT = {
 export const PRICING_CARDS: { title: string; body: string }[] = [
   {
     title: "Consultation First",
-    body: "Every project starts with a consultation so I can assess the garment, understand your needs, and give you an accurate quote, not a ballpark.",
+    body: "Every project starts with a consultation so I can assess the garment, understand your needs, and give you a real quote for your garment.",
   },
   {
     title: "No Surprise Charges",
@@ -394,7 +394,7 @@ export const PRICING_CARDS: { title: string; body: string }[] = [
 export const PORTFOLIO_TEXT = {
   heroLabel: "Selected Work",
   heroHeading: "The Work",
-  heroSubtext: "Each garment is a collaboration between craft and vision.",
+  heroSubtext: "Real work from my studio: gowns, bridal parties, tailoring and repairs.",
   featuredSectionLabel: "Featured Transformation",
   featuredHeading: "Drag to see the difference.",
   featuredBody:
@@ -406,7 +406,7 @@ export const PORTFOLIO_TEXT = {
 
 export const CONTACT_TEXT = {
   heroLabel: "Get in Touch",
-  heroHeading: "Let's Talk About Your Garment",
+  heroHeading: "Let's talk about your garment",
   waitlistBannerBold: "Bridal fittings are on a waitlist right now.",
   waitlistBannerText:
     "Fill out the form below to join my waitlist. I'll reach out as soon as a spot opens up.",

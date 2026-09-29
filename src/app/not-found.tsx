@@ -17,7 +17,8 @@ const NAV_LINKS = [
 ];
 
 export default async function NotFound() {
-  const site = await getMergedSite();
+  // A 404 must still render if Sanity is having a moment.
+  const site = await getMergedSite().catch(() => ({ limitedMode: false, reopensLabel: "" }));
   const { primary } = ctas(site);
   return (
     <section

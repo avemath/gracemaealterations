@@ -19,13 +19,13 @@ export default function AvailabilityPill({
   bookingNote,
   className = "",
 }: Props) {
-  // One line per lane on phones, so a wrap never strands the separator.
+  // One line per lane at every width: on one line, desktop wrapped
+  // "waitlist open" onto a line of its own.
   const label = limitedMode ? (
     <>
-      <span className="block sm:inline">Tailoring &amp; repairs: booking now</span>
+      <span className="block">Tailoring &amp; repairs: booking now</span>
       <span className="sr-only">. </span>
-      <span className="hidden sm:inline" aria-hidden="true"> · </span>
-      <span className="block sm:inline">Bridal: {reopensLabel} waitlist open</span>
+      <span className="block">Bridal: {reopensLabel} waitlist open</span>
     </>
   ) : (
     bookingNote
