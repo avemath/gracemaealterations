@@ -26,6 +26,8 @@ jobs:
       # so tests/photo-check.spec.ts can drive it; that spec intercepts
       # /api/photo-check, so no model is ever called from CI.
       ANTHROPIC_API_KEY: ci-placeholder-not-a-key
+      # A throwaway value so the signed-webhook test runs; the real one lives in Vercel.
+      SANITY_REVALIDATE_SECRET: ci-only-webhook-secret
     steps:
       - uses: actions/checkout@v4
 
