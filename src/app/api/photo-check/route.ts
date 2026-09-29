@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { PHOTO_CHECK_SCHEMA, sanitizePhotoCheck } from "@/lib/photoCheck";
 import { BRIDAL_ALTERATIONS } from "@/lib/contactOptions";
+import { getText, textDefaults } from "@/lib/text";
 
 // Vision with a short, low-effort read usually lands in 5 to 15 seconds.
 export const maxDuration = 60;
@@ -96,11 +97,13 @@ export async function POST(req: NextRequest) {
   if (!allowedOrigin(req.headers.get("origin"))) {
     return NextResponse.json({ error: "Not allowed." }, { status: 403 });
   }
+  // What the customer reads when something goes wrong (Studio: Contact form & emails).
+  const t = await getText("forms").catch(() => textDefaults("forms"));
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? req.headers.get("x-real-ip") ?? "unknown";
   if (rateLimited(ip)) {
     return NextResponse.json(
-      { error: "That's a lot of checks for one hour. Send the request as it is, and Grace will look at the photos herself." },
+      { error: t.pcErrHourly },
       { status: 429 }
     );
   }
@@ -118,7 +121,7 @@ export async function POST(req: NextRequest) {
     .filter((p): p is NonNullable<typeof p> => p !== null);
   if (photos.length === 0) {
     return NextResponse.json(
-      { error: "Those photos can't be checked. JPG or PNG photos work best." },
+      { error: t.pcErrPhotos },
       { status: 400 }
     );
   }
@@ -161,30 +164,30 @@ export async function POST(req: NextRequest) {
 
     if (response.stop_reason === "refusal") {
       return NextResponse.json(
-        { error: "The check couldn't read these photos. Send them as they are and Grace will look herself." },
+        { error: t.pcErrDeclined },
         { status: 422 }
       );
     }
     const text = response.content.find((b) => b.type === "text");
     if (response.stop_reason === "max_tokens" || !text || text.type !== "text") {
-      return NextResponse.json({ error: "The check didn't finish. Please try again." }, { status: 502 });
+      return NextResponse.json({ error: t.pcErrUnfinished }, { status: 502 });
     }
 
     const result = sanitizePhotoCheck(JSON.parse(text.text));
     if (!result) {
-      return NextResponse.json({ error: "The check didn't finish. Please try again." }, { status: 502 });
+      return NextResponse.json({ error: t.pcErrUnfinished }, { status: 502 });
     }
     if (serviceType !== "bridal") result.checklist = [];
     return NextResponse.json({ result });
   } catch (error) {
     if (error instanceof Anthropic.RateLimitError) {
-      return NextResponse.json({ error: "The check is busy right now. Please try again in a minute." }, { status: 503 });
+      return NextResponse.json({ error: t.pcErrBusy }, { status: 503 });
     }
     if (error instanceof Anthropic.APIError) {
       console.error("photo-check: API error", error.status, error.message);
     } else {
       console.error("photo-check: failed", error);
     }
-    return NextResponse.json({ error: "The check isn't available right now. Your request will still send." }, { status: 502 });
+    return NextResponse.json({ error: t.pcUnavailable }, { status: 502 });
   }
 }
