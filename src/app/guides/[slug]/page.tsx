@@ -6,11 +6,13 @@ import {
   getGuide,
   getPublishedGuides,
   getPublishedBustleStyles,
+  getMergedSite,
 } from "@/lib/sanity.queries";
 import { pageMetadata, SITE_URL, FALLBACK_OG_IMAGE, jsonLdHtml } from "@/lib/metadata";
 import SanityImage from "@/components/ui/SanityImage";
 import BustleExplorer from "@/components/sections/BustleExplorer";
 import FittingChecklist, { type ChecklistItem } from "@/components/sections/FittingChecklist";
+import FittingDates from "@/components/sections/FittingDates";
 
 export const revalidate = 60;
 
@@ -61,6 +63,10 @@ export default async function GuidePage({ params }: { params: { slug: string } }
     guide.slug === "what-to-bring-to-your-wedding-dress-fitting" && guide.body?.length
       ? checklistItems(guide.body)
       : [];
+
+  // The timeline guide gets a "Your dates" calculator above its steps.
+  const isTimelineGuide = guide.slug === "wedding-dress-alterations-timeline";
+  const site = isTimelineGuide ? await getMergedSite() : null;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -135,6 +141,17 @@ export default async function GuidePage({ params }: { params: { slug: string } }
             ) : guide.body && guide.body.length > 0 && (
               <div className="font-jost text-charcoal/75 text-base leading-[1.65] max-w-[65ch] space-y-5">
                 <PortableText value={guide.body as PortableTextBlock[]} />
+              </div>
+            )}
+
+            {site && (
+              <div className="mt-14">
+                <FittingDates
+                  steps={guide.timelineSteps}
+                  limitedMode={site.limitedMode}
+                  bridalWaitlisted={site.limitedMode && site.waitlistServices.includes("bridal")}
+                  reopensLabel={site.reopensLabel}
+                />
               </div>
             )}
 
