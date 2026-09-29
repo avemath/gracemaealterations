@@ -223,17 +223,15 @@ export default function HomePageContent({ data, siteText: t }: { data: HomePageD
         </div>
 
 
-        {/* Scroll indicator, desktop screens tall enough to leave room under
-            the buttons. Sits under the copy column: centred on the page it
-            floated alone between the words and the photo. */}
-        <div className="absolute bottom-8 inset-x-0 z-10 hidden lg:[@media(min-height:840px)]:block pointer-events-none" aria-hidden="true">
-          <div className="max-w-7xl mx-auto px-12">
-            <div className="inline-flex flex-col items-center gap-2">
-              <span className="font-jost text-[0.6rem] tracking-[0.25em] uppercase text-charcoal/75">{t.homeScroll}</span>
-              {/* CSS keyframes rather than a permanent Framer rAF loop. */}
-              <span className="block w-px h-8 bg-gold/50 animate-scroll-hint" />
-            </div>
-          </div>
+        {/* Scroll indicator, desktop only. Centred on the page, where a scroll
+            cue is expected. */}
+        <div
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden lg:flex flex-col items-center gap-2 pointer-events-none"
+          aria-hidden="true"
+        >
+          <span className="font-jost text-[0.6rem] tracking-[0.25em] uppercase text-charcoal/75">{t.homeScroll}</span>
+          {/* CSS keyframes rather than a permanent Framer rAF loop. */}
+          <span className="block w-px h-8 bg-gold/50 animate-scroll-hint" />
         </div>
       </section>
 
