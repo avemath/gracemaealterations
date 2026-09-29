@@ -12,6 +12,7 @@ import {
   parseDateInput,
   statusText,
   todayInPittsburgh,
+  type DateMessages,
   type TimelineStep,
 } from "@/lib/bridalDates";
 
@@ -20,6 +21,8 @@ interface Props {
   limitedMode: boolean;
   bridalWaitlisted: boolean;
   reopensLabel: string;
+  /** Wording from the Studio (Guides & tools). */
+  messages: DateMessages;
 }
 
 const STORAGE_KEY = "gm-wedding-date";
@@ -35,7 +38,7 @@ function countdown(days: number): string {
  * with an honest read on whether it fits and a calendar file to keep.
  * The date is remembered on this device only, as a convenience.
  */
-export default function FittingDates({ steps, limitedMode, bridalWaitlisted, reopensLabel }: Props) {
+export default function FittingDates({ steps, limitedMode, bridalWaitlisted, reopensLabel, messages }: Props) {
   const inputId = useId();
   const hintId = useId();
   const [value, setValue] = useState("");
@@ -131,7 +134,7 @@ export default function FittingDates({ steps, limitedMode, bridalWaitlisted, reo
               </p>
             )}
             <p className="font-cormorant italic text-charcoal text-xl leading-snug max-w-[55ch]">
-              {statusText(result.fit, waitlisted, reopensLabel)}
+              {statusText(result.fit, waitlisted, reopensLabel, messages)}
             </p>
           </div>
         )}

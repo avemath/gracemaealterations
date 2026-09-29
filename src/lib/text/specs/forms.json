@@ -1,0 +1,7 @@
+{
+  "id": "formsText",
+  "title": "Contact form & emails",
+  "description": "Everything a client reads while sending a request, and the emails they get back. Leave a field empty to use the original wording. Words in {curly brackets} are filled in automatically, so keep them as they are.",
+  "groups": [],
+  "fields": {}
+}

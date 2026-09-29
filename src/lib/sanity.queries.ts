@@ -226,6 +226,12 @@ async function safeFetch<T>(query: string): Promise<T | null> {
   throw lastError;
 }
 
+/** A singleton document by id, published version only. */
+export async function fetchSingleton<T>(id: string): Promise<T | null> {
+  if (!/^[A-Za-z][\w-]*$/.test(id)) return null;
+  return safeFetch<T>(`*[_id == "${id}"][0]`);
+}
+
 // ── QUERIES ───────────────────────────────────────────────────
 
 export async function getSiteSettings(): Promise<SanitySiteSettings | null> {

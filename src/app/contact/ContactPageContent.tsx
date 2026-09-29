@@ -7,7 +7,7 @@ import SanityImage from "@/components/ui/SanityImage";
 import Accordion from "@/components/ui/Accordion";
 import { analytics } from "@/lib/analytics";
 import { preparePhoto } from "@/lib/compressImage";
-import { dateFit, parseDateInput, statusText } from "@/lib/bridalDates";
+import { dateFit, parseDateInput, statusText, type DateMessages } from "@/lib/bridalDates";
 import PhotoCheck from "@/components/contact/PhotoCheck";
 import type { PhotoCheckResult } from "@/lib/photoCheck";
 import {
@@ -209,6 +209,8 @@ interface Props {
   text: ContactText;
   /** True when the AI photo check is configured (ANTHROPIC_API_KEY is set). */
   photoCheckEnabled?: boolean;
+  /** Wording for the note under the wedding date (Studio: Guides & tools). */
+  dateMessages: DateMessages;
 }
 
 // ── Component ──────────────────────────────────────────────────────────────
@@ -221,6 +223,7 @@ export default function ContactPageContent({
   hasPolicies,
   text,
   photoCheckEnabled = false,
+  dateMessages,
 }: Props) {
   const { limitedMode, waitlistServices, reopensLabel, limitedNote } = availability;
 
@@ -582,7 +585,7 @@ export default function ContactPageContent({
                                     aria-live="polite"
                                     data-testid="date-note"
                                   >
-                                    {fit ? statusText(fit, branchWaitlisted, reopensLabel) : ""}
+                                    {fit ? statusText(fit, branchWaitlisted, reopensLabel, dateMessages) : ""}
                                   </p>
                                 </div>
                                 <Field
