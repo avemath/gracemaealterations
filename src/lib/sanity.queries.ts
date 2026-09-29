@@ -165,6 +165,11 @@ export interface SanityService {
   freeConsult?: string;
   cardImage?: SanityImage | null;
   typicalTimeline?: string | null;
+  /**
+   * The guides Grace picked for this service, published ones only. Null when
+   * she hasn't picked any, so the services page uses its usual list.
+   */
+  guides?: { title: string; slug: string }[] | null;
 }
 
 export interface SanityPortfolioItem {
@@ -302,7 +307,11 @@ export async function getServices(): Promise<SanityService[] | null> {
     shortDescription, description, services,
     priceRange, priceNote, freeConsult,
     typicalTimeline,
-    cardImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop }
+    cardImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
+    "guides": select(
+      count(guides) > 0 => (guides[]->)[published == true && defined(slug.current)]{ title, "slug": slug.current },
+      null
+    )
   }`);
 }
 
@@ -680,6 +689,7 @@ export async function getMergedServices() {
     freeConsult: svc.freeConsult,
     cardImage: null,
     typicalTimeline: null,
+    guides: null,
   }));
 }
 

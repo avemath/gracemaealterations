@@ -5,9 +5,11 @@ import { useFocusTrap } from "@/lib/useFocusTrap";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import SanityImage from "@/components/ui/SanityImage";
-import BeforeAfterSlider from "@/components/ui/BeforeAfterSlider";
+import BeforeAfterSliderView from "@/components/ui/BeforeAfterSliderView";
 import CTABanner from "@/components/sections/CTABanner";
 import type { SanityPortfolioItem } from "@/lib/sanity.queries";
+import type { TextFor } from "@/lib/cta";
+import { fill } from "@/lib/text/fill";
 
 interface PortfolioPageDataProps {
   heroLabel: string;
@@ -33,11 +35,14 @@ const TYPE_RANK = (type?: string) => {
   return rank === -1 ? TYPE_ORDER.length : rank;
 };
 
-const FILTERS: { label: string; value: FilterType }[] = [
-  { label: "All Work", value: "all" },
-  { label: "Bridal", value: "bridal" },
-  { label: "Tailoring", value: "tailoring" },
-  { label: "Custom", value: "custom" },
+type PortfolioText = TextFor<"portfolio" | "slider" | "banner">;
+
+/** Each filter button's words live in the Studio under this key. */
+const FILTERS: { key: keyof PortfolioText; value: FilterType }[] = [
+  { key: "portfolioFilterAll", value: "all" },
+  { key: "portfolioFilterBridal", value: "bridal" },
+  { key: "portfolioFilterTailoring", value: "tailoring" },
+  { key: "portfolioFilterCustom", value: "custom" },
 ];
 
 const CloseIcon = () => (
@@ -60,9 +65,11 @@ interface Props {
   items: SanityPortfolioItem[];
   portfolioPageData: PortfolioPageDataProps;
   availability: { limitedMode: boolean; reopensLabel: string };
+  /** The Studio's site-wide words for the filters, labels, slider and banner. */
+  text: PortfolioText;
 }
 
-export default function PortfolioPageContent({ items, portfolioPageData, availability }: Props) {
+export default function PortfolioPageContent({ items, portfolioPageData, availability, text }: Props) {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const filteredRef = useRef<SanityPortfolioItem[]>(items);
@@ -105,7 +112,7 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
       <section
         className="relative flex items-end overflow-hidden bg-near_black"
         style={{ minHeight: "42vh" }}
-        aria-label="Portfolio hero"
+        aria-label={text.portfolioHeroRegion}
       >
         {/* Subtle texture gradient so the dark bg has depth */}
         <div className="absolute inset-0 bg-gradient-to-br from-near_black via-near_black to-charcoal/60 pointer-events-none" aria-hidden="true" />
@@ -123,9 +130,9 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
       </section>
 
       {/* ── FILTER PILLS ───────────────────────────────────────── */}
-      <section className="bg-ivory px-6 py-6 border-b border-blush" aria-label="Filter portfolio by type">
+      <section className="bg-ivory px-6 py-6 border-b border-blush" aria-label={text.portfolioFilterRegion}>
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filter by garment type">
+          <div className="flex flex-wrap items-center gap-2" role="group" aria-label={text.portfolioFilterGroup}>
             {FILTERS.map((f) => (
               <button
                 key={f.value}
@@ -138,28 +145,29 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
                     : "border border-blush text-charcoal/75 hover:border-gold/40 hover:text-charcoal"
                 }`}
               >
-                {f.label}
+                {text[f.key]}
               </button>
             ))}
             <p className="sr-only" aria-live="polite">
-              {filtered.length} {filtered.length === 1 ? "piece" : "pieces"} shown
+              {fill(filtered.length === 1 ? text.portfolioCountOne : text.portfolioCountMany, { count: filtered.length })}
             </p>
           </div>
         </div>
       </section>
 
       {/* ── FEATURED TRANSFORMATION (before/after slider) ─────── */}
-      <section className="bg-ivory px-6 pt-12 pb-0" aria-label="Featured transformation">
+      <section className="bg-ivory px-6 pt-12 pb-0" aria-label={text.portfolioFeaturedRegion}>
         <div className="max-w-7xl mx-auto">
           <div data-reveal
               className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center"
             >
             {/* Slider */}
-            <BeforeAfterSlider
+            <BeforeAfterSliderView
               beforeImage={portfolioPageData.beforeImage}
               afterImage={portfolioPageData.afterImage}
               label={portfolioPageData.featuredLabel ?? undefined}
               description={portfolioPageData.featuredDescription ?? undefined}
+              text={text}
             />
 
             {/* Text callout */}
@@ -181,7 +189,7 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
       </section>
 
       {/* ── MASONRY GRID ───────────────────────────────────────── */}
-      <section className="bg-ivory px-6 py-8 lg:py-12" aria-label="Portfolio gallery">
+      <section className="bg-ivory px-6 py-8 lg:py-12" aria-label={text.portfolioGalleryRegion}>
         <div className="max-w-7xl mx-auto">
           <AnimatePresence mode="wait">
             <div data-reveal
@@ -213,7 +221,7 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
                       e.preventDefault();
                       setLightboxIndex(i);
                     }}
-                    aria-label={`View ${item.label}`}
+                    aria-label={fill(text.portfolioView, { item: item.label })}
                   >
                     <SanityImage
                       image={item.image}
@@ -245,7 +253,7 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
                       href={`/portfolio/${item.slug}`}
                       className="absolute bottom-3 right-3 z-10 font-jost text-[10px] tracking-[0.16em] uppercase text-ivory bg-near_black/70 px-2.5 py-1.5 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100 transition-opacity duration-300 touch:opacity-100 touch:top-3 touch:bottom-auto touch:py-2.5"
                     >
-                      Read the case study
+                      {text.portfolioCaseStudy}
                       <span className="sr-only">: {item.label}</span>
                     </Link>
                   )}
@@ -256,7 +264,7 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
 
           {filtered.length === 0 && (
             <div className="text-center py-24">
-              <p className="font-cormorant italic text-charcoal/75 text-2xl">No items in this category yet.</p>
+              <p className="font-cormorant italic text-charcoal/75 text-2xl">{text.portfolioEmpty}</p>
             </div>
           )}
         </div>
@@ -275,14 +283,14 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
               onClick={closeLightbox}
               role="dialog"
               aria-modal="true"
-              aria-label={`Lightbox: ${lightboxItem.label}`}
+              aria-label={fill(text.portfolioLightbox, { item: lightboxItem.label })}
             >
             {/* Close, first in tab order */}
             <button
               type="button"
               className="absolute top-5 right-5 w-11 h-11 flex items-center justify-center text-ivory hover:text-gold transition-colors z-10"
               onClick={closeLightbox}
-              aria-label="Close lightbox"
+              aria-label={text.portfolioClose}
             >
               <CloseIcon />
             </button>
@@ -293,7 +301,7 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
               type="button"
               className="absolute left-4 lg:left-6 w-11 h-11 flex items-center justify-center text-ivory hover:text-gold transition-colors z-10 aria-disabled:opacity-25 aria-disabled:hover:text-ivory aria-disabled:cursor-default"
               onClick={(e) => { e.stopPropagation(); if (lightboxIndex > 0) setLightboxIndex(lightboxIndex - 1); }}
-              aria-label="Previous image"
+              aria-label={text.portfolioPrevious}
               aria-disabled={lightboxIndex === 0}
             >
               <ChevronLeft />
@@ -303,7 +311,7 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
               type="button"
               className="absolute right-4 lg:right-6 w-11 h-11 flex items-center justify-center text-ivory hover:text-gold transition-colors z-10 aria-disabled:opacity-25 aria-disabled:hover:text-ivory aria-disabled:cursor-default"
               onClick={(e) => { e.stopPropagation(); if (lightboxIndex < filtered.length - 1) setLightboxIndex(lightboxIndex + 1); }}
-              aria-label="Next image"
+              aria-label={text.portfolioNext}
               aria-disabled={lightboxIndex === filtered.length - 1}
             >
               <ChevronRight />
@@ -352,6 +360,7 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
         buttonLabel={portfolioPageData.ctaButton}
         limitedMode={availability.limitedMode}
         reopensLabel={availability.reopensLabel}
+        text={text}
       />
     </>
   );

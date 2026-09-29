@@ -2,24 +2,28 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ctas } from "@/lib/cta";
 import { getMergedSite } from "@/lib/sanity.queries";
+import { getText } from "@/lib/text";
 
 export const metadata: Metadata = {
   title: "Page Not Found",
   robots: { index: false, follow: false },
 };
 
-const NAV_LINKS = [
-  { label: "Home",      href: "/" },
-  { label: "Services",  href: "/services" },
-  { label: "Portfolio", href: "/portfolio" },
-  { label: "About",     href: "/about" },
-  { label: "Contact",   href: "/contact" },
-];
-
 export default async function NotFound() {
-  // A 404 must still render if Sanity is having a moment.
-  const site = await getMergedSite().catch(() => ({ limitedMode: false, reopensLabel: "" }));
-  const { primary } = ctas(site);
+  // A 404 must still render if Sanity is having a moment. (getText already
+  // falls back to the original words on its own.)
+  const [site, text] = await Promise.all([
+    getMergedSite().catch(() => ({ limitedMode: false, reopensLabel: "" })),
+    getText("site"),
+  ]);
+  const { primary } = ctas(site, text);
+  const NAV_LINKS = [
+    { label: text.notFoundHome, href: "/" },
+    { label: text.navServices, href: "/services" },
+    { label: text.navPortfolio, href: "/portfolio" },
+    { label: text.navAbout, href: "/about" },
+    { label: text.navContact, href: "/contact" },
+  ];
   return (
     <section
       className="bg-ivory min-h-[80vh] flex flex-col items-center justify-center px-6 py-24 text-center"
@@ -40,16 +44,16 @@ export default async function NotFound() {
         id="not-found-heading"
         className="font-cormorant italic text-charcoal text-3xl lg:text-4xl mb-4"
       >
-        This page has come undone.
+        {text.notFoundHeading}
       </h1>
 
       <p className="font-jost text-charcoal/75 text-sm leading-relaxed max-w-xs mb-12">
-        The link may have moved or no longer exists. Let&rsquo;s get you back to the right place.
+        {text.notFoundBody}
       </p>
 
       <nav
         className="flex flex-wrap gap-x-8 gap-y-3 justify-center mb-12"
-        aria-label="Recovery navigation"
+        aria-label={text.notFoundNav}
       >
         {NAV_LINKS.map((link) => (
           <Link

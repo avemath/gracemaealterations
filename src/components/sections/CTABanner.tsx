@@ -1,31 +1,36 @@
 import Button from "@/components/ui/Button";
-import { reopenYear } from "@/lib/cta";
+import { reopenYear, type TextFor } from "@/lib/cta";
+import { fill } from "@/lib/text/fill";
 
 interface CTABannerProps {
-  headline?: string;
-  subhead?: string;
-  buttonLabel?: string;
+  /** Every page passes its own wording from its Studio document. */
+  headline: string;
+  subhead: string;
+  buttonLabel: string;
   buttonHref?: string;
   /** In limited mode the banner speaks to next year's brides instead. */
   limitedMode?: boolean;
   reopensLabel?: string;
+  /** The Studio's words for that limited mode version. */
+  text: TextFor<"banner">;
 }
 
 export default function CTABanner({
-  headline = "Your dress deserves to fit perfectly.",
-  subhead = "Book a consultation in Pittsburgh today.",
-  buttonLabel = "Get in Touch",
+  headline,
+  subhead,
+  buttonLabel,
   buttonHref = "/contact",
   limitedMode = false,
   reopensLabel = "",
+  text,
 }: CTABannerProps) {
   const year = reopenYear(reopensLabel);
 
   const copy = limitedMode
     ? {
-        headline: year ? `Getting married in ${year}?` : "Getting married after bridal reopens?",
-        subhead: `Bridal fittings reopen ${reopensLabel}. Waitlist brides get first choice of fitting dates, in the order they joined.`,
-        buttonLabel: "Save my place",
+        headline: year ? fill(text.bannerHeadlineYear, { year }) : text.bannerHeadline,
+        subhead: fill(text.bannerSubhead, { reopens: reopensLabel }),
+        buttonLabel: text.bannerButton,
         buttonHref: "/contact?service=bridal",
       }
     : { headline, subhead, buttonLabel, buttonHref };
