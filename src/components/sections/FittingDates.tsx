@@ -12,25 +12,32 @@ import {
   parseDateInput,
   statusText,
   todayInPittsburgh,
-  type DateMessages,
   type TimelineStep,
 } from "@/lib/bridalDates";
+import { fill } from "@/lib/text/fill";
+import type { Text } from "@/lib/text";
+
+/**
+ * The calculator's wording from the Studio (Guides & tools): the date
+ * messages it shares with the contact form, and its own "dates" fields.
+ */
+export type DatesText = Pick<Text<"tools">, Extract<keyof Text<"tools">, `date${string}`>>;
 
 interface Props {
   steps?: TimelineStep[] | null;
   limitedMode: boolean;
   bridalWaitlisted: boolean;
   reopensLabel: string;
-  /** Wording from the Studio (Guides & tools). */
-  messages: DateMessages;
+  text: DatesText;
 }
 
 const STORAGE_KEY = "gm-wedding-date";
 
-function countdown(days: number): string {
-  if (days === 0) return "Today";
-  if (days < 14) return `${days} day${days === 1 ? "" : "s"} to go`;
-  return `${Math.floor(days / 7)} weeks to go`;
+function countdown(days: number, text: DatesText): string {
+  if (days === 0) return text.datesCountdownToday;
+  if (days === 1) return text.datesCountdownOneDay;
+  if (days < 14) return fill(text.datesCountdownDays, { days });
+  return fill(text.datesCountdownWeeks, { weeks: Math.floor(days / 7) });
 }
 
 /**
@@ -38,7 +45,7 @@ function countdown(days: number): string {
  * with an honest read on whether it fits and a calendar file to keep.
  * The date is remembered on this device only, as a convenience.
  */
-export default function FittingDates({ steps, limitedMode, bridalWaitlisted, reopensLabel, messages }: Props) {
+export default function FittingDates({ steps, limitedMode, bridalWaitlisted, reopensLabel, text }: Props) {
   const inputId = useId();
   const hintId = useId();
   const [value, setValue] = useState("");
@@ -80,10 +87,10 @@ export default function FittingDates({ steps, limitedMode, bridalWaitlisted, reo
   const waitlisted = limitedMode && bridalWaitlisted;
   const cta =
     waitlisted && result && result.fit.kind !== "rush" && result.fit.kind !== "beforeReopen"
-      ? "Join the bridal waitlist"
+      ? text.datesCtaWaitlist
       : waitlisted
-        ? "Ask about my date"
-        : "Request a fitting";
+        ? text.datesCtaAsk
+        : text.datesCtaBook;
 
   const download = () => {
     if (!result) return;
@@ -101,17 +108,17 @@ export default function FittingDates({ steps, limitedMode, bridalWaitlisted, reo
   return (
     <div className="border border-blush bg-white/50" data-testid="fitting-dates">
       <div className="px-5 sm:px-7 pt-6 pb-6 border-b border-blush">
-        <p className="font-jost font-medium text-gold_ink text-xs tracking-[0.22em] uppercase">Your dates</p>
+        <p className="font-jost font-medium text-gold_ink text-xs tracking-[0.22em] uppercase">{text.datesLabel}</p>
         <h2 className="font-cormorant italic text-charcoal text-2xl sm:text-[1.75rem] leading-snug mt-2">
-          Count it back from your wedding
+          {text.datesHeading}
         </h2>
         <p id={hintId} className="font-jost text-charcoal/75 text-sm leading-[1.65] mt-1 max-w-[55ch]">
-          Pop in your date and I&apos;ll turn the timeline below into real dates you can plan around.
+          {text.datesIntro}
         </p>
 
         <div className="mt-5">
           <label htmlFor={inputId} className="block font-jost font-medium text-charcoal text-xs tracking-[0.22em] uppercase mb-2">
-            Wedding date
+            {text.datesInputLabel}
           </label>
           <input
             id={inputId}
@@ -130,11 +137,11 @@ export default function FittingDates({ steps, limitedMode, bridalWaitlisted, reo
           <div className="px-5 sm:px-7 pt-6">
             {result.fit.kind !== "past" && (
               <p className="font-jost font-medium text-gold_ink text-xs tracking-[0.22em] uppercase mb-2">
-                {countdown(daysBetween(result.today, result.wedding))}
+                {countdown(daysBetween(result.today, result.wedding), text)}
               </p>
             )}
             <p className="font-cormorant italic text-charcoal text-xl leading-snug max-w-[55ch]">
-              {statusText(result.fit, waitlisted, reopensLabel, messages)}
+              {statusText(result.fit, waitlisted, reopensLabel, text)}
             </p>
           </div>
         )}
@@ -142,11 +149,11 @@ export default function FittingDates({ steps, limitedMode, bridalWaitlisted, reo
 
       {result && result.plan.length > 0 && (
         <div className="px-5 sm:px-7 pt-6 pb-7">
-          <ol className="relative" data-testid="fit-plan" aria-label="Your fitting dates">
+          <ol className="relative" data-testid="fit-plan" aria-label={text.datesPlanLabel}>
             {result.plan.map((w, i) => {
               const passed = daysBetween(result.today, w.to) < 0;
               const now = !passed && !w.openEnded && daysBetween(result.today, w.from) <= 0;
-              const when = w.openEnded ? `By ${formatDate(w.to)}` : formatRange(w.from, w.to);
+              const when = w.openEnded ? fill(text.datesByDate, { date: formatDate(w.to) }) : formatRange(w.from, w.to);
               return (
                 <li key={i} className="relative pl-7 pb-5">
                   <span
@@ -167,14 +174,14 @@ export default function FittingDates({ steps, limitedMode, bridalWaitlisted, reo
                     {w.title}
                     {now && (
                       <span className="not-italic font-jost font-medium text-gold_ink text-[0.6875rem] tracking-[0.18em] uppercase ml-2 align-middle">
-                        Now
+                        {text.datesNow}
                       </span>
                     )}
                   </p>
                   <p className={`font-jost text-sm leading-[1.65] ${passed ? "text-charcoal/[.65]" : "text-charcoal/75"}`}>
                     {when}
-                    {passed && <span className="sr-only"> (already passed)</span>}
-                    {passed && <span aria-hidden="true"> · passed</span>}
+                    {passed && <span className="sr-only"> {text.datesPassedSpoken}</span>}
+                    {passed && <span aria-hidden="true"> · {text.datesPassed}</span>}
                   </p>
                 </li>
               );
@@ -184,7 +191,7 @@ export default function FittingDates({ steps, limitedMode, bridalWaitlisted, reo
                 aria-hidden="true"
                 className="absolute left-[-1px] top-[0.35rem] w-[13px] h-[13px] rotate-45 border border-gold_ink bg-gold_ink"
               />
-              <p className="font-cormorant italic text-charcoal text-lg leading-snug">Your wedding</p>
+              <p className="font-cormorant italic text-charcoal text-lg leading-snug">{text.datesWedding}</p>
               <p className="font-jost text-charcoal/75 text-sm leading-[1.65]">{formatDate(result.wedding)}</p>
             </li>
           </ol>
@@ -194,7 +201,7 @@ export default function FittingDates({ steps, limitedMode, bridalWaitlisted, reo
               {cta}
             </Link>
             <button type="button" onClick={download} className="btn-outline" data-testid="fit-ics">
-              Add these to my calendar
+              {text.datesCalendarButton}
             </button>
           </div>
         </div>
@@ -203,7 +210,7 @@ export default function FittingDates({ steps, limitedMode, bridalWaitlisted, reo
       {result?.fit.kind === "past" && <div className="pb-6" />}
       {!result && (
         <p className="px-5 sm:px-7 py-5 font-jost text-charcoal/[.65] text-sm">
-          Nothing is sent anywhere. Your date stays on this device.
+          {text.datesPrivacy}
         </p>
       )}
     </div>

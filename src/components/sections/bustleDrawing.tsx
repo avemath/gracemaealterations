@@ -17,6 +17,7 @@
  * hooks on the outside; dashed rings are ties hidden underneath.
  */
 
+import type { Text } from "@/lib/text";
 import type { BustleStyleId, TrainId } from "./BustleExplorer";
 
 type Pt = { x: number; y: number };
@@ -66,33 +67,36 @@ function pathOpacity(t: number) {
 
 // ── Captions: what is happening, step by step ───────────────────────────────
 
-export const STEPS: Record<BustleStyleId, [string, string, string]> = {
-  american: [
-    "Loops are sewn under the train.",
-    "One at a time, from the center, each loop is lifted up the skirt…",
-    "…and hooked onto a button at the hip.",
-  ],
-  french: [
-    "Ribbons are sewn under the train.",
-    "From the center out, each ribbon is tucked up underneath the skirt…",
-    "…and tied to its partner inside.",
-  ],
-  austrian: [
-    "A cord runs through rings up the center back.",
-    "Pulling the cord gathers the train upward…",
-    "…into soft ruched swags.",
-  ],
-  ballroom: [
-    "Ties are sewn all around the underside.",
-    "The train folds under, all the way round…",
-    "…so the hem sits level, like a ball gown.",
-  ],
-  "detachable-train": [
-    "The train hooks on at the waist.",
-    "Unhook it…",
-    "…and the gown underneath is floor length.",
-  ],
-};
+/** The fifteen step captions, as written in the Studio (Guides & tools). */
+export type BustleStepText = Pick<
+  Text<"tools">,
+  | "bustleStepAmerican1"
+  | "bustleStepAmerican2"
+  | "bustleStepAmerican3"
+  | "bustleStepFrench1"
+  | "bustleStepFrench2"
+  | "bustleStepFrench3"
+  | "bustleStepAustrian1"
+  | "bustleStepAustrian2"
+  | "bustleStepAustrian3"
+  | "bustleStepBallroom1"
+  | "bustleStepBallroom2"
+  | "bustleStepBallroom3"
+  | "bustleStepDetachable1"
+  | "bustleStepDetachable2"
+  | "bustleStepDetachable3"
+>;
+
+/** Three captions per style: train down, on its way up, bustled. */
+export function bustleSteps(text: BustleStepText): Record<BustleStyleId, [string, string, string]> {
+  return {
+    american: [text.bustleStepAmerican1, text.bustleStepAmerican2, text.bustleStepAmerican3],
+    french: [text.bustleStepFrench1, text.bustleStepFrench2, text.bustleStepFrench3],
+    austrian: [text.bustleStepAustrian1, text.bustleStepAustrian2, text.bustleStepAustrian3],
+    ballroom: [text.bustleStepBallroom1, text.bustleStepBallroom2, text.bustleStepBallroom3],
+    "detachable-train": [text.bustleStepDetachable1, text.bustleStepDetachable2, text.bustleStepDetachable3],
+  };
+}
 
 export function stepFor(t: number) {
   return t < 0.12 ? 0 : t < 0.9 ? 1 : 2;
