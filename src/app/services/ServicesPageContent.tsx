@@ -214,6 +214,21 @@ export default function ServicesPageContent({
                   </div>
                 </div>
 
+                {(service.worksWith?.filter(Boolean).length ?? 0) > 0 && (
+                  <div className="mt-10 max-w-3xl">
+                    <h3 className="font-jost font-medium text-charcoal text-xs tracking-[0.22em] uppercase mb-4">
+                      {text.servicesWorkedOn}
+                    </h3>
+                    <ul className="flex flex-wrap gap-x-5 gap-y-2" role="list">
+                      {service.worksWith!.filter(Boolean).map((name) => (
+                        <li key={name} className="font-cormorant italic text-charcoal text-lg leading-snug">
+                          {name}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
                 {/* Section CTA: the waitlist lane for anything closed. */}
                 <div className="mt-10">
                   {isWaitlisted(service.id) ? (

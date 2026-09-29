@@ -359,7 +359,7 @@ export async function POST(req: NextRequest) {
           ${row("Name", escapeHtml(name))}
           ${row("Email", `<a href="mailto:${escapeHtml(email)}" style="color:${GOLD_INK};">${escapeHtml(email)}</a>`)}
           ${row("Service", escapeHtml(serviceLabel))}
-          ${eventDate ? row(serviceType === "bridal" ? "Wedding Date" : "Event Date", escapeHtml(readableDate(eventDate))) : ""}
+          ${eventDate ? row(serviceType === "bridal" ? "Wedding Date" : serviceType === "tailoring" ? "Needed By" : "Event Date", escapeHtml(readableDate(eventDate))) : ""}
           ${timing ? row("Timing", `<span style="color:${timing.rush ? "#9B1C1C" : "#1C1C1C"};">${escapeHtml(timing.text)}</span>`) : ""}
           ${row("Found Me Via", escapeHtml(referral || "Not specified"))}
         </table>

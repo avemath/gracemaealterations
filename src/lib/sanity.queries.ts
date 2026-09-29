@@ -111,6 +111,11 @@ export interface SanityAboutPage {
   ctaHeadline?: string;
   ctaSubhead?: string;
   ctaButton?: string;
+  fittingLabel?: string;
+  fittingHeading?: string;
+  fittingText?: string;
+  fittingPhotos?: SanityImage[];
+  fittingDetails?: { label?: string; text?: string }[];
 }
 
 export interface SanityServicesPage {
@@ -170,6 +175,8 @@ export interface SanityService {
    * she hasn't picked any, so the services page uses its usual list.
    */
   guides?: { title: string; slug: string }[] | null;
+  /** Designers and brands Grace has worked on, shown under the service. */
+  worksWith?: string[] | null;
 }
 
 export interface SanityPortfolioItem {
@@ -267,7 +274,10 @@ export async function getAboutPage(): Promise<SanityAboutPage | null> {
     paragraph1, paragraph2, paragraph3, pullQuote,
     valuesLabel, valuesHeading,
     independenceLabel, independenceHeading, independenceQuote,
-    ctaHeadline, ctaSubhead, ctaButton
+    ctaHeadline, ctaSubhead, ctaButton,
+    fittingLabel, fittingHeading, fittingText,
+    fittingPhotos[]{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
+    fittingDetails[]{ label, text }
   }`);
 }
 
@@ -306,7 +316,7 @@ export async function getServices(): Promise<SanityService[] | null> {
     _id, title, "id": slug.current, icon,
     shortDescription, description, services,
     priceRange, priceNote, freeConsult,
-    typicalTimeline,
+    typicalTimeline, worksWith,
     cardImage{ asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop },
     "guides": select(
       count(guides) > 0 => (guides[]->)[published == true && defined(slug.current)]{ title, "slug": slug.current },
@@ -622,6 +632,12 @@ export async function getMergedAboutPage() {
     ctaHeadline: a?.ctaHeadline ?? ABOUT_TEXT.ctaHeadline,
     ctaSubhead: a?.ctaSubhead ?? ABOUT_TEXT.ctaSubhead,
     ctaButton: a?.ctaButton ?? ABOUT_TEXT.ctaButton,
+    // Hidden until Grace adds a photo or a detail.
+    fittingLabel: a?.fittingLabel || "Your fitting",
+    fittingHeading: a?.fittingHeading || "Where fittings happen",
+    fittingText: a?.fittingText ?? "",
+    fittingPhotos: (a?.fittingPhotos ?? []).filter((p) => p?.asset),
+    fittingDetails: (a?.fittingDetails ?? []).filter((d) => d?.label || d?.text),
   };
 }
 
@@ -690,6 +706,7 @@ export async function getMergedServices() {
     cardImage: null,
     typicalTimeline: null,
     guides: null,
+    worksWith: null,
   }));
 }
 

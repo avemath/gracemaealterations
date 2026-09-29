@@ -73,6 +73,7 @@ test.describe("contact form", () => {
     await page.getByLabel("Full name").fill("Jane Doe");
     await page.getByLabel("Email address").fill("jane@example.com");
     await page.getByLabel(/The garment, and what you'd like done/).fill("Navy trousers, hem to flats");
+    await page.getByLabel(/Needed by/).fill("2027-03-01");
     await page.getByLabel("How did you find me?").selectOption("Google");
     await submit(page).click();
 
@@ -83,6 +84,7 @@ test.describe("contact form", () => {
       email: "jane@example.com",
       serviceType: "tailoring",
       garmentDetails: "Navy trousers, hem to flats",
+      eventDate: "2027-03-01",
       referralSource: "Google",
       company: "",
     });

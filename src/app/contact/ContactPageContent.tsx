@@ -676,6 +676,10 @@ export default function ContactPageContent({
                               </>
                             )}
 
+                            {branch === "tailoring" && (
+                              <Field {...fieldProps("eventDate")} label={t.neededByLabel} type="date" optional={t.optional} />
+                            )}
+
                             {branch === "party" && (
                               <>
                                 <Field {...fieldProps("eventDate")} label={t.eventDateLabel} type="date" />
