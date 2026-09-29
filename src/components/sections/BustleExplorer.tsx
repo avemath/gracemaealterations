@@ -109,16 +109,29 @@ export default function BustleExplorer({
   copy = [],
   text,
   footer,
+  initialStyle = "american",
+  initialTrain = "chapel",
+  fixed = false,
+  points,
 }: {
   /** Published Bustle Styles from the Studio; their wording wins. */
   copy?: BustleCopy[];
   /** Wording from the Studio (Guides & tools). */
   text: BustleText;
   footer?: React.ReactNode;
+  initialStyle?: BustleStyleId;
+  initialTrain?: TrainId;
+  /**
+   * One particular dress (a care card): the style and train are set, so the
+   * choices are hidden and only the bustle and let-down controls remain.
+   */
+  fixed?: boolean;
+  /** This dress's number of points, drawn instead of the style's usual count. */
+  points?: number | null;
 }) {
   const uid = useId();
-  const [style, setStyle] = useState<BustleStyleId>("american");
-  const [train, setTrain] = useState<TrainId>("chapel");
+  const [style, setStyle] = useState<BustleStyleId>(initialStyle);
+  const [train, setTrain] = useState<TrainId>(initialTrain);
   const [t, setT] = useState(0);
   const tRef = useRef(0);
   const raf = useRef(0);
@@ -211,7 +224,11 @@ export default function BustleExplorer({
     fabricNotes: cms?.fabricNotes || base.fabricNotes,
     how: text[base.how],
   };
-  const n = base.points[train];
+  // Austrian gathers on one cord, and a detachable train has no points to draw.
+  const n =
+    points && style !== "austrian" && style !== "detachable-train"
+      ? Math.min(9, Math.max(1, Math.round(points)))
+      : base.points[train];
   const bustled = t > 0.5;
   const steps = bustleSteps(text)[style];
   const step = steps[stepFor(t)];
@@ -325,6 +342,8 @@ export default function BustleExplorer({
       {/* ── Controls and notes ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-16">
         <div>
+        {!fixed && (
+        <>
         <fieldset>
           <legend className="font-jost font-medium text-charcoal text-xs tracking-[0.22em] uppercase mb-2 lg:mb-3">
             {text.bustleStyleLegend}
@@ -380,6 +399,8 @@ export default function BustleExplorer({
             ))}
           </div>
         </fieldset>
+        </>
+        )}
 
         <div className="mt-5 lg:mt-8 flex items-center gap-4">
           <button

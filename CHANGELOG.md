@@ -2,6 +2,10 @@
 
 Newest first. Grace facing notes live in `site/content/FOR-GRACE.md`.
 
+## Bustle helper on care cards, September 2026
+
+- `feat: "How to bustle your dress" on care pages`: a care card can hold the gown's bustle style, train length, number of points, step-by-step notes and a short video. The care page then shows the bustle drawing locked to that style (with that many points), the steps and the video, and the printed card adds "Scan it for how to bustle your dress, too." All of its wording is in Contact form & emails.
+
 ## Lighter pages, guide share cards and tool insight, September 2026
 
 - `perf: animation library loads only what the site uses` (LazyMotion + domAnimation): about 25 KB less JavaScript on the home, services, portfolio, about and contact pages (home 165 kB to 140 kB first load).

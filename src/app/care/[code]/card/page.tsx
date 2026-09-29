@@ -70,6 +70,7 @@ export default async function CareCardPrint({ params }: { params: { code: string
                 </p>
                 <p className="font-jost text-charcoal/75 leading-snug mt-[3pt]" style={{ fontSize: "6.5pt" }}>
                   {text.careCardScan}
+                  {card.bustleStyle ? ` ${text.careCardBustle}` : ""}
                 </p>
               </div>
             </div>
