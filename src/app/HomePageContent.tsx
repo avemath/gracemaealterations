@@ -140,9 +140,13 @@ export default function HomePageContent({ data, siteText: t }: { data: HomePageD
 
         {/* One portrait for both layouts: full width under the copy on mobile,
             a full-height column on the right from lg up. Rendering it twice
-            shipped two <img> elements and two priority preloads. */}
+            shipped two <img> elements and two priority preloads.
+            From lg up the photo starts 32px past the copy column (48px
+            padding + 520px copy + 32px, inside the centred 80rem container)
+            rather than at a fixed 52%, which left a wide empty band between
+            the words and Grace on laptop and desktop screens. */}
         <div
-          className="relative z-[2] w-full aspect-[1024/1210] -mt-4 overflow-hidden lg:mt-0 lg:absolute lg:inset-y-0 lg:right-0 lg:w-[48%] lg:aspect-auto"
+          className="relative z-[2] w-full aspect-[1024/1210] -mt-4 overflow-hidden lg:mt-0 lg:absolute lg:inset-y-0 lg:right-0 lg:w-auto lg:left-[min(52%,calc(max(0px,50%_-_40rem)_+_600px))] lg:aspect-auto"
           aria-hidden="true"
         >
           {/* Parallax inner — taller than container so there's room to translate */}
@@ -157,14 +161,14 @@ export default function HomePageContent({ data, siteText: t }: { data: HomePageD
               sizes="(min-width:1024px) 72vw, 100vw"
             />
           </motion.div>
-          {/* Blends the image's left edge into the ivory column. The default
-              via-25% stop still laid ~20% ivory over her face at 60% across,
-              which read as a white sheen — these stops clear it by 52%. */}
+          {/* Softens the image's left edge into the ivory. Fixed pixel stops so
+              the fade stays a narrow seam at any width: a fade over half the
+              photo read as more empty space, and veiled her face. */}
           <div
             className="hidden lg:block absolute inset-0 pointer-events-none"
             style={{
               background:
-                "linear-gradient(to right, #FAF7F2 0%, rgba(250,247,242,0.85) 12%, rgba(250,247,242,0.35) 28%, rgba(250,247,242,0.06) 42%, rgba(250,247,242,0) 52%)",
+                "linear-gradient(to right, #FAF7F2 0px, rgba(250,247,242,0.75) 36px, rgba(250,247,242,0.3) 100px, rgba(250,247,242,0.08) 170px, rgba(250,247,242,0) 230px)",
             }}
           />
         </div>
@@ -219,14 +223,17 @@ export default function HomePageContent({ data, siteText: t }: { data: HomePageD
         </div>
 
 
-        {/* Scroll indicator — desktop only */}
-        <div data-reveal
-              className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden lg:flex flex-col items-center gap-2"
-              aria-hidden="true"
-            >
-          <span className="font-jost text-[0.6rem] tracking-[0.25em] uppercase text-charcoal/75">{t.homeScroll}</span>
-          {/* CSS keyframes rather than a permanent Framer rAF loop. */}
-          <span className="block w-px h-8 bg-gold/50 animate-scroll-hint" />
+        {/* Scroll indicator, desktop screens tall enough to leave room under
+            the buttons. Sits under the copy column: centred on the page it
+            floated alone between the words and the photo. */}
+        <div className="absolute bottom-8 inset-x-0 z-10 hidden lg:[@media(min-height:840px)]:block pointer-events-none" aria-hidden="true">
+          <div className="max-w-7xl mx-auto px-12">
+            <div className="inline-flex flex-col items-center gap-2">
+              <span className="font-jost text-[0.6rem] tracking-[0.25em] uppercase text-charcoal/75">{t.homeScroll}</span>
+              {/* CSS keyframes rather than a permanent Framer rAF loop. */}
+              <span className="block w-px h-8 bg-gold/50 animate-scroll-hint" />
+            </div>
+          </div>
         </div>
       </section>
 
