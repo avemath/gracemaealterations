@@ -3,18 +3,54 @@
   "title": "Site-wide words",
   "description": "Buttons, labels and small bits of text used across the site. Leave a field empty to use the original wording. Words in {curly brackets} are filled in automatically, so keep them as they are.",
   "groups": [
-    { "name": "buttons", "title": "Buttons" },
-    { "name": "sticky", "title": "Sticky buttons" },
-    { "name": "banner", "title": "Closing banner" },
-    { "name": "header", "title": "Header and menu" },
-    { "name": "footer", "title": "Footer" },
-    { "name": "home", "title": "Home page" },
-    { "name": "services", "title": "Services page" },
-    { "name": "portfolio", "title": "Portfolio page" },
-    { "name": "slider", "title": "Before and after slider" },
-    { "name": "about", "title": "About page" },
-    { "name": "other", "title": "Landing and policies pages" },
-    { "name": "notFound", "title": "Page not found" }
+    {
+      "name": "buttons",
+      "title": "Buttons"
+    },
+    {
+      "name": "sticky",
+      "title": "Sticky buttons"
+    },
+    {
+      "name": "banner",
+      "title": "Closing banner"
+    },
+    {
+      "name": "header",
+      "title": "Header and menu"
+    },
+    {
+      "name": "footer",
+      "title": "Footer"
+    },
+    {
+      "name": "home",
+      "title": "Home page"
+    },
+    {
+      "name": "services",
+      "title": "Services page"
+    },
+    {
+      "name": "portfolio",
+      "title": "Portfolio page"
+    },
+    {
+      "name": "slider",
+      "title": "Before and after slider"
+    },
+    {
+      "name": "about",
+      "title": "About page"
+    },
+    {
+      "name": "other",
+      "title": "Landing and policies pages"
+    },
+    {
+      "name": "notFound",
+      "title": "Page not found"
+    }
   ],
   "fields": {
     "ctaTailoring": {
@@ -433,6 +469,12 @@
       "title": "Heading over the guide links",
       "description": "Under each service that has guides. Pick which guides appear on each Service document.",
       "default": "Helpful guides"
+    },
+    "servicesWorkedOn": {
+      "group": "services",
+      "title": "Heading over the designers list",
+      "description": "Shown under a service when its Service document lists designers or brands you've worked on.",
+      "default": "Gowns I've worked on"
     },
     "servicesGuidesFor": {
       "group": "services",

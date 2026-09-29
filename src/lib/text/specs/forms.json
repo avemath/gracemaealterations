@@ -291,6 +291,12 @@
       "title": "Bridal party: event date label",
       "default": "Event date"
     },
+    "neededByLabel": {
+      "group": "fields",
+      "title": "Tailoring: needed by label",
+      "description": "An optional date on tailoring and repair requests, so you can see deadlines.",
+      "default": "Needed by"
+    },
     "garmentCountLabel": {
       "group": "fields",
       "title": "Bridal party: number of garments label",

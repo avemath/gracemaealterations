@@ -33,6 +33,11 @@ Everything below is in the Studio at **gracemaealterations.com/studio**. Nothing
 
 24. **Care cards can teach the bustle.** On a bridal care card, open **How to bustle it (bridal only)**: pick the bustle style and train length, add the number of points, write the steps one per line, and, if you like, upload a short phone video of you bustling it at the final fitting. The care page then shows "How to bustle your dress" with the drawing set to her style, your steps and your video, and the printed card says to scan it for the bustle too. Her maid of honor can pull it up at the reception.
 
+25. **Three things that appear as soon as you fill them in** (until then, nothing shows):
+    - **Gowns I've worked on**: at **Services**, then Bridal Alterations, add designers and brands you've altered (Maggie Sottero, Allure, David's Bridal...). They show under the bridal service and help brides who search for their designer.
+    - **Where fittings happen**: at **About Page**, the "Where Fittings Happen" tab. One to three photos of the room and mirror, plus short details like Where (your neighborhood, not your address), Parking, Guests and Kids and pets.
+    - Tailoring requests now have an optional **Needed by** date, shown in your email.
+
 ---
 
 ## Only you can do these
