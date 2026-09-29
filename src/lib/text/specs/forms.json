@@ -987,6 +987,50 @@
       "group": "photoCheck",
       "title": "Photo check: busy right now",
       "default": "The check is busy right now. Please try again in a minute."
+    },
+    "careBustleHeading": {
+      "group": "care",
+      "title": "Care page: bustle section heading",
+      "description": "Shown when the care card has a bustle style filled in.",
+      "default": "How to bustle your dress"
+    },
+    "careBustleIntro": {
+      "group": "care",
+      "title": "Care page: bustle section intro",
+      "long": true,
+      "default": "Whoever bustles you at the reception can follow along here. It takes a few minutes, and it's easier with one practice run before the day."
+    },
+    "careBustleStyle": {
+      "group": "care",
+      "title": "Care page: which bustle",
+      "description": "{style} becomes the bustle style, {points} the number of points.",
+      "default": "Your bustle: {style}, {points} points"
+    },
+    "careBustleStyleNoPoints": {
+      "group": "care",
+      "title": "Care page: which bustle (no number of points given)",
+      "description": "{style} becomes the bustle style.",
+      "default": "Your bustle: {style}"
+    },
+    "careBustleStepsHeading": {
+      "group": "care",
+      "title": "Care page: steps heading",
+      "default": "Step by step"
+    },
+    "careBustleVideoHeading": {
+      "group": "care",
+      "title": "Care page: video heading",
+      "default": "Watch me do it"
+    },
+    "careBustleVideoAria": {
+      "group": "care",
+      "title": "Care page: video description for screen readers",
+      "default": "Video of Grace bustling this dress"
+    },
+    "careCardBustle": {
+      "group": "care",
+      "title": "Printed card: extra line when there's a bustle",
+      "default": "Scan it for how to bustle your dress, too."
     }
   }
 }

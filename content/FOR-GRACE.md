@@ -31,6 +31,8 @@ Everything below is in the Studio at **gracemaealterations.com/studio**. Nothing
 22. The trouser hem guide's writing is now an ordinary guide under **Guides**, like the others, and each service can choose which guides it lists underneath it (**Services**, then the service, then **Helpful guides**).
 23. In any document's menu, **Open preview** opens the page it appears on. Once you publish, the site updates within a minute or two (instantly, once Avery switches on instant updates).
 
+24. **Care cards can teach the bustle.** On a bridal care card, open **How to bustle it (bridal only)**: pick the bustle style and train length, add the number of points, write the steps one per line, and, if you like, upload a short phone video of you bustling it at the final fitting. The care page then shows "How to bustle your dress" with the drawing set to her style, your steps and your video, and the printed card says to scan it for the bustle too. Her maid of honor can pull it up at the reception.
+
 ---
 
 ## Only you can do these

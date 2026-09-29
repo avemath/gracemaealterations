@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getCareCard, getMergedSite } from "@/lib/sanity.queries";
+import { getCareCard, getMergedSite, getPublishedBustleStyles } from "@/lib/sanity.queries";
+import BustleExplorer, { type BustleStyleId, type TrainId } from "@/components/sections/BustleExplorer";
+import { toolText } from "@/app/guides/toolText";
 import SanityImage from "@/components/ui/SanityImage";
 import BeforeAfterSlider from "@/components/ui/BeforeAfterSlider";
 import { getText, fill } from "@/lib/text";
@@ -17,6 +19,15 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+const BUSTLE_STYLES: Record<BustleStyleId, string> = {
+  american: "American",
+  french: "French",
+  austrian: "Austrian",
+  ballroom: "Ballroom",
+  "detachable-train": "Detachable train",
+};
+const TRAINS: TrainId[] = ["sweep", "chapel", "cathedral"];
+
 function finishedLabel(date?: string | null) {
   if (!date) return null;
   const d = new Date(`${date}T12:00:00Z`);
@@ -27,6 +38,18 @@ function finishedLabel(date?: string | null) {
 export default async function CarePage({ params }: { params: { code: string } }) {
   const [card, site, text] = await Promise.all([getCareCard(params.code), getMergedSite(), getText("forms")]);
   if (!card) notFound();
+
+  // "How to bustle your dress", only when Grace filled in the bustle style.
+  const bustleStyle = card.bustleStyle && card.bustleStyle in BUSTLE_STYLES ? (card.bustleStyle as BustleStyleId) : null;
+  const [toolsText, bustleCopy] = bustleStyle
+    ? await Promise.all([getText("tools"), getPublishedBustleStyles().catch(() => null)])
+    : [null, null];
+  const bustleName =
+    bustleStyle && (bustleCopy?.find((s) => s.slug === bustleStyle)?.name || BUSTLE_STYLES[bustleStyle]);
+  const bustleSteps = (card.bustleSteps ?? "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
 
   // The review link lives in Site Settings once Grace has a Google profile.
   const reviewUrl = site.googleReviewUrl;
@@ -101,6 +124,68 @@ export default async function CarePage({ params }: { params: { code: string } })
                 )}
               </div>
             ))}
+          </div>
+        </section>
+      )}
+
+      {bustleStyle && toolsText && (
+        <section className="px-6 pb-14" aria-labelledby="bustle-heading">
+          <div className="max-w-5xl mx-auto border-t border-blush pt-8">
+            <h2 id="bustle-heading" className="font-cormorant italic text-charcoal text-3xl mb-2">
+              {text.careBustleHeading}
+            </h2>
+            <p className="font-jost text-charcoal/75 text-base leading-[1.7] max-w-[60ch] mb-2">{text.careBustleIntro}</p>
+            <p className="font-jost font-medium text-gold_ink text-xs tracking-[0.18em] uppercase mb-8">
+              {card.bustlePoints
+                ? fill(text.careBustleStyle, { style: bustleName ?? "", points: card.bustlePoints })
+                : fill(text.careBustleStyleNoPoints, { style: bustleName ?? "" })}
+            </p>
+
+            <BustleExplorer
+              copy={(bustleCopy ?? []).map((s) => ({ ...s, slug: s.slug ?? "" }))}
+              text={toolText(toolsText, "bustle")}
+              initialStyle={bustleStyle}
+              initialTrain={TRAINS.includes(card.bustleTrain as TrainId) ? (card.bustleTrain as TrainId) : "chapel"}
+              fixed
+              points={card.bustlePoints}
+            />
+
+            {(bustleSteps.length > 0 || card.bustleVideo?.url) && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-12">
+                {bustleSteps.length > 0 && (
+                  <div>
+                    <h3 className="font-jost font-medium text-charcoal text-xs tracking-[0.22em] uppercase mb-4">
+                      {text.careBustleStepsHeading}
+                    </h3>
+                    <ol className="space-y-3">
+                      {bustleSteps.map((step, i) => (
+                        <li key={i} className="flex gap-4 font-jost text-charcoal/80 text-base leading-[1.6]">
+                          <span className="font-cormorant italic text-gold_ink text-xl leading-none pt-0.5 w-6 shrink-0" aria-hidden="true">
+                            {i + 1}
+                          </span>
+                          <span>{step}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+                {card.bustleVideo?.url && (
+                  <div>
+                    <h3 className="font-jost font-medium text-charcoal text-xs tracking-[0.22em] uppercase mb-4">
+                      {text.careBustleVideoHeading}
+                    </h3>
+                    <video
+                      src={card.bustleVideo.url}
+                      controls
+                      playsInline
+                      preload="metadata"
+                      aria-label={text.careBustleVideoAria}
+                      className="w-full max-h-[70vh] bg-near_black"
+                    />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </section>
       )}

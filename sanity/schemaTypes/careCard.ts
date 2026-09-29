@@ -19,6 +19,15 @@ export const careCard = defineType({
   name: "careCard",
   title: "Care Card",
   type: "document",
+  fieldsets: [
+    {
+      name: "bustle",
+      title: "How to bustle it (bridal only)",
+      description:
+        "Fill this in for a gown with a bustle, and the care page gets a \"How to bustle your dress\" section with the drawing set to this style, your steps and your video. Whoever bustles her at the reception can scan the card and follow along. Leave it empty for anything else.",
+      options: { collapsible: true, collapsed: true },
+    },
+  ],
   fields: [
     defineField({
       name: "garment",
@@ -88,6 +97,65 @@ export const careCard = defineType({
       type: "image",
       options: { hotspot: true },
       fields: [{ name: "alt", title: "Alt text", type: "string" }],
+    }),
+    defineField({
+      name: "bustleStyle",
+      title: "Bustle style",
+      type: "string",
+      fieldset: "bustle",
+      options: {
+        list: [
+          { title: "American (over-bustle)", value: "american" },
+          { title: "French (under-bustle)", value: "french" },
+          { title: "Austrian (ruched)", value: "austrian" },
+          { title: "Ballroom", value: "ballroom" },
+          { title: "Detachable train", value: "detachable-train" },
+        ],
+        layout: "radio",
+      },
+    }),
+    defineField({
+      name: "bustleTrain",
+      title: "Train length",
+      description: "Sets the drawing. Pick the closest.",
+      type: "string",
+      fieldset: "bustle",
+      options: {
+        list: [
+          { title: "Sweep", value: "sweep" },
+          { title: "Chapel", value: "chapel" },
+          { title: "Cathedral", value: "cathedral" },
+        ],
+        layout: "radio",
+        direction: "horizontal",
+      },
+      initialValue: "chapel",
+    }),
+    defineField({
+      name: "bustlePoints",
+      title: "Number of points",
+      description: "How many hooks, buttons or ties, so the helper knows when they're done.",
+      type: "number",
+      fieldset: "bustle",
+      validation: (rule) => rule.min(1).max(20).integer(),
+    }),
+    defineField({
+      name: "bustleSteps",
+      title: "Steps",
+      description:
+        'One step per line, in order. For example "Find the loop marked 1 under the train" then "Hook it onto button 1 at the back of the waist".',
+      type: "text",
+      rows: 6,
+      fieldset: "bustle",
+    }),
+    defineField({
+      name: "bustleVideo",
+      title: "Video",
+      description:
+        "Optional. A short phone video of you bustling this dress at the final fitting (under a minute is plenty). It plays on the care page.",
+      type: "file",
+      fieldset: "bustle",
+      options: { accept: "video/*" },
     }),
     defineField({
       name: "code",
