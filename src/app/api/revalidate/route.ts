@@ -14,7 +14,10 @@ import { createHmac, timingSafeEqual } from "crypto";
 
 export const runtime = "nodejs";
 
-const MAX_AGE_MS = 5 * 60 * 1000;
+// Sanity retries a delivery that failed (say, during a deploy) for a while
+// afterwards, with its original timestamp. A replayed call can only refresh
+// the site, so a day's window costs nothing and keeps those retries working.
+const MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
 /** Checks Sanity's "t=<ms>,v1=<hmac>" signature over "<t>.<body>". */
 function validSignature(header: string | null, body: string, secret: string): boolean {
