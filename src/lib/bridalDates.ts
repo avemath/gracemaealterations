@@ -318,7 +318,33 @@ function slug(text: string): string {
  * An .ics calendar with an all-day event on the day each window opens (or the
  * "by" date for an open-ended step), plus the wedding day itself.
  */
-export function icsFor(plan: FittingWindow[], weddingDate: Date, now: Date = new Date()): string {
+/** The calendar file's wording, editable in the Studio (Guides & tools). */
+export interface CalendarWording {
+  datesCalName: string;
+  datesCalOpens: string;
+  datesCalOpensNote: string;
+  datesCalBy: string;
+  datesCalByNote: string;
+  datesCalWedding: string;
+  datesCalWeddingNote: string;
+}
+
+const CALENDAR_DEFAULTS: CalendarWording = {
+  datesCalName: "Wedding dress fittings",
+  datesCalOpens: "{step} window opens",
+  datesCalOpensNote: "{step}: {range}. Timeline from gracemaealterations.com",
+  datesCalBy: "{step} by today",
+  datesCalByNote: "Aim to have this done by {date}. Timeline from gracemaealterations.com",
+  datesCalWedding: "Wedding day",
+  datesCalWeddingNote: "Congratulations!",
+};
+
+export function icsFor(
+  plan: FittingWindow[],
+  weddingDate: Date,
+  now: Date = new Date(),
+  wording: CalendarWording = CALENDAR_DEFAULTS
+): string {
   const stamp = icsStamp(now);
   const wedding = icsDate(weddingDate);
 
@@ -340,18 +366,23 @@ export function icsFor(plan: FittingWindow[], weddingDate: Date, now: Date = new
     "PRODID:-//Grace Mae Alterations//Your dates//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
-    "X-WR-CALNAME:Wedding dress fittings",
+    `X-WR-CALNAME:${icsText(wording.datesCalName)}`,
     ...plan.flatMap((w, i) =>
       w.openEnded
-        ? event(w.to, `${w.title} by today`, `Aim to have this done by ${formatDate(w.to)}. Timeline from gracemaealterations.com`, `${i}-${slug(w.title)}`)
+        ? event(
+            w.to,
+            fillIn(wording.datesCalBy, { step: w.title }),
+            fillIn(wording.datesCalByNote, { step: w.title, date: formatDate(w.to) }),
+            `${i}-${slug(w.title)}`
+          )
         : event(
             w.from,
-            `${w.title} window opens`,
-            `${w.title}: ${formatRange(w.from, w.to)}. Timeline from gracemaealterations.com`,
+            fillIn(wording.datesCalOpens, { step: w.title }),
+            fillIn(wording.datesCalOpensNote, { step: w.title, range: formatRange(w.from, w.to) }),
             `${i}-${slug(w.title)}`
           )
     ),
-    ...event(weddingDate, "Wedding day", "Congratulations!", "wedding"),
+    ...event(weddingDate, wording.datesCalWedding, wording.datesCalWeddingNote, "wedding"),
     "END:VCALENDAR",
   ];
 

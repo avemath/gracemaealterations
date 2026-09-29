@@ -3,14 +3,38 @@
   "title": "Guides & tools",
   "description": "The words in the guides and their interactive tools: the \"Your dates\" calculator, the fitting bag checklist, the bustle and trouser hem drawings. Leave a field empty to use the original wording. Words in {curly brackets} are filled in automatically, so keep them as they are.",
   "groups": [
-    { "name": "dates", "title": "Wedding date messages" },
-    { "name": "datesTool", "title": "Your dates calculator" },
-    { "name": "bag", "title": "Fitting bag checklist" },
-    { "name": "bustle", "title": "Bustle explorer" },
-    { "name": "bustleSteps", "title": "Bustle explorer steps" },
-    { "name": "hem", "title": "Trouser hem explorer" },
-    { "name": "hemChoices", "title": "Trouser hem explorer choices" },
-    { "name": "guides", "title": "Guides pages" }
+    {
+      "name": "dates",
+      "title": "Wedding date messages"
+    },
+    {
+      "name": "datesTool",
+      "title": "Your dates calculator"
+    },
+    {
+      "name": "bag",
+      "title": "Fitting bag checklist"
+    },
+    {
+      "name": "bustle",
+      "title": "Bustle explorer"
+    },
+    {
+      "name": "bustleSteps",
+      "title": "Bustle explorer steps"
+    },
+    {
+      "name": "hem",
+      "title": "Trouser hem explorer"
+    },
+    {
+      "name": "hemChoices",
+      "title": "Trouser hem explorer choices"
+    },
+    {
+      "name": "guides",
+      "title": "Guides pages"
+    }
   ],
   "fields": {
     "datePast": {
@@ -70,7 +94,6 @@
       "long": true,
       "default": "Plenty of time. Join the waitlist whenever you're ready; fittings start around {range}."
     },
-
     "datesLabel": {
       "group": "datesTool",
       "title": "Small label at the top",
@@ -177,7 +200,6 @@
       "title": "Calendar button",
       "default": "Add these to my calendar"
     },
-
     "bagLabel": {
       "group": "bag",
       "title": "Checklist heading",
@@ -195,7 +217,6 @@
       "title": "Everything is packed",
       "default": "All packed. See you at the fitting."
     },
-
     "bustleButtonUp": {
       "group": "bustle",
       "title": "Button: bustle the train",
@@ -372,7 +393,6 @@
       "long": true,
       "default": "The train is a separate piece that hooks on at the waist for the ceremony and comes off for the reception."
     },
-
     "bustleStepAmerican1": {
       "group": "bustleSteps",
       "title": "American, step 1 (train down)",
@@ -451,7 +471,6 @@
       "title": "Detachable train, step 3 (train off)",
       "default": "…and the gown underneath is floor length."
     },
-
     "hemBreakLegend": {
       "group": "hem",
       "title": "Label above the break choices",
@@ -523,7 +542,6 @@
       "long": true,
       "default": "Side view of a {leg} trouser leg over {shoe}, hemmed with {break} and a slanted hem."
     },
-
     "hemBreakNone": {
       "group": "hemChoices",
       "title": "No break: name",
@@ -678,7 +696,6 @@
       "long": true,
       "default": "A wide leg falls past the shoe instead of resting on it, so it barely folds. I usually hem wide legs longer, just clear of the floor."
     },
-
     "guidesLabel": {
       "group": "guides",
       "title": "Guides page: small label",
@@ -739,6 +756,48 @@
       "title": "Trouser hem guide: button",
       "description": "Goes to the contact form with tailoring picked.",
       "default": "Send a tailoring request"
+    },
+    "datesCalName": {
+      "group": "datesTool",
+      "title": "Calendar file: calendar name",
+      "description": "The name the downloaded calendar shows in her calendar app.",
+      "default": "Wedding dress fittings"
+    },
+    "datesCalOpens": {
+      "group": "datesTool",
+      "title": "Calendar file: event when a fitting window opens",
+      "description": "{step} becomes the step's title, such as \"First fitting\".",
+      "default": "{step} window opens"
+    },
+    "datesCalOpensNote": {
+      "group": "datesTool",
+      "title": "Calendar file: note on that event",
+      "description": "{step} becomes the step's title and {range} its dates.",
+      "long": true,
+      "default": "{step}: {range}. Timeline from gracemaealterations.com"
+    },
+    "datesCalBy": {
+      "group": "datesTool",
+      "title": "Calendar file: event for a \"do this by\" step",
+      "description": "{step} becomes the step's title.",
+      "default": "{step} by today"
+    },
+    "datesCalByNote": {
+      "group": "datesTool",
+      "title": "Calendar file: note on that event",
+      "description": "{date} becomes the date.",
+      "long": true,
+      "default": "Aim to have this done by {date}. Timeline from gracemaealterations.com"
+    },
+    "datesCalWedding": {
+      "group": "datesTool",
+      "title": "Calendar file: the wedding day event",
+      "default": "Wedding day"
+    },
+    "datesCalWeddingNote": {
+      "group": "datesTool",
+      "title": "Calendar file: note on the wedding day",
+      "default": "Congratulations!"
     }
   }
 }
