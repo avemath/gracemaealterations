@@ -2,6 +2,947 @@
   "id": "formsText",
   "title": "Contact form & emails",
   "description": "Everything a client reads while sending a request, and the emails they get back. Leave a field empty to use the original wording. Words in {curly brackets} are filled in automatically, so keep them as they are.",
-  "groups": [],
-  "fields": {}
+  "groups": [
+    { "name": "choose", "title": "Choosing a request type" },
+    { "name": "fields", "title": "Form fields" },
+    { "name": "photos", "title": "Photos" },
+    { "name": "photoCheck", "title": "Photo check" },
+    { "name": "buttons", "title": "Buttons and messages" },
+    { "name": "contact", "title": "Contact details and questions" },
+    { "name": "emails", "title": "Confirmation emails" },
+    { "name": "care", "title": "Care pages" }
+  ],
+  "fields": {
+    "chooseHeading": {
+      "group": "choose",
+      "title": "Heading above the three choices",
+      "default": "What can I help with?"
+    },
+    "chooseIntro": {
+      "group": "choose",
+      "title": "Line under that heading",
+      "default": "Pick one, then tell me a little about it."
+    },
+    "chooseAria": {
+      "group": "choose",
+      "title": "Name of the three choices, read aloud",
+      "description": "Not shown on screen. A screen reader says this before reading the three choices.",
+      "default": "Type of request"
+    },
+    "cardTailoringTitle": {
+      "group": "choose",
+      "title": "Tailoring choice: title",
+      "default": "Tailoring or a repair"
+    },
+    "cardTailoringBlurb": {
+      "group": "choose",
+      "title": "Tailoring choice: description",
+      "long": true,
+      "default": "Hems, waists, sleeves, zips. Open now, usually done within two weeks."
+    },
+    "cardBridalTitle": {
+      "group": "choose",
+      "title": "Bridal choice: title",
+      "description": "Used while bridal is open for bookings.",
+      "default": "Bridal"
+    },
+    "cardBridalBlurb": {
+      "group": "choose",
+      "title": "Bridal choice: description",
+      "description": "Used while bridal is open for bookings.",
+      "default": "Hems, bustles, bodice work and fittings for your gown."
+    },
+    "cardBridalWaitlistTitle": {
+      "group": "choose",
+      "title": "Bridal choice: title while on the waitlist",
+      "description": "Used while Site Settings has limited availability turned on. {reopens} becomes the reopening time from Site Settings, such as \"early 2027\".",
+      "default": "Bridal ({reopens} waitlist)"
+    },
+    "cardBridalWaitlistBlurb": {
+      "group": "choose",
+      "title": "Bridal choice: description while on the waitlist",
+      "long": true,
+      "default": "Join the waitlist and you'll get first pick of fitting dates, in the order you joined."
+    },
+    "cardPartyTitle": {
+      "group": "choose",
+      "title": "Bridal party choice: title",
+      "default": "Bridal party or special occasion"
+    },
+    "cardPartyBlurb": {
+      "group": "choose",
+      "title": "Bridal party choice: description",
+      "long": true,
+      "default": "Bridesmaids, mothers, flower girls: one point of contact, one pickup day."
+    },
+    "formHeading": {
+      "group": "choose",
+      "title": "Form heading",
+      "description": "Shown above the form once a choice is picked.",
+      "default": "Send a request"
+    },
+    "formHeadingWaitlist": {
+      "group": "choose",
+      "title": "Form heading while you're not taking new clients",
+      "description": "Used when \"accepting clients\" is turned off in Site Settings.",
+      "default": "Join the waitlist"
+    },
+    "formHeadingBridalWaitlist": {
+      "group": "choose",
+      "title": "Form heading for bridal while it's on the waitlist",
+      "default": "Join the bridal waitlist"
+    },
+    "formAria": {
+      "group": "choose",
+      "title": "Name of the form, read aloud",
+      "description": "Not shown on screen. A screen reader says this when it reaches the form.",
+      "default": "Contact request form"
+    },
+
+    "nameLabel": {
+      "group": "fields",
+      "title": "Name: label",
+      "default": "Full name"
+    },
+    "namePlaceholder": {
+      "group": "fields",
+      "title": "Name: grey hint inside the box",
+      "default": "Your full name"
+    },
+    "emailLabel": {
+      "group": "fields",
+      "title": "Email: label",
+      "default": "Email address"
+    },
+    "emailPlaceholder": {
+      "group": "fields",
+      "title": "Email: grey hint inside the box",
+      "default": "your@email.com"
+    },
+    "optional": {
+      "group": "fields",
+      "title": "\"Optional\" tag",
+      "description": "Shown after the label of a field a client can leave empty, such as Venue or Photos.",
+      "default": "(optional)"
+    },
+    "weddingDateLabel": {
+      "group": "fields",
+      "title": "Bridal: wedding date label",
+      "description": "The note that appears under it is in \"Guides & tools\", under Wedding date messages.",
+      "default": "Wedding date"
+    },
+    "designerLabel": {
+      "group": "fields",
+      "title": "Bridal: dress designer label",
+      "default": "Dress designer, or where you bought it"
+    },
+    "designerPlaceholder": {
+      "group": "fields",
+      "title": "Bridal: dress designer hint",
+      "default": "e.g. Allure, or David's Bridal"
+    },
+    "arrivalLabel": {
+      "group": "fields",
+      "title": "Bridal: dress arrival date label",
+      "default": "When the dress arrives"
+    },
+    "venueLabel": {
+      "group": "fields",
+      "title": "Bridal: venue label",
+      "default": "Venue"
+    },
+    "venuePlaceholder": {
+      "group": "fields",
+      "title": "Bridal: venue hint",
+      "default": "Where you're getting married"
+    },
+    "aboutDressHeading": {
+      "group": "fields",
+      "title": "Bridal: \"About the dress\" heading",
+      "default": "About the dress"
+    },
+    "aboutDressOptional": {
+      "group": "fields",
+      "title": "Bridal: tag after \"About the dress\"",
+      "default": "(all optional)"
+    },
+    "sizeOrderedLabel": {
+      "group": "fields",
+      "title": "Bridal: dress size ordered label",
+      "default": "Dress size ordered"
+    },
+    "sizeOrderedPlaceholder": {
+      "group": "fields",
+      "title": "Bridal: dress size ordered hint",
+      "default": "e.g. 10"
+    },
+    "streetSizeLabel": {
+      "group": "fields",
+      "title": "Bridal: street size label",
+      "default": "Your usual street size"
+    },
+    "streetSizePlaceholder": {
+      "group": "fields",
+      "title": "Bridal: street size hint",
+      "default": "e.g. 6"
+    },
+    "alterationsLabel": {
+      "group": "fields",
+      "title": "Bridal: heading over the tick boxes",
+      "default": "What you think it needs"
+    },
+    "optHem": {
+      "group": "fields",
+      "title": "Bridal tick box: hem",
+      "description": "The tick box names are also used by the photo check's suggestions and in the request email you receive.",
+      "default": "Hem"
+    },
+    "optBustle": {
+      "group": "fields",
+      "title": "Bridal tick box: bustle",
+      "default": "Bustle"
+    },
+    "optBodice": {
+      "group": "fields",
+      "title": "Bridal tick box: bodice",
+      "default": "Take in bodice or sides"
+    },
+    "optCups": {
+      "group": "fields",
+      "title": "Bridal tick box: bra cups",
+      "default": "Add bra cups"
+    },
+    "optCorset": {
+      "group": "fields",
+      "title": "Bridal tick box: corset back",
+      "default": "Corset-back conversion"
+    },
+    "optStraps": {
+      "group": "fields",
+      "title": "Bridal tick box: straps or sleeves",
+      "default": "Straps or sleeves"
+    },
+    "optNeckline": {
+      "group": "fields",
+      "title": "Bridal tick box: neckline",
+      "default": "Neckline"
+    },
+    "optLaceBeading": {
+      "group": "fields",
+      "title": "Bridal tick box: lace or beading",
+      "default": "Lace or beading repair"
+    },
+    "optUnsure": {
+      "group": "fields",
+      "title": "Bridal tick box: not sure",
+      "default": "Not sure yet"
+    },
+    "shoesLabel": {
+      "group": "fields",
+      "title": "Bridal: shoes and undergarments question",
+      "default": "Do you have your shoes and undergarments yet?"
+    },
+    "optShoesBoth": {
+      "group": "fields",
+      "title": "Shoes answer: both",
+      "default": "Yes, I have both"
+    },
+    "optShoesOnly": {
+      "group": "fields",
+      "title": "Shoes answer: shoes only",
+      "default": "Shoes only"
+    },
+    "optShoesNotYet": {
+      "group": "fields",
+      "title": "Shoes answer: not yet",
+      "default": "Not yet"
+    },
+    "selectOne": {
+      "group": "fields",
+      "title": "\"Select one\" in drop-down lists",
+      "description": "What a drop-down list says before anything is picked.",
+      "default": "Select one"
+    },
+    "eventDateLabel": {
+      "group": "fields",
+      "title": "Bridal party: event date label",
+      "default": "Event date"
+    },
+    "garmentCountLabel": {
+      "group": "fields",
+      "title": "Bridal party: number of garments label",
+      "default": "How many garments"
+    },
+    "garmentCountPlaceholder": {
+      "group": "fields",
+      "title": "Bridal party: number of garments hint",
+      "default": "e.g. 4"
+    },
+    "notesLabelTailoring": {
+      "group": "fields",
+      "title": "Tailoring: notes label",
+      "default": "The garment, and what you'd like done"
+    },
+    "notesPlaceholderTailoring": {
+      "group": "fields",
+      "title": "Tailoring: notes hint",
+      "default": "e.g. navy trousers, hem to flat shoes"
+    },
+    "notesLabelBridal": {
+      "group": "fields",
+      "title": "Bridal: notes label",
+      "default": "Anything else I should know"
+    },
+    "notesPlaceholderBridal": {
+      "group": "fields",
+      "title": "Bridal: notes hint",
+      "long": true,
+      "default": "e.g. fabric, lace or beading, anything you are worried about"
+    },
+    "notesLabel": {
+      "group": "fields",
+      "title": "Bridal party: notes label",
+      "default": "Notes"
+    },
+    "notesPlaceholder": {
+      "group": "fields",
+      "title": "Bridal party: notes hint",
+      "default": "Anything you want me to know"
+    },
+    "referralLabel": {
+      "group": "fields",
+      "title": "\"How did you find me?\" question",
+      "default": "How did you find me?"
+    },
+    "referralOptions": {
+      "group": "fields",
+      "title": "\"How did you find me?\" answers",
+      "description": "One answer per line. The one a client picks appears in your request email.",
+      "long": true,
+      "default": "Google\nInstagram\nBridal shop\nWedding planner\nThe Knot / WeddingWire\nA friend who was a client\nOther"
+    },
+
+    "photosLabel": {
+      "group": "photos",
+      "title": "Photos: label",
+      "description": "Followed by the \"Optional\" tag from Form fields.",
+      "default": "Photos"
+    },
+    "photosHint": {
+      "group": "photos",
+      "title": "Photos: note under the label",
+      "description": "{max} becomes the most photos a client can add (5).",
+      "long": true,
+      "default": "Up to {max} photos. Front, back, and a close-up of anything you are worried about. Large photos are resized before sending."
+    },
+    "photosAdd": {
+      "group": "photos",
+      "title": "Add photos box",
+      "default": "Add photos"
+    },
+    "photosPreparing": {
+      "group": "photos",
+      "title": "Add photos box while photos are being prepared",
+      "default": "Preparing photos"
+    },
+    "photosTypes": {
+      "group": "photos",
+      "title": "Photo types line",
+      "description": "Shown under \"Add photos\".",
+      "default": "JPG, PNG, HEIC, WEBP"
+    },
+    "photoRemove": {
+      "group": "photos",
+      "title": "Remove photo button, read aloud",
+      "description": "Not shown on screen: the button is a small ×. A screen reader says this. {file} becomes the photo's file name.",
+      "default": "Remove {file}"
+    },
+    "photoTooBig": {
+      "group": "photos",
+      "title": "Photo is too large",
+      "description": "{file} becomes the photo's file name.",
+      "default": "\"{file}\" is too large to attach."
+    },
+    "photoTooBigTogether": {
+      "group": "photos",
+      "title": "Photos too large to send together",
+      "description": "{file} becomes the photo's file name; {email} becomes your email address from Site Settings.",
+      "long": true,
+      "default": "\"{file}\" would make the photos too large to send together. Try fewer photos, or email the rest to {email}."
+    },
+    "photoUnreadable": {
+      "group": "photos",
+      "title": "Photo could not be read",
+      "long": true,
+      "default": "One of those photos could not be read. Please try another."
+    },
+
+    "pcButton": {
+      "group": "photoCheck",
+      "title": "Check button",
+      "description": "Appears under the photos once a client adds one.",
+      "default": "Check my photos"
+    },
+    "pcButtonAgain": {
+      "group": "photoCheck",
+      "title": "Check button after the photos change",
+      "default": "Check the new photos"
+    },
+    "pcIntro": {
+      "group": "photoCheck",
+      "title": "Note beside the check button",
+      "description": "The sentence saying where the photos go is fixed and follows this, so the disclosure always stays accurate.",
+      "long": true,
+      "default": "Optional. A quick automated read of what the photos show (the garment, the likely fabric, visible details) to help you describe it. It never quotes or recommends work; Grace does that in person."
+    },
+    "pcCheckingOne": {
+      "group": "photoCheck",
+      "title": "While checking one photo",
+      "default": "Looking at your photo…"
+    },
+    "pcCheckingSome": {
+      "group": "photoCheck",
+      "title": "While checking two or three photos",
+      "default": "Looking at your photos…"
+    },
+    "pcCheckingMany": {
+      "group": "photoCheck",
+      "title": "While checking more than three photos",
+      "description": "Only the first three are checked.",
+      "default": "Looking at the first three photos…"
+    },
+    "pcUnavailable": {
+      "group": "photoCheck",
+      "title": "Check isn't working",
+      "long": true,
+      "default": "The check isn't available right now. Your request will still send."
+    },
+    "pcUnreadable": {
+      "group": "photoCheck",
+      "title": "Photos too unclear to read",
+      "default": "The check couldn’t read these photos."
+    },
+    "pcUnreadableTip": {
+      "group": "photoCheck",
+      "title": "Tip after unclear photos",
+      "long": true,
+      "default": "A full-length photo of the garment in good light works best. Or just send them; Grace will look herself."
+    },
+    "pcHeading": {
+      "group": "photoCheck",
+      "title": "Result heading",
+      "default": "What the photos show"
+    },
+    "pcGarment": {
+      "group": "photoCheck",
+      "title": "Result row: garment",
+      "default": "Garment"
+    },
+    "pcShape": {
+      "group": "photoCheck",
+      "title": "Result row: shape",
+      "default": "Shape"
+    },
+    "pcFabric": {
+      "group": "photoCheck",
+      "title": "Result row: fabric",
+      "default": "Fabric"
+    },
+    "pcLayers": {
+      "group": "photoCheck",
+      "title": "Result row: layers",
+      "default": "Layers"
+    },
+    "pcDetails": {
+      "group": "photoCheck",
+      "title": "Result row: details",
+      "default": "Details"
+    },
+    "pcClosure": {
+      "group": "photoCheck",
+      "title": "Result row: closure",
+      "default": "Closure"
+    },
+    "pcTrain": {
+      "group": "photoCheck",
+      "title": "Result row: train",
+      "default": "Train"
+    },
+    "pcFit": {
+      "group": "photoCheck",
+      "title": "Result row: how it sits",
+      "default": "How it sits"
+    },
+    "pcSureHigh": {
+      "group": "photoCheck",
+      "title": "How sure: very",
+      "description": "Shown beside the garment and each fabric.",
+      "default": "Clear in the photos"
+    },
+    "pcSureMedium": {
+      "group": "photoCheck",
+      "title": "How sure: fairly",
+      "default": "Likely"
+    },
+    "pcSureLow": {
+      "group": "photoCheck",
+      "title": "How sure: not very",
+      "default": "Hard to tell"
+    },
+    "pcSuggest": {
+      "group": "photoCheck",
+      "title": "Line above the suggested tick boxes",
+      "description": "Bridal only. The suggestions use the tick box names from Form fields.",
+      "long": true,
+      "default": "Related to what’s visible. Tap any that match what you want:"
+    },
+    "pcCannotShow": {
+      "group": "photoCheck",
+      "title": "\"Photos can't show\" lead-in",
+      "description": "Followed by a short list of things photos can't tell.",
+      "default": "Photos can’t show:"
+    },
+    "pcInclude": {
+      "group": "photoCheck",
+      "title": "Send it along: tick box",
+      "default": "Send this with my request"
+    },
+    "pcIncludeHint": {
+      "group": "photoCheck",
+      "title": "Send it along: note",
+      "long": true,
+      "default": "Anything wrong? Untick it, or say so in your notes. It’s a starting point, not a quote."
+    },
+
+    "submitSend": {
+      "group": "buttons",
+      "title": "Send button",
+      "default": "Send my request"
+    },
+    "submitWaitlist": {
+      "group": "buttons",
+      "title": "Send button when joining the waitlist",
+      "default": "Join the waitlist"
+    },
+    "submitAskDate": {
+      "group": "buttons",
+      "title": "Send button when the wedding date is tight",
+      "description": "Used when the wedding is under eight weeks away, or the first fitting falls before bridal reopens.",
+      "default": "Ask about my date"
+    },
+    "submitSending": {
+      "group": "buttons",
+      "title": "Send button while sending",
+      "default": "Sending"
+    },
+    "errorPrefix": {
+      "group": "buttons",
+      "title": "Word before every error",
+      "description": "Comes before each message below, as in \"Error: Please add your name.\"",
+      "default": "Error:"
+    },
+    "errName": {
+      "group": "buttons",
+      "title": "Name left empty",
+      "default": "Please add your name."
+    },
+    "errEmailMissing": {
+      "group": "buttons",
+      "title": "Email left empty",
+      "default": "Please add an email address so I can reply."
+    },
+    "errEmailInvalid": {
+      "group": "buttons",
+      "title": "Email doesn't look right",
+      "default": "That email address does not look right."
+    },
+    "sendFailed": {
+      "group": "buttons",
+      "title": "Request didn't send",
+      "description": "Follows \"Error:\", so it starts in lower case.",
+      "default": "something went wrong."
+    },
+    "sendTooLarge": {
+      "group": "buttons",
+      "title": "Request didn't send: photos too large",
+      "default": "The photos were too large to send."
+    },
+    "sendTooMany": {
+      "group": "buttons",
+      "title": "Request didn't send: too many tries",
+      "default": "Too many requests from this connection."
+    },
+    "sendEmailMe": {
+      "group": "buttons",
+      "title": "After a failed send: email me instead",
+      "description": "{email} becomes your email address from Site Settings, as a link.",
+      "default": "Please email me at {email}."
+    },
+    "policiesLine": {
+      "group": "buttons",
+      "title": "Policies line under the button",
+      "description": "Shown once you have policies. {policies} becomes a link to your policies page, using the words below.",
+      "default": "By sending this you agree to my {policies}."
+    },
+    "policiesLink": {
+      "group": "buttons",
+      "title": "Policies link words",
+      "default": "policies"
+    },
+
+    "contactHeroAria": {
+      "group": "contact",
+      "title": "Top of the page, read aloud",
+      "description": "Not shown on screen. A screen reader's name for the dark banner at the top.",
+      "default": "Contact hero"
+    },
+    "contactSectionAria": {
+      "group": "contact",
+      "title": "Form and details section, read aloud",
+      "description": "Not shown on screen. A screen reader's name for the part of the page with the form.",
+      "default": "Contact information and form"
+    },
+    "infoHeading": {
+      "group": "contact",
+      "title": "Contact details heading",
+      "default": "Contact information"
+    },
+    "infoLocation": {
+      "group": "contact",
+      "title": "Location label",
+      "default": "Location"
+    },
+    "infoLocationLine": {
+      "group": "contact",
+      "title": "Location line",
+      "description": "{location} becomes the location from Site Settings.",
+      "default": "{location} · By appointment"
+    },
+    "infoEmail": {
+      "group": "contact",
+      "title": "Email label",
+      "default": "Email"
+    },
+    "infoInstagram": {
+      "group": "contact",
+      "title": "Instagram label",
+      "default": "Instagram"
+    },
+    "faqLabel": {
+      "group": "contact",
+      "title": "Questions: small label",
+      "description": "Above the questions at the bottom of the contact page.",
+      "default": "Common questions"
+    },
+    "faqHeading": {
+      "group": "contact",
+      "title": "Questions: heading",
+      "default": "Frequently asked"
+    },
+
+    "confirmSubject": {
+      "group": "emails",
+      "title": "Request received: subject line",
+      "default": "Your request was received · Grace Mae Alterations"
+    },
+    "confirmHeading": {
+      "group": "emails",
+      "title": "Request received: heading",
+      "default": "Your request was received."
+    },
+    "confirmGreeting": {
+      "group": "emails",
+      "title": "Greeting",
+      "description": "Starts every confirmation email. {name} becomes the client's first name.",
+      "default": "Hi {name},"
+    },
+    "confirmGreetingNoName": {
+      "group": "emails",
+      "title": "Greeting without a name",
+      "description": "Used when the name typed in isn't a plain first name.",
+      "default": "Hi,"
+    },
+    "confirmIntro": {
+      "group": "emails",
+      "title": "Request received: first paragraph",
+      "description": "Follows the greeting (\"Hi Ann,\"), so it starts in lower case.",
+      "long": true,
+      "default": "thank you for reaching out. I've received your request, and I read every message myself. I'll reply as soon as I can."
+    },
+    "confirmNextHeading": {
+      "group": "emails",
+      "title": "\"What happens next\" heading",
+      "default": "What Happens Next"
+    },
+    "confirmNextSteps": {
+      "group": "emails",
+      "title": "\"What happens next\" steps",
+      "description": "One step per line; they are numbered in the email.",
+      "long": true,
+      "default": "I'll review your request and reach out to schedule your first fitting.\nAt the fitting we'll look at the garment together, talk through the alterations, and I'll give you a quote and a realistic timeline.\nAlterations begin after the fitting and a deposit. I'll keep you updated along the way."
+    },
+    "confirmBringHeading": {
+      "group": "emails",
+      "title": "\"What to bring\" heading",
+      "default": "What to Bring to Your First Fitting"
+    },
+    "confirmBringBridal": {
+      "group": "emails",
+      "title": "What to bring: bridal",
+      "description": "One item per line.",
+      "long": true,
+      "default": "Your wedding dress\nThe shoes you plan to wear on your wedding day, since heel height sets the hem length\nAny undergarments, shapewear, or a strapless bra you plan to wear with the gown\nAny accessories you'd like to try on with the dress"
+    },
+    "confirmBringTailoring": {
+      "group": "emails",
+      "title": "What to bring: tailoring or repair",
+      "description": "One item per line.",
+      "long": true,
+      "default": "The garment(s) you need altered\nShoes you plan to wear, if a hem adjustment is involved"
+    },
+    "confirmBringParty": {
+      "group": "emails",
+      "title": "What to bring: bridal party",
+      "description": "One item per line.",
+      "long": true,
+      "default": "Each garment, labelled with who will wear it\nThe shoes each person plans to wear, if hems are involved\nAnyone being fitted, or a date when they can come in"
+    },
+    "confirmBringOther": {
+      "group": "emails",
+      "title": "What to bring: no type picked",
+      "description": "One item per line.",
+      "long": true,
+      "default": "The garment(s) you need altered\nShoes if a hem adjustment is involved"
+    },
+    "confirmQuestions": {
+      "group": "emails",
+      "title": "Request received: questions line",
+      "description": "{email} becomes your email address, as a link.",
+      "long": true,
+      "default": "Questions in the meantime? Reply to this email or reach me at {email}."
+    },
+    "confirmWaitlistSubject": {
+      "group": "emails",
+      "title": "Waitlist: subject line",
+      "default": "You're on my waitlist · Grace Mae Alterations"
+    },
+    "confirmWaitlistHeading": {
+      "group": "emails",
+      "title": "Waitlist: heading",
+      "default": "You're on my waitlist."
+    },
+    "confirmWaitlistIntroBridal": {
+      "group": "emails",
+      "title": "Waitlist: first paragraph (bridal)",
+      "description": "Follows the greeting, so it starts in lower case. {reopens} becomes the reopening time from Site Settings.",
+      "long": true,
+      "default": "you're on my bridal waitlist. I'll reach out in order as dates open for {reopens}."
+    },
+    "confirmWaitlistIntroReopens": {
+      "group": "emails",
+      "title": "Waitlist: first paragraph (other requests, with a reopening time)",
+      "description": "Follows the greeting, so it starts in lower case. {reopens} becomes the reopening time from Site Settings.",
+      "long": true,
+      "default": "you're on my waitlist. I'll reach out in order as dates open for {reopens}."
+    },
+    "confirmWaitlistIntro": {
+      "group": "emails",
+      "title": "Waitlist: first paragraph (no reopening time set)",
+      "description": "Follows the greeting, so it starts in lower case.",
+      "long": true,
+      "default": "your request has been received and you're on my waitlist. I'll reach out as soon as a spot opens up."
+    },
+    "confirmWaitlistMeantime": {
+      "group": "emails",
+      "title": "Waitlist: second paragraph",
+      "description": "Also used in the \"I have your date\" email.",
+      "long": true,
+      "default": "In the meantime, feel free to reply to this email with any questions."
+    },
+    "confirmDateSubject": {
+      "group": "emails",
+      "title": "\"I have your date\": subject line",
+      "description": "Sent instead of the waitlist email when a bride's date is under eight weeks away, or her first fitting falls before bridal reopens.",
+      "default": "About your date · Grace Mae Alterations"
+    },
+    "confirmDateHeading": {
+      "group": "emails",
+      "title": "\"I have your date\": heading",
+      "default": "I have your date."
+    },
+    "confirmDateIntro": {
+      "group": "emails",
+      "title": "\"I have your date\": first paragraph",
+      "description": "Follows the greeting.",
+      "long": true,
+      "default": "I have your request and your date. I'll tell you honestly whether I can fit it in, and if I can't, I'll suggest someone who can."
+    },
+    "confirmTagline": {
+      "group": "emails",
+      "title": "Line under every heading",
+      "default": "Grace Mae Alterations · Pittsburgh, PA"
+    },
+    "confirmSignName": {
+      "group": "emails",
+      "title": "Sign-off name",
+      "default": "Grace Mae"
+    },
+    "confirmSignLine": {
+      "group": "emails",
+      "title": "Sign-off line",
+      "description": "Under your name at the end of every email.",
+      "long": true,
+      "default": "Grace Mae Alterations · Pittsburgh, PA · By appointment only"
+    },
+
+    "careTabTitle": {
+      "group": "care",
+      "title": "Care page: browser tab title",
+      "default": "Care notes"
+    },
+    "careLabel": {
+      "group": "care",
+      "title": "Care page: small label",
+      "description": "Used when the card has no first name.",
+      "default": "Care notes"
+    },
+    "careLabelNamed": {
+      "group": "care",
+      "title": "Care page: small label with a name",
+      "description": "{name} becomes the client's first name from the care card.",
+      "default": "Care notes for {name}"
+    },
+    "careHeading": {
+      "group": "care",
+      "title": "Care page: heading",
+      "description": "{garment} becomes the garment from the care card, such as \"wedding gown\".",
+      "default": "Caring for your {garment}"
+    },
+    "careThanks": {
+      "group": "care",
+      "title": "Care page: thank-you line",
+      "default": "Thank you for trusting me with it."
+    },
+    "careAltered": {
+      "group": "care",
+      "title": "Care page: altered line (no date)",
+      "default": "Altered by hand in Pittsburgh."
+    },
+    "careAlteredOn": {
+      "group": "care",
+      "title": "Care page: altered line with the date",
+      "description": "{date} becomes the month it was finished, such as \"May 2026\".",
+      "default": "Altered by hand in Pittsburgh, {date}."
+    },
+    "careFabric": {
+      "group": "care",
+      "title": "Care page: fabric line",
+      "description": "Shown when the card has a fabric. {fabric} becomes the fabric, in lower case.",
+      "default": "These notes are written for {fabric}."
+    },
+    "carePhotoAria": {
+      "group": "care",
+      "title": "Care page: photos, read aloud",
+      "description": "Not shown on screen. A screen reader's name for the before and after photos.",
+      "default": "Before and after"
+    },
+    "carePhotoAlt": {
+      "group": "care",
+      "title": "Care page: photo description",
+      "description": "Read aloud when a photo has no description of its own. {garment} becomes the garment.",
+      "default": "Your {garment}"
+    },
+    "careWorkHeading": {
+      "group": "care",
+      "title": "Care page: \"What we did\" heading",
+      "default": "What we did"
+    },
+    "careNotesAria": {
+      "group": "care",
+      "title": "Care page: care notes, read aloud",
+      "description": "Not shown on screen. A screen reader's name for the care notes section.",
+      "default": "Care notes"
+    },
+    "careReviewHeading": {
+      "group": "care",
+      "title": "Care page: reviews heading",
+      "default": "If you loved how it turned out"
+    },
+    "careReviewText": {
+      "group": "care",
+      "title": "Care page: reviews line",
+      "long": true,
+      "default": "A few words from you help the next bride find me more than anything I could say myself."
+    },
+    "careReviewButton": {
+      "group": "care",
+      "title": "Care page: Google review button",
+      "description": "Shown once a review link is set in Site Settings.",
+      "default": "Leave a Google review"
+    },
+    "careInstagramButton": {
+      "group": "care",
+      "title": "Care page: Instagram button",
+      "description": "{instagram} becomes your Instagram handle from Site Settings.",
+      "default": "Share a photo, tag {instagram}"
+    },
+    "careMore": {
+      "group": "care",
+      "title": "Care page: closing line",
+      "description": "{link} becomes a link to the contact page, using the words below.",
+      "long": true,
+      "default": "Something not sitting right, or another piece that needs work? {link}."
+    },
+    "careMoreLink": {
+      "group": "care",
+      "title": "Care page: closing link words",
+      "default": "Send me a request"
+    },
+    "careCardSubtitle": {
+      "group": "care",
+      "title": "Printed card: line under your name",
+      "default": "Bridal & clothing alterations"
+    },
+    "careCardHeading": {
+      "group": "care",
+      "title": "Printed card: heading",
+      "description": "{garment} becomes the garment from the care card.",
+      "default": "Care notes for your {garment}"
+    },
+    "careCardScan": {
+      "group": "care",
+      "title": "Printed card: scan line",
+      "long": true,
+      "default": "Scan for how to store and clean it, and your before and after."
+    },
+    "careCardPrintTabTitle": {
+      "group": "care",
+      "title": "Print page: browser tab title",
+      "description": "The print page is only for you.",
+      "default": "Print care card"
+    },
+    "careCardPrintHeading": {
+      "group": "care",
+      "title": "Print page: heading",
+      "description": "Only for you. {garment} becomes the garment from the care card.",
+      "default": "Care card for the {garment}"
+    },
+    "careCardPrintNote": {
+      "group": "care",
+      "title": "Print page: printing note",
+      "description": "Only for you.",
+      "long": true,
+      "default": "Prints at business-card size on its own. Heavy cardstock works best. Trim along the dashed line and tuck it in the garment bag."
+    },
+    "careCardPrintButton": {
+      "group": "care",
+      "title": "Print page: print button",
+      "default": "Print the card"
+    },
+    "careCardPrintOpen": {
+      "group": "care",
+      "title": "Print page: link to the care page",
+      "default": "See the page it opens"
+    }
+  }
 }
