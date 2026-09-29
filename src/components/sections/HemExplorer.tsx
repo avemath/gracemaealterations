@@ -1,5 +1,6 @@
 "use client";
 
+import { analytics } from "@/lib/analytics";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { fill } from "@/lib/text/fill";
 import type { Text } from "@/lib/text";
@@ -121,6 +122,7 @@ export default function HemExplorer({ text }: { text: HemText }) {
   const set = (patch: Partial<Choice>) => {
     const next = { ...choice, ...patch };
     if (next.brk === choice.brk && next.shoe === choice.shoe && next.leg === choice.leg && next.slanted === choice.slanted) return;
+    analytics.toolUse("hem", `${next.brk}/${next.shoe}/${next.leg}${next.slanted ? "/slanted" : ""}`);
     update(next, choice.shoe);
   };
 

@@ -4,7 +4,7 @@ import { test, expect } from "@playwright/test";
  * Link previews and icons. These only need one width, and they check the
  * server HTML directly rather than the rendered page.
  */
-const OWN_CARD = ["/", "/about", "/services", "/portfolio", "/contact"];
+const OWN_CARD = ["/", "/about", "/services", "/portfolio", "/contact", "/guides/wedding-dress-bustle-types", "/guides/trouser-hem-length"];
 
 const ogImage = (html: string) =>
   html.match(/<meta property="og:image" content="([^"]+)"/)?.[1] ?? null;

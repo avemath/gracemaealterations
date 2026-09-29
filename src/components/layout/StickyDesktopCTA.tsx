@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { pageCtas, type CtaText } from "@/lib/cta";
 
 const EXCLUDED = ["/contact", "/studio"];

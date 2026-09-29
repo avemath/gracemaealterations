@@ -1,5 +1,6 @@
 "use client";
 
+import { analytics } from "@/lib/analytics";
 import { useEffect, useRef, useState } from "react";
 import type { Confidence, PhotoCheckResult } from "@/lib/photoCheck";
 import { bridalAlterationLabels, type OptionText } from "@/lib/contactOptions";
@@ -62,6 +63,7 @@ export default function PhotoCheck({
   }, [photosKey]);
 
   const run = async () => {
+    analytics.photoCheck();
     const askedFor = photosKey;
     setState({ kind: "checking" });
     try {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { m as motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import SanityImage from "@/components/ui/SanityImage";

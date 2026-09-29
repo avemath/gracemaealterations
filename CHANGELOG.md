@@ -2,6 +2,12 @@
 
 Newest first. Grace facing notes live in `site/content/FOR-GRACE.md`.
 
+## Lighter pages, guide share cards and tool insight, September 2026
+
+- `perf: animation library loads only what the site uses` (LazyMotion + domAnimation): about 25 KB less JavaScript on the home, services, portfolio, about and contact pages (home 165 kB to 140 kB first load).
+- `feat: every guide shares with its own card`, and the share cards now use Gelasio (a close cousin of the site's Georgia) and a plain sans instead of Cormorant and Jost.
+- `feat: see which tools get used`: Vercel Analytics events for the bustle and hem explorers (which style or break), the Your dates calculator (what kind of date, and calendar downloads), a fully packed fitting bag, and the photo check.
+
 ## Every word editable in the Studio, September 2026
 
 - `feat: words around the site`: three new Studio documents, Site-wide words (131 fields), Contact form & emails (171) and Guides & tools (133), hold the wording that used to be written into the code: buttons and labels, header, footer and sticky buttons, the home, services, portfolio, about, landing, policies and 404 pages, the contact form, photo check, confirmation emails and care pages, and the guides' tools (Your dates, fitting bag, bustle and trouser hem explorers, calendar file). Each field starts with the original wording, shows it underneath, and falls back to it when left empty. The Studio schema, the site's fallbacks and the seed script all come from one spec per area (`src/lib/text/specs`), so they can't drift apart; `tests/wording.spec.ts` checks the specs.
