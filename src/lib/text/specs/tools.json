@@ -3,7 +3,14 @@
   "title": "Guides & tools",
   "description": "The words in the guides and their interactive tools: the \"Your dates\" calculator, the fitting bag checklist, the bustle and trouser hem drawings. Leave a field empty to use the original wording. Words in {curly brackets} are filled in automatically, so keep them as they are.",
   "groups": [
-    { "name": "dates", "title": "Wedding date messages" }
+    { "name": "dates", "title": "Wedding date messages" },
+    { "name": "datesTool", "title": "Your dates calculator" },
+    { "name": "bag", "title": "Fitting bag checklist" },
+    { "name": "bustle", "title": "Bustle explorer" },
+    { "name": "bustleSteps", "title": "Bustle explorer steps" },
+    { "name": "hem", "title": "Trouser hem explorer" },
+    { "name": "hemChoices", "title": "Trouser hem explorer choices" },
+    { "name": "guides", "title": "Guides pages" }
   ],
   "fields": {
     "datePast": {
@@ -62,6 +69,676 @@
       "title": "Plenty of time (bridal on the waitlist)",
       "long": true,
       "default": "Plenty of time. Join the waitlist whenever you're ready; fittings start around {range}."
+    },
+
+    "datesLabel": {
+      "group": "datesTool",
+      "title": "Small label at the top",
+      "description": "The gold label above the calculator's heading, on the timeline guide.",
+      "default": "Your dates"
+    },
+    "datesHeading": {
+      "group": "datesTool",
+      "title": "Heading",
+      "default": "Count it back from your wedding"
+    },
+    "datesIntro": {
+      "group": "datesTool",
+      "title": "Line under the heading",
+      "long": true,
+      "default": "Pop in your date and I'll turn the timeline below into real dates you can plan around."
+    },
+    "datesInputLabel": {
+      "group": "datesTool",
+      "title": "Label above the date box",
+      "default": "Wedding date"
+    },
+    "datesPrivacy": {
+      "group": "datesTool",
+      "title": "Note before a date is chosen",
+      "description": "Shown at the bottom of the calculator until a date is picked.",
+      "default": "Nothing is sent anywhere. Your date stays on this device."
+    },
+    "datesCountdownToday": {
+      "group": "datesTool",
+      "title": "Countdown: the wedding is today",
+      "default": "Today"
+    },
+    "datesCountdownOneDay": {
+      "group": "datesTool",
+      "title": "Countdown: one day to go",
+      "default": "1 day to go"
+    },
+    "datesCountdownDays": {
+      "group": "datesTool",
+      "title": "Countdown: under two weeks",
+      "description": "{days} becomes the number of days left, such as 9.",
+      "default": "{days} days to go"
+    },
+    "datesCountdownWeeks": {
+      "group": "datesTool",
+      "title": "Countdown: two weeks or more",
+      "description": "{weeks} becomes the number of whole weeks left, such as 20.",
+      "default": "{weeks} weeks to go"
+    },
+    "datesPlanLabel": {
+      "group": "datesTool",
+      "title": "Name of the list of dates (read aloud)",
+      "description": "Not shown on the page. Screen readers announce it before the list of fitting dates.",
+      "default": "Your fitting dates"
+    },
+    "datesByDate": {
+      "group": "datesTool",
+      "title": "Date for an open-ended step",
+      "description": "Used for a step like \"12+ weeks\". {date} becomes the date, such as \"Mar 20, 2027\".",
+      "default": "By {date}"
+    },
+    "datesNow": {
+      "group": "datesTool",
+      "title": "Tag on the step that is happening now",
+      "default": "Now"
+    },
+    "datesPassed": {
+      "group": "datesTool",
+      "title": "Note on a step that has already passed",
+      "description": "Shown after the dates, following a small dot.",
+      "default": "passed"
+    },
+    "datesPassedSpoken": {
+      "group": "datesTool",
+      "title": "Note on a passed step (read aloud)",
+      "description": "Not shown on the page. What screen readers say after a step's dates once it has passed.",
+      "default": "(already passed)"
+    },
+    "datesWedding": {
+      "group": "datesTool",
+      "title": "Last line of the list",
+      "description": "The wedding day itself, at the end of the list of dates.",
+      "default": "Your wedding"
+    },
+    "datesCtaBook": {
+      "group": "datesTool",
+      "title": "Button: bridal is open",
+      "default": "Request a fitting"
+    },
+    "datesCtaWaitlist": {
+      "group": "datesTool",
+      "title": "Button: bridal is on the waitlist",
+      "default": "Join the bridal waitlist"
+    },
+    "datesCtaAsk": {
+      "group": "datesTool",
+      "title": "Button: waitlist, and the date is too soon",
+      "description": "Used instead of the waitlist button when the date is under eight weeks away or falls before bridal reopens.",
+      "default": "Ask about my date"
+    },
+    "datesCalendarButton": {
+      "group": "datesTool",
+      "title": "Calendar button",
+      "default": "Add these to my calendar"
+    },
+
+    "bagLabel": {
+      "group": "bag",
+      "title": "Checklist heading",
+      "description": "The gold label at the top of the packing list on the \"what to bring\" guide. The items themselves are the guide's paragraphs.",
+      "default": "Your fitting bag"
+    },
+    "bagCount": {
+      "group": "bag",
+      "title": "How many are packed",
+      "description": "{count} becomes the number ticked and {total} the number of items.",
+      "default": "{count} of {total} packed"
+    },
+    "bagDone": {
+      "group": "bag",
+      "title": "Everything is packed",
+      "default": "All packed. See you at the fitting."
+    },
+
+    "bustleButtonUp": {
+      "group": "bustle",
+      "title": "Button: bustle the train",
+      "default": "Bustle it"
+    },
+    "bustleButtonDown": {
+      "group": "bustle",
+      "title": "Button: let the train down",
+      "default": "Let it down"
+    },
+    "bustleStyleLegend": {
+      "group": "bustle",
+      "title": "Label above the style choices",
+      "description": "The style names themselves come from Bustle Styles.",
+      "default": "Bustle style"
+    },
+    "bustleTrainLegend": {
+      "group": "bustle",
+      "title": "Label above the train choices",
+      "default": "Train length"
+    },
+    "bustleTrainSweep": {
+      "group": "bustle",
+      "title": "Train choice: shortest",
+      "default": "Sweep"
+    },
+    "bustleTrainChapel": {
+      "group": "bustle",
+      "title": "Train choice: middle",
+      "default": "Chapel"
+    },
+    "bustleTrainCathedral": {
+      "group": "bustle",
+      "title": "Train choice: longest",
+      "default": "Cathedral"
+    },
+    "bustleBack": {
+      "group": "bustle",
+      "title": "Name of the back view",
+      "description": "Printed in capitals on the drawing, and on the view switch on phones.",
+      "default": "Back"
+    },
+    "bustleSide": {
+      "group": "bustle",
+      "title": "Name of the side view",
+      "description": "Printed in capitals on the drawing, and on the view switch on phones.",
+      "default": "Side"
+    },
+    "bustleStageCeremony": {
+      "group": "bustle",
+      "title": "Stage 1 name",
+      "description": "The small gold line above each step's caption on the drawing.",
+      "default": "Ceremony"
+    },
+    "bustleStageBustling": {
+      "group": "bustle",
+      "title": "Stage 2 name",
+      "default": "Bustling"
+    },
+    "bustleStageReception": {
+      "group": "bustle",
+      "title": "Stage 3 name",
+      "default": "Reception"
+    },
+    "bustleStepCount": {
+      "group": "bustle",
+      "title": "Step number",
+      "description": "Follows the stage name. {step} becomes the step number and {total} the number of steps (3).",
+      "default": "Step {step} of {total}"
+    },
+    "bustleStateDown": {
+      "group": "bustle",
+      "title": "Train down (read aloud)",
+      "description": "Not shown on the page. What screen readers hear for the drawing and the slider while the train is down.",
+      "default": "train down for the ceremony"
+    },
+    "bustleStateUp": {
+      "group": "bustle",
+      "title": "Bustled (read aloud)",
+      "description": "Not shown on the page. What screen readers hear once the train is bustled.",
+      "default": "bustled for the reception"
+    },
+    "bustleDrawingName": {
+      "group": "bustle",
+      "title": "Name of the drawing (read aloud)",
+      "description": "Not shown on the page. {style} becomes the style name and {state} one of the two lines above.",
+      "default": "{style} bustle, {state}"
+    },
+    "bustleSpokenUpdate": {
+      "group": "bustle",
+      "title": "Announcement on each change (read aloud)",
+      "description": "Not shown on the page. Screen readers say this whenever the style or position changes.",
+      "default": "{style}, {state}."
+    },
+    "bustleSliderLabel": {
+      "group": "bustle",
+      "title": "Name of the slider (read aloud)",
+      "description": "Not shown on the page. Screen readers announce it for the slider next to the button.",
+      "default": "Train position, from ceremony to reception"
+    },
+    "bustleAlsoCalled": {
+      "group": "bustle",
+      "title": "Other names line",
+      "description": "Under the style name, and on the bustle cards. {names} becomes the style's \"Also called\" from Bustle Styles.",
+      "default": "Also called: {names}"
+    },
+    "bustleTypicalPoints": {
+      "group": "bustle",
+      "title": "Label: typical points",
+      "description": "Also used on the bustle cards.",
+      "default": "Typical points"
+    },
+    "bustlePointsInDrawing": {
+      "group": "bustle",
+      "title": "How many points the drawing shows",
+      "description": "Added after the typical points. {count} becomes the number of points drawn.",
+      "default": "({count} in this drawing)"
+    },
+    "bustleBestFor": {
+      "group": "bustle",
+      "title": "Label: best for",
+      "description": "Also used on the bustle cards.",
+      "default": "Best for"
+    },
+    "bustleFabric": {
+      "group": "bustle",
+      "title": "Label: fabric",
+      "description": "Also used on the bustle cards.",
+      "default": "Fabric"
+    },
+    "bustleKeyHook": {
+      "group": "bustle",
+      "title": "Key: solid gold dot",
+      "default": "Hook on top"
+    },
+    "bustleKeyTie": {
+      "group": "bustle",
+      "title": "Key: dashed gold ring",
+      "default": "Tied underneath"
+    },
+    "bustleKeyPull": {
+      "group": "bustle",
+      "title": "Key: gold arrow",
+      "default": "Which way it’s pulled"
+    },
+    "bustleHowAmerican": {
+      "group": "bustle",
+      "title": "How it works: American",
+      "description": "The paragraph under the style name. The name, other names, points, best for and fabric are edited in Bustle Styles.",
+      "long": true,
+      "default": "The train is lifted and hooked onto the back of the skirt, so it falls in soft poufs over the top."
+    },
+    "bustleHowFrench": {
+      "group": "bustle",
+      "title": "How it works: French",
+      "long": true,
+      "default": "The train is tied up underneath the skirt with numbered ribbons, so it tucks under in a cascade."
+    },
+    "bustleHowAustrian": {
+      "group": "bustle",
+      "title": "How it works: Austrian",
+      "long": true,
+      "default": "A cord runs up the center back. Pulling it gathers the train straight up into ruched folds."
+    },
+    "bustleHowBallroom": {
+      "group": "bustle",
+      "title": "How it works: Ballroom",
+      "long": true,
+      "default": "The train folds up underneath all the way round, so the hem sits level with the floor, like a ball gown."
+    },
+    "bustleHowDetachable": {
+      "group": "bustle",
+      "title": "How it works: Detachable train",
+      "long": true,
+      "default": "The train is a separate piece that hooks on at the waist for the ceremony and comes off for the reception."
+    },
+
+    "bustleStepAmerican1": {
+      "group": "bustleSteps",
+      "title": "American, step 1 (train down)",
+      "description": "The captions on the drawing change as the train lifts: step 1 with the train down, step 2 while it moves, step 3 once it is bustled.",
+      "default": "Loops are sewn under the train."
+    },
+    "bustleStepAmerican2": {
+      "group": "bustleSteps",
+      "title": "American, step 2 (lifting)",
+      "long": true,
+      "default": "One at a time, from the center, each loop is lifted up the skirt…"
+    },
+    "bustleStepAmerican3": {
+      "group": "bustleSteps",
+      "title": "American, step 3 (bustled)",
+      "default": "…and hooked onto a button at the hip."
+    },
+    "bustleStepFrench1": {
+      "group": "bustleSteps",
+      "title": "French, step 1 (train down)",
+      "default": "Ribbons are sewn under the train."
+    },
+    "bustleStepFrench2": {
+      "group": "bustleSteps",
+      "title": "French, step 2 (lifting)",
+      "long": true,
+      "default": "From the center out, each ribbon is tucked up underneath the skirt…"
+    },
+    "bustleStepFrench3": {
+      "group": "bustleSteps",
+      "title": "French, step 3 (bustled)",
+      "default": "…and tied to its partner inside."
+    },
+    "bustleStepAustrian1": {
+      "group": "bustleSteps",
+      "title": "Austrian, step 1 (train down)",
+      "default": "A cord runs through rings up the center back."
+    },
+    "bustleStepAustrian2": {
+      "group": "bustleSteps",
+      "title": "Austrian, step 2 (lifting)",
+      "default": "Pulling the cord gathers the train upward…"
+    },
+    "bustleStepAustrian3": {
+      "group": "bustleSteps",
+      "title": "Austrian, step 3 (bustled)",
+      "default": "…into soft ruched swags."
+    },
+    "bustleStepBallroom1": {
+      "group": "bustleSteps",
+      "title": "Ballroom, step 1 (train down)",
+      "default": "Ties are sewn all around the underside."
+    },
+    "bustleStepBallroom2": {
+      "group": "bustleSteps",
+      "title": "Ballroom, step 2 (lifting)",
+      "default": "The train folds under, all the way round…"
+    },
+    "bustleStepBallroom3": {
+      "group": "bustleSteps",
+      "title": "Ballroom, step 3 (bustled)",
+      "default": "…so the hem sits level, like a ball gown."
+    },
+    "bustleStepDetachable1": {
+      "group": "bustleSteps",
+      "title": "Detachable train, step 1 (train on)",
+      "default": "The train hooks on at the waist."
+    },
+    "bustleStepDetachable2": {
+      "group": "bustleSteps",
+      "title": "Detachable train, step 2 (coming off)",
+      "default": "Unhook it…"
+    },
+    "bustleStepDetachable3": {
+      "group": "bustleSteps",
+      "title": "Detachable train, step 3 (train off)",
+      "default": "…and the gown underneath is floor length."
+    },
+
+    "hemBreakLegend": {
+      "group": "hem",
+      "title": "Label above the break choices",
+      "default": "Break"
+    },
+    "hemShoeLegend": {
+      "group": "hem",
+      "title": "Label above the shoe choices",
+      "default": "Shoe"
+    },
+    "hemLegLegend": {
+      "group": "hem",
+      "title": "Label above the leg choices",
+      "default": "Leg"
+    },
+    "hemLegName": {
+      "group": "hem",
+      "title": "Leg name",
+      "description": "How a leg choice is named in the line under the drawing and the notes, such as \"Slim leg\". {leg} becomes the leg choice.",
+      "default": "{leg} leg"
+    },
+    "hemSlantLabel": {
+      "group": "hem",
+      "title": "Slanted hem switch",
+      "description": "The switch below the choices, and the label on its note.",
+      "default": "Slanted hem"
+    },
+    "hemSlantShort": {
+      "group": "hem",
+      "title": "Slanted hem, in the line under the drawing",
+      "default": "Slanted"
+    },
+    "hemSlantNote": {
+      "group": "hem",
+      "title": "Slanted hem note",
+      "description": "Shown under the choices while the slanted hem is switched on.",
+      "long": true,
+      "default": "The hem is angled a little longer at the back than the front, so it covers more of the heel without piling up on the shoe. It’s a nice finish on slim trousers."
+    },
+    "hemLabelBreak": {
+      "group": "hem",
+      "title": "Drawing label: the break",
+      "description": "Printed in capitals on the drawing, pointing at the fold.",
+      "default": "BREAK"
+    },
+    "hemLabelNoBreak": {
+      "group": "hem",
+      "title": "Drawing label: no break",
+      "description": "Printed on the drawing instead of the one above when \"No break\" is chosen.",
+      "default": "NO BREAK"
+    },
+    "hemLabelHem": {
+      "group": "hem",
+      "title": "Drawing label: the hem",
+      "description": "Printed on the drawing, pointing at the back of the hem.",
+      "default": "HEM"
+    },
+    "hemDrawingName": {
+      "group": "hem",
+      "title": "Name of the drawing (read aloud)",
+      "description": "Not shown on the page. {leg} becomes the leg (\"straight\"), {shoe} the shoe as said aloud (\"a dress shoe\") and {break} the break (\"a half break\" or \"no break\").",
+      "long": true,
+      "default": "Side view of a {leg} trouser leg over {shoe}, hemmed with {break}."
+    },
+    "hemDrawingNameSlanted": {
+      "group": "hem",
+      "title": "Name of the drawing with a slanted hem (read aloud)",
+      "description": "Not shown on the page. Used instead of the one above while the slanted hem is on.",
+      "long": true,
+      "default": "Side view of a {leg} trouser leg over {shoe}, hemmed with {break} and a slanted hem."
+    },
+
+    "hemBreakNone": {
+      "group": "hemChoices",
+      "title": "No break: name",
+      "default": "No break"
+    },
+    "hemBreakNoneCaption": {
+      "group": "hemChoices",
+      "title": "No break: caption",
+      "description": "Under the drawing while this break is chosen.",
+      "long": true,
+      "default": "The hem just skims the top of the shoe, so the leg falls in one clean line with no fold. I love it on slim, modern suits and cropped trousers."
+    },
+    "hemBreakNoneSpoken": {
+      "group": "hemChoices",
+      "title": "No break: description (read aloud)",
+      "description": "Not shown on the page. Screen readers hear it as the drawing's description.",
+      "long": true,
+      "default": "The front of the hem just grazes the top of the shoe with no fold, and the back sits at the top of the heel."
+    },
+    "hemBreakQuarter": {
+      "group": "hemChoices",
+      "title": "Quarter break: name",
+      "default": "Quarter break"
+    },
+    "hemBreakQuarterCaption": {
+      "group": "hemChoices",
+      "title": "Quarter break: caption",
+      "long": true,
+      "default": "The hem just touches the shoe, leaving a barely-there dimple at the front. It’s the length I suggest most often for suits and chinos today."
+    },
+    "hemBreakQuarterSpoken": {
+      "group": "hemChoices",
+      "title": "Quarter break: description (read aloud)",
+      "long": true,
+      "default": "The front of the hem rests lightly on the shoe with a small dimple, and the back covers the top of the heel."
+    },
+    "hemBreakHalf": {
+      "group": "hemChoices",
+      "title": "Half break: name",
+      "default": "Half break"
+    },
+    "hemBreakHalfCaption": {
+      "group": "hemChoices",
+      "title": "Half break: caption",
+      "long": true,
+      "default": "One soft fold sits just above the shoe, and the back of the hem covers about half the heel. It’s the classic suit length, and a safe choice if you’re unsure."
+    },
+    "hemBreakHalfSpoken": {
+      "group": "hemChoices",
+      "title": "Half break: description (read aloud)",
+      "long": true,
+      "default": "One soft horizontal fold sits above the shoe at the front, and the back of the hem covers about half of the heel."
+    },
+    "hemBreakFull": {
+      "group": "hemChoices",
+      "title": "Full break: name",
+      "default": "Full break"
+    },
+    "hemBreakFullCaption": {
+      "group": "hemChoices",
+      "title": "Full break: caption",
+      "long": true,
+      "default": "The front folds into a deep crease across the shoe, and the back covers most of the heel. I keep it for fuller, traditional trousers; on a slim leg it just looks too long."
+    },
+    "hemBreakFullSpoken": {
+      "group": "hemChoices",
+      "title": "Full break: description (read aloud)",
+      "long": true,
+      "default": "A deep fold creases across the front above the shoe, and the back of the hem covers most of the heel."
+    },
+    "hemShoeDress": {
+      "group": "hemChoices",
+      "title": "Dress shoe: name",
+      "default": "Dress shoe"
+    },
+    "hemShoeDressSpoken": {
+      "group": "hemChoices",
+      "title": "Dress shoe: as said aloud",
+      "description": "Not shown on the page. Fills {shoe} in the drawing's name.",
+      "default": "a dress shoe"
+    },
+    "hemShoeDressNote": {
+      "group": "hemChoices",
+      "title": "Dress shoe: note",
+      "description": "Under the choices while this shoe is chosen.",
+      "long": true,
+      "default": "Dress shoes are low and sleek, so small changes in length show. Most suit hems I pin are pinned over a pair like these."
+    },
+    "hemShoeSneaker": {
+      "group": "hemChoices",
+      "title": "Sneaker: name",
+      "default": "Sneaker"
+    },
+    "hemShoeSneakerSpoken": {
+      "group": "hemChoices",
+      "title": "Sneaker: as said aloud",
+      "default": "a sneaker"
+    },
+    "hemShoeSneakerNote": {
+      "group": "hemChoices",
+      "title": "Sneaker: note",
+      "long": true,
+      "default": "Sneakers are chunkier and higher at the back, so the same trousers break sooner. I usually take casual pants a touch shorter for them."
+    },
+    "hemShoeHeel": {
+      "group": "hemChoices",
+      "title": "Heel: name",
+      "default": "Heel"
+    },
+    "hemShoeHeelSpoken": {
+      "group": "hemChoices",
+      "title": "Heel: as said aloud",
+      "default": "a heeled pump"
+    },
+    "hemShoeHeelNote": {
+      "group": "hemChoices",
+      "title": "Heel: note",
+      "long": true,
+      "default": "A heel lifts the back of your foot and tips it forward, so the hem lands somewhere quite different than it does in flats. Bring the shoes you’ll wear, and I’ll pin to those."
+    },
+    "hemLegSlim": {
+      "group": "hemChoices",
+      "title": "Slim leg: name",
+      "default": "Slim"
+    },
+    "hemLegSlimNote": {
+      "group": "hemChoices",
+      "title": "Slim leg: note",
+      "description": "Under the choices while this leg is chosen.",
+      "long": true,
+      "default": "A slim opening sits right on the shoe, so every bit of break shows. Slim trousers look sharpest with a little break or none."
+    },
+    "hemLegStraight": {
+      "group": "hemChoices",
+      "title": "Straight leg: name",
+      "default": "Straight"
+    },
+    "hemLegStraightNote": {
+      "group": "hemChoices",
+      "title": "Straight leg: note",
+      "long": true,
+      "default": "A straight leg is the middle ground. Most suits and chinos are cut this way, and any of these breaks can work."
+    },
+    "hemLegWide": {
+      "group": "hemChoices",
+      "title": "Wide leg: name",
+      "default": "Wide"
+    },
+    "hemLegWideNote": {
+      "group": "hemChoices",
+      "title": "Wide leg: note",
+      "long": true,
+      "default": "A wide leg falls past the shoe instead of resting on it, so it barely folds. I usually hem wide legs longer, just clear of the floor."
+    },
+
+    "guidesLabel": {
+      "group": "guides",
+      "title": "Guides page: small label",
+      "description": "The gold label above the heading on the Guides page.",
+      "default": "Guides"
+    },
+    "guidesHeading": {
+      "group": "guides",
+      "title": "Guides page: heading",
+      "default": "What to expect"
+    },
+    "guidesIntro": {
+      "group": "guides",
+      "title": "Guides page: line under the heading",
+      "long": true,
+      "default": "Plain answers to the questions I get asked most, from timelines and bustles to trouser hems."
+    },
+    "guidesSeoTitle": {
+      "group": "guides",
+      "title": "Guides page: title in search results",
+      "description": "Shown on the browser tab and as the headline in Google.",
+      "default": "Wedding Dress Alteration Guides | Grace Mae | Pittsburgh"
+    },
+    "guidesSeoDescription": {
+      "group": "guides",
+      "title": "Guides page: description in search results",
+      "description": "The short summary under the headline in Google.",
+      "long": true,
+      "default": "Timelines, bustle types, trouser hem lengths and what to bring to a fitting, written by a Pittsburgh bridal seamstress."
+    },
+    "guideBackLink": {
+      "group": "guides",
+      "title": "Each guide: link back to all guides",
+      "description": "The small gold link above every guide's title.",
+      "default": "Guides"
+    },
+    "guideQuestions": {
+      "group": "guides",
+      "title": "Each guide: closing question",
+      "description": "At the bottom of every guide written in the Studio, before the link below.",
+      "default": "Questions this did not answer?"
+    },
+    "guideQuestionsLink": {
+      "group": "guides",
+      "title": "Each guide: closing link",
+      "description": "Goes to the contact page.",
+      "default": "Send me a request"
+    },
+    "hemGuideClosing": {
+      "group": "guides",
+      "title": "Trouser hem guide: closing line",
+      "description": "Above the button at the bottom of the trouser hem guide. The rest of that guide is edited in Guides.",
+      "long": true,
+      "default": "Not sure which you like? Bring the trousers and the shoes, and we can try a couple of lengths with pins before anything is cut."
+    },
+    "hemGuideButton": {
+      "group": "guides",
+      "title": "Trouser hem guide: button",
+      "description": "Goes to the contact form with tailoring picked.",
+      "default": "Send a tailoring request"
     }
   }
 }

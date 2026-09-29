@@ -24,7 +24,16 @@ export const guide = defineType({
       name: "body",
       title: "Body",
       type: "array",
-      of: [{ type: "block", styles: [{ title: "Normal", value: "normal" }] }],
+      // Headings split a longer guide (like the trouser hem one) into parts.
+      of: [
+        {
+          type: "block",
+          styles: [
+            { title: "Normal", value: "normal" },
+            { title: "Heading", value: "h2" },
+          ],
+        },
+      ],
     }),
     defineField({
       name: "timelineSteps",

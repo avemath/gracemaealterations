@@ -4,16 +4,19 @@ import { getPublishedGuides, type SanityGuide } from "@/lib/sanity.queries";
 import { pageMetadata, FALLBACK_OG_IMAGE } from "@/lib/metadata";
 import { BUILT_IN_GUIDES } from "@/lib/builtInGuides";
 import SanityImage from "@/components/ui/SanityImage";
+import { getText } from "@/lib/text";
 
 // The built-in guides are always there, so the index is never a placeholder
 // and is always worth indexing.
-export const metadata: Metadata = pageMetadata({
-  path: "/guides",
-  title: "Wedding Dress Alteration Guides | Grace Mae | Pittsburgh",
-  description:
-    "Timelines, bustle types, trouser hem lengths and what to bring to a fitting, written by a Pittsburgh bridal seamstress.",
-  image: FALLBACK_OG_IMAGE,
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const text = await getText("tools");
+  return pageMetadata({
+    path: "/guides",
+    title: text.guidesSeoTitle,
+    description: text.guidesSeoDescription,
+    image: FALLBACK_OG_IMAGE,
+  });
+}
 
 type ListedGuide = {
   key: string;
@@ -24,27 +27,38 @@ type ListedGuide = {
 };
 
 export default async function GuidesPage() {
-  const sanityGuides = (await getPublishedGuides()) ?? [];
+  const [sanityGuides, text] = await Promise.all([getPublishedGuides().then((g) => g ?? []), getText("tools")]);
   const builtInSlugs = new Set(BUILT_IN_GUIDES.map((g) => g.slug));
+  const studio = new Map(sanityGuides.map((g) => [g.slug, g]));
   // Studio guides first, then the ones written into the site. A built-in page
-  // wins its URL, so a Studio guide with the same slug is left out.
+  // wins its URL, so a Studio guide with the same slug is listed once, in the
+  // built-in's place, but with the title and summary Grace wrote in the Studio.
   const guides: ListedGuide[] = [
     ...sanityGuides
       .filter((g) => !builtInSlugs.has(g.slug))
       .map((g) => ({ key: g._id, slug: g.slug, title: g.title, summary: g.summary, heroImage: g.heroImage })),
-    ...BUILT_IN_GUIDES.map((g) => ({ key: `built-in-${g.slug}`, slug: g.slug, title: g.title, summary: g.summary })),
+    ...BUILT_IN_GUIDES.map((g) => {
+      const edited = studio.get(g.slug);
+      return {
+        key: `built-in-${g.slug}`,
+        slug: g.slug,
+        title: edited?.title || g.title,
+        summary: edited?.summary || g.summary,
+        heroImage: edited?.heroImage,
+      };
+    }),
   ];
 
   return (
     <>
       <section className="bg-near_black" aria-label="Guides hero">
         <div className="max-w-5xl mx-auto px-6 lg:px-12 pt-36 lg:pt-44 pb-14">
-          <p className="section-label text-gold mb-4">Guides</p>
+          <p className="section-label text-gold mb-4">{text.guidesLabel}</p>
           <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-ivory">
-            What to expect
+            {text.guidesHeading}
           </h1>
           <p className="font-jost text-ivory/75 text-base leading-[1.65] max-w-[65ch] mt-6">
-            Plain answers to the questions I get asked most, from timelines and bustles to trouser hems.
+            {text.guidesIntro}
           </p>
         </div>
       </section>

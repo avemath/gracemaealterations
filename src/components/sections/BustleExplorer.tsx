@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { BackView, SideView, STEPS, stepFor, GOLD, FOLD_FILL } from "./bustleDrawing";
+import { fill } from "@/lib/text/fill";
+import type { Text } from "@/lib/text";
+import { BackView, SideView, bustleSteps, stepFor, GOLD, FOLD_FILL } from "./bustleDrawing";
 
 /**
  * An interactive drawing of a gown from the back. Pick a bustle and a train
@@ -11,11 +13,16 @@ import { BackView, SideView, STEPS, stepFor, GOLD, FOLD_FILL } from "./bustleDra
  * and the button simply move t.
  *
  * The copy for each style defaults to what is written here and is replaced by
- * the Studio's Bustle Styles once those are published.
+ * the Studio's Bustle Styles once those are published. Everything else it
+ * says (buttons, captions, the "how it works" lines) comes from the Studio's
+ * Guides & tools wording, passed in by the page.
  */
 
 export type BustleStyleId = "american" | "french" | "austrian" | "ballroom" | "detachable-train";
 export type TrainId = "sweep" | "chapel" | "cathedral";
+
+/** The explorer's own wording from the Studio (Guides & tools): every "bustle" field. */
+export type BustleText = Pick<Text<"tools">, Extract<keyof Text<"tools">, `bustle${string}`>>;
 
 export interface BustleCopy {
   slug: string;
@@ -32,7 +39,8 @@ interface StyleInfo {
   typicalPoints: string;
   bestFor: string;
   fabricNotes: string;
-  how: string;
+  /** The Guides & tools field with the "how it works" line. */
+  how: keyof BustleText;
   /** How the points are drawn: hooks on top, ties underneath, or none. */
   points: Record<TrainId, number>;
 }
@@ -42,7 +50,7 @@ const STYLES: Record<BustleStyleId, StyleInfo> = {
     name: "American",
     alsoCalled: "Over-bustle, pickup bustle",
     typicalPoints: "2 to 7 points",
-    how: "The train is lifted and hooked onto the back of the skirt, so it falls in soft poufs over the top.",
+    how: "bustleHowAmerican",
     bestFor: "Most skirts. It is the workhorse and the one I use most often.",
     fabricNotes: "Works on almost anything. Heavy satins hold the folds crisply; very soft chiffon can look limp.",
     points: { sweep: 1, chapel: 3, cathedral: 5 },
@@ -51,7 +59,7 @@ const STYLES: Record<BustleStyleId, StyleInfo> = {
     name: "French",
     alsoCalled: "Under-bustle, Victorian bustle",
     typicalPoints: "2 to 5 points",
-    how: "The train is tied up underneath the skirt with numbered ribbons, so it tucks under in a cascade.",
+    how: "bustleHowFrench",
     bestFor: "Skirts where you want the train to disappear underneath rather than sit on top.",
     fabricNotes: "Lovely on lace and layered tulle. Needs enough structure underneath to carry the weight.",
     points: { sweep: 2, chapel: 3, cathedral: 5 },
@@ -60,7 +68,7 @@ const STYLES: Record<BustleStyleId, StyleInfo> = {
     name: "Austrian",
     alsoCalled: "Ruched bustle, gathered bustle",
     typicalPoints: "One continuous gather",
-    how: "A cord runs up the center back. Pulling it gathers the train straight up into ruched folds.",
+    how: "bustleHowAustrian",
     bestFor: "Simple skirts with no beading down the center back seam.",
     fabricNotes: "Draws the train up on a drawstring. Best on lighter fabrics; heavy satin fights it.",
     points: { sweep: 1, chapel: 1, cathedral: 1 },
@@ -69,7 +77,7 @@ const STYLES: Record<BustleStyleId, StyleInfo> = {
     name: "Ballroom",
     alsoCalled: "Floor-length bustle",
     typicalPoints: "3 to 9 points",
-    how: "The train folds up underneath all the way round, so the hem sits level with the floor, like a ball gown.",
+    how: "bustleHowBallroom",
     bestFor: "Formal gowns where you want the hem to sit level all the way round after bustling.",
     fabricNotes: "Takes the most points and the most time, and it is worth it on a long cathedral train.",
     points: { sweep: 3, chapel: 5, cathedral: 7 },
@@ -78,7 +86,7 @@ const STYLES: Record<BustleStyleId, StyleInfo> = {
     name: "Detachable train",
     alsoCalled: "Removable train, convertible train",
     typicalPoints: "Not applicable",
-    how: "The train is a separate piece that hooks on at the waist for the ceremony and comes off for the reception.",
+    how: "bustleHowDetachable",
     bestFor: "Gowns designed for it, or where a bustle would be too heavy.",
     fabricNotes: "The train comes off entirely at the reception. Needs to be planned, not retrofitted to any dress.",
     points: { sweep: 0, chapel: 0, cathedral: 0 },
@@ -86,10 +94,10 @@ const STYLES: Record<BustleStyleId, StyleInfo> = {
 };
 
 const ORDER: BustleStyleId[] = ["american", "french", "austrian", "ballroom", "detachable-train"];
-const TRAINS: { id: TrainId; label: string }[] = [
-  { id: "sweep", label: "Sweep" },
-  { id: "chapel", label: "Chapel" },
-  { id: "cathedral", label: "Cathedral" },
+const TRAINS: { id: TrainId; label: keyof BustleText }[] = [
+  { id: "sweep", label: "bustleTrainSweep" },
+  { id: "chapel", label: "bustleTrainChapel" },
+  { id: "cathedral", label: "bustleTrainCathedral" },
 ];
 
 const ease = (p: number) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
@@ -98,10 +106,13 @@ const ease = (p: number) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 
 
 export default function BustleExplorer({
   copy = [],
+  text,
   footer,
 }: {
   /** Published Bustle Styles from the Studio; their wording wins. */
   copy?: BustleCopy[];
+  /** Wording from the Studio (Guides & tools). */
+  text: BustleText;
   footer?: React.ReactNode;
 }) {
   const uid = useId();
@@ -195,12 +206,16 @@ export default function BustleExplorer({
     typicalPoints: cms?.typicalPoints || base.typicalPoints,
     bestFor: cms?.bestFor || base.bestFor,
     fabricNotes: cms?.fabricNotes || base.fabricNotes,
+    how: text[base.how],
   };
   const n = base.points[train];
   const bustled = t > 0.5;
-  const step = STEPS[style][stepFor(t)];
+  const steps = bustleSteps(text)[style];
+  const step = steps[stepFor(t)];
+  const stages = [text.bustleStageCeremony, text.bustleStageBustling, text.bustleStageReception];
 
-  const state = bustled ? "bustled for the reception" : "train down for the ceremony";
+  const state = bustled ? text.bustleStateUp : text.bustleStateDown;
+  const toggleLabel = bustled ? text.bustleButtonDown : text.bustleButtonUp;
   const titleId = `${uid}-title`;
   const descId = `${uid}-desc`;
 
@@ -216,8 +231,8 @@ export default function BustleExplorer({
           role="img"
           aria-labelledby={`${titleId} ${descId}`}
         >
-          <title id={titleId}>{`${info.name} bustle, ${state}`}</title>
-          <desc id={descId}>{`${info.how} ${STEPS[style].join(" ")}`}</desc>
+          <title id={titleId}>{fill(text.bustleDrawingName, { style: info.name, state })}</title>
+          <desc id={descId}>{`${info.how} ${steps.join(" ")}`}</desc>
           <defs>
             <radialGradient id={`${uid}-glow`} cx="50%" cy="40%" r="65%">
               <stop offset="0%" stopColor="#3a3230" />
@@ -253,8 +268,8 @@ export default function BustleExplorer({
 
           {!narrow && (
             <>
-              <text x="20" y="34" fill="rgba(250,247,242,0.6)" fontSize="11" letterSpacing="2.2" fontFamily="sans-serif">BACK</text>
-              <text x="380" y="34" fill="rgba(250,247,242,0.6)" fontSize="11" letterSpacing="2.2" fontFamily="sans-serif">SIDE</text>
+              <text x="20" y="34" fill="rgba(250,247,242,0.6)" fontSize="11" letterSpacing="2.2" fontFamily="sans-serif">{text.bustleBack.toUpperCase()}</text>
+              <text x="380" y="34" fill="rgba(250,247,242,0.6)" fontSize="11" letterSpacing="2.2" fontFamily="sans-serif">{text.bustleSide.toUpperCase()}</text>
             </>
           )}
         </svg>
@@ -265,7 +280,7 @@ export default function BustleExplorer({
           aria-hidden="true"
         >
           <p className="font-jost text-[0.65rem] tracking-[0.18em] uppercase text-gold">
-            {["Ceremony", "Bustling", "Reception"][stepFor(t)]} · Step {stepFor(t) + 1} of 3
+            {stages[stepFor(t)]} · {fill(text.bustleStepCount, { step: stepFor(t) + 1, total: stages.length })}
           </p>
           <p className="font-cormorant italic text-ivory text-lg sm:text-xl leading-snug mt-0.5" data-testid="bustle-step">
             {step}
@@ -285,7 +300,7 @@ export default function BustleExplorer({
                   view === v ? "bg-ivory text-near_black" : "text-ivory/80"
                 }`}
               >
-                {v === "side" ? "Side" : "Back"}
+                {v === "side" ? text.bustleSide : text.bustleBack}
               </button>
             ))}
           </div>
@@ -300,7 +315,7 @@ export default function BustleExplorer({
             animateTo(bustled ? 0 : 1);
           }}
         >
-          {bustled ? "Let it down" : "Bustle it"}
+          {toggleLabel}
         </button>
       </div>
 
@@ -309,7 +324,7 @@ export default function BustleExplorer({
         <div>
         <fieldset>
           <legend className="font-jost font-medium text-charcoal text-xs tracking-[0.22em] uppercase mb-2 lg:mb-3">
-            Bustle style
+            {text.bustleStyleLegend}
           </legend>
           <div className="flex flex-wrap gap-2">
             {ORDER.map((id) => (
@@ -337,7 +352,7 @@ export default function BustleExplorer({
 
         <fieldset className="mt-4 lg:mt-6">
           <legend className="font-jost font-medium text-charcoal text-xs tracking-[0.22em] uppercase mb-2 lg:mb-3">
-            Train length
+            {text.bustleTrainLegend}
           </legend>
           <div className="flex flex-wrap gap-2">
             {TRAINS.map(({ id, label }) => (
@@ -357,7 +372,7 @@ export default function BustleExplorer({
                   onChange={() => pickTrain(id)}
                   className="sr-only"
                 />
-                {label}
+                {text[label]}
               </label>
             ))}
           </div>
@@ -369,10 +384,10 @@ export default function BustleExplorer({
             className="btn-gold shrink-0 whitespace-nowrap min-w-[10.5rem]"
             onClick={() => animateTo(bustled ? 0 : 1)}
           >
-            {bustled ? "Let it down" : "Bustle it"}
+            {toggleLabel}
           </button>
           <label className="flex-1 min-w-0">
-            <span className="sr-only">Train position, from ceremony to reception</span>
+            <span className="sr-only">{text.bustleSliderLabel}</span>
             <input
               type="range"
               min={0}
@@ -392,45 +407,45 @@ export default function BustleExplorer({
         </div>
 
         <p className="sr-only" aria-live="polite">
-          {`${info.name}, ${state}.`}
+          {fill(text.bustleSpokenUpdate, { style: info.name, state })}
         </p>
 
         <div className="mt-10 border-t border-blush pt-8 lg:mt-0 lg:border-t-0 lg:pt-0">
           <h2 className="font-cormorant italic text-charcoal text-3xl">{info.name}</h2>
-          <p className="font-jost text-charcoal/75 text-xs mt-1">Also called: {info.alsoCalled}</p>
+          <p className="font-jost text-charcoal/75 text-xs mt-1">{fill(text.bustleAlsoCalled, { names: info.alsoCalled })}</p>
           <p className="font-jost text-charcoal text-base leading-[1.7] mt-5 max-w-[60ch]">{info.how}</p>
           <dl className="mt-5 space-y-2.5 font-jost text-sm text-charcoal/75 leading-[1.65] max-w-[60ch]">
             <div>
-              <dt className="inline font-medium text-charcoal">Typical points: </dt>
+              <dt className="inline font-medium text-charcoal">{text.bustleTypicalPoints}: </dt>
               <dd className="inline">
                 {info.typicalPoints}
-                {n > 1 && ` (${n} in this drawing)`}
+                {n > 1 && ` ${fill(text.bustlePointsInDrawing, { count: n })}`}
               </dd>
             </div>
             <div>
-              <dt className="inline font-medium text-charcoal">Best for: </dt>
+              <dt className="inline font-medium text-charcoal">{text.bustleBestFor}: </dt>
               <dd className="inline">{info.bestFor}</dd>
             </div>
             <div>
-              <dt className="inline font-medium text-charcoal">Fabric: </dt>
+              <dt className="inline font-medium text-charcoal">{text.bustleFabric}: </dt>
               <dd className="inline">{info.fabricNotes}</dd>
             </div>
           </dl>
           <p className="font-jost text-charcoal/75 text-xs mt-6 flex items-center gap-4 flex-wrap">
             <span className="inline-flex items-center gap-2">
               <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><circle cx="5" cy="5" r="3.5" fill={GOLD} /></svg>
-              Hook on top
+              {text.bustleKeyHook}
             </span>
             <span className="inline-flex items-center gap-2">
               <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="4.2" fill="none" stroke={GOLD} strokeWidth="1.4" strokeDasharray="2.2 2" /></svg>
-              Tied underneath
+              {text.bustleKeyTie}
             </span>
             <span className="inline-flex items-center gap-2">
               <svg width="22" height="10" viewBox="0 0 22 10" aria-hidden="true">
                 <path d="M1,5 L15,5" stroke={GOLD} strokeWidth="1.4" strokeDasharray="4 3" />
                 <path d="M14,1.5 L21,5 L14,8.5 Z" fill={GOLD} />
               </svg>
-              Which way it&rsquo;s pulled
+              {text.bustleKeyPull}
             </span>
           </p>
           {footer && <div className="mt-8">{footer}</div>}

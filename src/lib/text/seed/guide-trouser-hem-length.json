@@ -1,0 +1,218 @@
+{
+  "_id": "guide-trouser-hem-length",
+  "_type": "guide",
+  "title": "Trouser hem length, explained",
+  "slug": {
+    "_type": "slug",
+    "current": "trouser-hem-length"
+  },
+  "summary": "No break, quarter, half or full: how much your trousers should rest on your shoes, and why I always pin a hem over the shoes you’ll actually wear.",
+  "body": [
+    {
+      "_type": "block",
+      "_key": "b02",
+      "style": "h2",
+      "markDefs": [],
+      "children": [
+        {
+          "_type": "span",
+          "_key": "s01",
+          "text": "What “break” means",
+          "marks": []
+        }
+      ]
+    },
+    {
+      "_type": "block",
+      "_key": "b04",
+      "style": "normal",
+      "markDefs": [],
+      "children": [
+        {
+          "_type": "span",
+          "_key": "s03",
+          "text": "The break is the fold that forms where the front of your trousers meets your shoe. The longer the hem, the more fabric rests on the shoe and the deeper that fold gets. With no break the hem stops just above the shoe; with a full break there’s a clear crease across the front and the back reaches well down the heel. None of them is wrong. It comes down to the cut, the occasion and what you like to see in the mirror.",
+          "marks": []
+        }
+      ]
+    },
+    {
+      "_type": "block",
+      "_key": "b06",
+      "style": "h2",
+      "markDefs": [],
+      "children": [
+        {
+          "_type": "span",
+          "_key": "s05",
+          "text": "How I help you choose",
+          "marks": []
+        }
+      ]
+    },
+    {
+      "_type": "block",
+      "_key": "b08",
+      "style": "normal",
+      "markDefs": [],
+      "children": [
+        {
+          "_type": "span",
+          "_key": "s07",
+          "text": "Most trousers today are cut slimmer than they used to be, and a slim leg looks best with less break: a quarter, or none at all. A classic suit with a straighter leg still sits well with a half break. As a starting point:",
+          "marks": []
+        }
+      ]
+    },
+    {
+      "_type": "block",
+      "_key": "b11",
+      "style": "normal",
+      "markDefs": [],
+      "children": [
+        {
+          "_type": "span",
+          "_key": "s09",
+          "text": "Suits:",
+          "marks": [
+            "strong"
+          ]
+        },
+        {
+          "_type": "span",
+          "_key": "s10",
+          "text": " A quarter or half break. A slim, modern suit looks sharpest with a quarter break or none; a classic suit with a straighter leg sits beautifully with a half break.",
+          "marks": []
+        }
+      ]
+    },
+    {
+      "_type": "block",
+      "_key": "b14",
+      "style": "normal",
+      "markDefs": [],
+      "children": [
+        {
+          "_type": "span",
+          "_key": "s12",
+          "text": "Dress trousers:",
+          "marks": [
+            "strong"
+          ]
+        },
+        {
+          "_type": "span",
+          "_key": "s13",
+          "text": " Usually a quarter break, or a half if they have pleats or a fuller leg.",
+          "marks": []
+        }
+      ]
+    },
+    {
+      "_type": "block",
+      "_key": "b17",
+      "style": "normal",
+      "markDefs": [],
+      "children": [
+        {
+          "_type": "span",
+          "_key": "s15",
+          "text": "Chinos:",
+          "marks": [
+            "strong"
+          ]
+        },
+        {
+          "_type": "span",
+          "_key": "s16",
+          "text": " No break to a quarter. They’re casual, and a clean line keeps them from looking sloppy.",
+          "marks": []
+        }
+      ]
+    },
+    {
+      "_type": "block",
+      "_key": "b20",
+      "style": "normal",
+      "markDefs": [],
+      "children": [
+        {
+          "_type": "span",
+          "_key": "s18",
+          "text": "Jeans:",
+          "marks": [
+            "strong"
+          ]
+        },
+        {
+          "_type": "span",
+          "_key": "s19",
+          "text": " Mostly taste. A little stacking at the ankle is fine on a slim jean; a straight or wide jean looks best just touching the shoe.",
+          "marks": []
+        }
+      ]
+    },
+    {
+      "_type": "block",
+      "_key": "b22",
+      "style": "h2",
+      "markDefs": [],
+      "children": [
+        {
+          "_type": "span",
+          "_key": "s21",
+          "text": "Bring the shoes you’ll wear",
+          "marks": []
+        }
+      ]
+    },
+    {
+      "_type": "block",
+      "_key": "b24",
+      "style": "normal",
+      "markDefs": [],
+      "children": [
+        {
+          "_type": "span",
+          "_key": "s23",
+          "text": "I measure a hem against a shoe, not the floor. A dress shoe, a sneaker and a heel each put the hem somewhere different, and even two pairs of dress shoes can differ more than you’d think. Please bring the exact pair you plan to wear and put them on while I pin. If the trousers will see more than one pair, bring the pair you’ll wear most and we’ll find a length that works for both.",
+          "marks": []
+        }
+      ]
+    },
+    {
+      "_type": "block",
+      "_key": "b26",
+      "style": "h2",
+      "markDefs": [],
+      "children": [
+        {
+          "_type": "span",
+          "_key": "s25",
+          "text": "Cuffs or a plain hem",
+          "marks": []
+        }
+      ]
+    },
+    {
+      "_type": "block",
+      "_key": "b28",
+      "style": "normal",
+      "markDefs": [],
+      "children": [
+        {
+          "_type": "span",
+          "_key": "s27",
+          "text": "A cuff (a turn-up) adds a little weight at the bottom, so the leg hangs straight and the break stays neat. Cuffs suit wool suit trousers and pleated trousers, and they look best with a quarter break or less, since a cuff sitting in a deep fold looks crumpled. A plain hem is the cleaner, more modern choice, and the right one for slim trousers and tuxedos.",
+          "marks": []
+        }
+      ]
+    }
+  ],
+  "seo": {
+    "title": "Trouser Hem Length & Break, Explained | Grace Mae | Pittsburgh",
+    "description": "No break, quarter, half or full? See how trouser hem length looks over dress shoes, sneakers and heels, from a Pittsburgh tailor."
+  },
+  "published": true,
+  "order": 4
+}

@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { fill } from "@/lib/text/fill";
+import type { Text } from "@/lib/text";
+
+/** The checklist's own wording from the Studio (Guides & tools). */
+export type ChecklistText = Pick<Text<"tools">, "bagLabel" | "bagCount" | "bagDone">;
 
 export interface ChecklistItem {
   /** The first sentence, shown as the item's title. */
@@ -74,7 +79,7 @@ const STORAGE_KEY = "gm-fitting-bag";
  * drawing and a box to tick while packing. Ticks are remembered on this
  * device only, as a convenience; nothing is sent anywhere.
  */
-export default function FittingChecklist({ items }: { items: ChecklistItem[] }) {
+export default function FittingChecklist({ items, text }: { items: ChecklistItem[]; text: ChecklistText }) {
   const [packed, setPacked] = useState<boolean[]>(() => items.map(() => false));
 
   useEffect(() => {
@@ -103,9 +108,9 @@ export default function FittingChecklist({ items }: { items: ChecklistItem[] }) 
   return (
     <div className="border border-blush bg-white/50" data-testid="fitting-bag">
       <div className="flex items-baseline justify-between gap-4 px-5 sm:px-7 pt-6 pb-4 border-b border-blush">
-        <p className="font-jost font-medium text-gold_ink text-xs tracking-[0.22em] uppercase">Your fitting bag</p>
+        <p className="font-jost font-medium text-gold_ink text-xs tracking-[0.22em] uppercase">{text.bagLabel}</p>
         <p className="font-jost text-charcoal/75 text-xs" aria-live="polite" data-testid="bag-count">
-          {done ? "All packed. See you at the fitting." : `${count} of ${items.length} packed`}
+          {done ? text.bagDone : fill(text.bagCount, { count, total: items.length })}
         </p>
       </div>
 
