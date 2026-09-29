@@ -94,7 +94,7 @@ export default function FittingDates({ steps, limitedMode, bridalWaitlisted, reo
 
   const download = () => {
     if (!result) return;
-    const blob = new Blob([icsFor(result.plan, result.wedding)], { type: "text/calendar;charset=utf-8" });
+    const blob = new Blob([icsFor(result.plan, result.wedding, new Date(), text)], { type: "text/calendar;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
