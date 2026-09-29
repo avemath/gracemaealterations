@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import "@/styles/globals.css";
 import SiteChrome from "@/components/layout/SiteChrome";
@@ -20,6 +20,9 @@ function minPrice(range?: string): number | null {
   const match = range?.match(/\$\s?([\d,]+)/);
   return match ? Number(match[1].replace(/,/g, "")) : null;
 }
+
+// Colors the phone's browser bar to match the dark header.
+export const viewport: Viewport = { themeColor: "#242020" };
 
 // ── METADATA ──────────────────────────────────────────────────
 export async function generateMetadata(): Promise<Metadata> {
@@ -154,11 +157,6 @@ export default async function RootLayout({
         {/* Every hero and portfolio image comes from here; opening the
             connection early saves a round trip on the LCP image. */}
         <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="anonymous" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: "document.documentElement.classList.add('js')",
-          }}
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }}

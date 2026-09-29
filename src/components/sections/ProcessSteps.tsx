@@ -128,56 +128,84 @@ export default function ProcessSteps({
     // Without this, the browser may return 0 before paint, which sets
     // strokeDasharray/offset to "0" (overrides the SVG attributes) and
     // makes the thread render solid from the start.
+    // Run in idle time so path measurement never competes with hydration.
+    // Until it lands, the hardcoded thresholds in PIERCE_POINTS are used, so
+    // the animation is correct either way.
+    const idle =
+      typeof window.requestIdleCallback === "function"
+        ? (cb: () => void) => window.requestIdleCallback(() => cb(), { timeout: 2000 })
+        : (cb: () => void) => window.setTimeout(cb, 200);
+    let cancelled = false;
+
     const init = () => {
       const path = threadPathRef.current;
-      if (!path) return;
+      if (!path || cancelled) return;
+      // The desktop drawing is display:none on phones: measure it only if the
+      // window is ever widened enough to show it.
+      if (path.getBoundingClientRect().width === 0) {
+        window.addEventListener("resize", onResize);
+        return;
+      }
+      window.removeEventListener("resize", onResize);
       const len = path.getTotalLength();
       if (len <= 0) { requestAnimationFrame(init); return; }
       threadLenRef.current = len;
-
-      // Sample the path ONCE into a table, then measure every pierce point
-      // against that table. The previous version walked the path per pierce
-      // point: 12 x 801 = 9,612 getPointAtLength calls in a single task, which
-      // measured as a 9.5 second long task on throttled mobile. This is 400
-      // calls total, and the extra precision was never visible anyway.
-      const SAMPLES = 400;
-      const points: { x: number; y: number }[] = new Array(SAMPLES + 1);
-      for (let i = 0; i <= SAMPLES; i++) {
-        const p = path.getPointAtLength((i / SAMPLES) * len);
-        points[i] = { x: p.x, y: p.y };
-      }
-
-      const computed = PIERCE_POINTS.map(({ cx, cy }) => {
-        let bestV = 0, bestDist = Infinity;
-        for (let i = 0; i <= SAMPLES; i++) {
-          const p = points[i];
-          // Squared distance: the comparison is all we need, so skip the sqrt.
-          const d = (p.x - cx) ** 2 + (p.y - cy) ** 2;
-          if (d < bestDist) { bestDist = d; bestV = i / SAMPLES; }
-        }
-        return bestV;
-      });
-      pierceThresholdsRef.current = computed;
 
       // Apply current scroll immediately so a mid-scroll page load looks right
       const v = Math.max(0, Math.min(1, scrollYProgress.get()));
       path.style.strokeDasharray  = String(len);
       path.style.strokeDashoffset = String(len * (1 - v));
 
-      PIERCE_POINTS.forEach((_pt, i) => {
-        const el = pierceRefsArr.current[i];
-        if (el) el.style.opacity = v >= computed[i] ? "1" : "0";
-      });
-    };
-    // Run in idle time so path measurement never competes with hydration.
-    // Until it lands, the hardcoded thresholds in PIERCE_POINTS are used, so
-    // the animation is correct either way.
-    const schedule =
-      typeof window.requestIdleCallback === "function"
-        ? (cb: () => void) => window.requestIdleCallback(() => cb(), { timeout: 2000 })
-        : (cb: () => void) => window.setTimeout(cb, 200);
+      // Sample the path into a table, then measure every pierce point against
+      // it. getPointAtLength is slow (400 calls were a half-second task on a
+      // throttled phone), so the sampling runs in small slices across idle
+      // callbacks and never blocks input.
+      const SAMPLES = 400;
+      const SLICE = 40;
+      const points: { x: number; y: number }[] = new Array(SAMPLES + 1);
+      let next = 0;
 
-    schedule(() => requestAnimationFrame(init));
+      const finish = () => {
+        const computed = PIERCE_POINTS.map(({ cx, cy }) => {
+          let bestV = 0, bestDist = Infinity;
+          for (let i = 0; i <= SAMPLES; i++) {
+            const p = points[i];
+            // Squared distance: the comparison is all we need, so skip the sqrt.
+            const d = (p.x - cx) ** 2 + (p.y - cy) ** 2;
+            if (d < bestDist) { bestDist = d; bestV = i / SAMPLES; }
+          }
+          return bestV;
+        });
+        pierceThresholdsRef.current = computed;
+        const now = Math.max(0, Math.min(1, scrollYProgress.get()));
+        PIERCE_POINTS.forEach((_pt, i) => {
+          const el = pierceRefsArr.current[i];
+          if (el) el.style.opacity = now >= computed[i] ? "1" : "0";
+        });
+      };
+
+      const sampleSlice = () => {
+        if (cancelled) return;
+        const end = Math.min(SAMPLES, next + SLICE - 1);
+        for (; next <= end; next++) {
+          const p = path.getPointAtLength((next / SAMPLES) * len);
+          points[next] = { x: p.x, y: p.y };
+        }
+        if (next <= SAMPLES) idle(sampleSlice);
+        else finish();
+      };
+      idle(sampleSlice);
+    };
+
+    const onResize = () => {
+      if (threadPathRef.current && threadPathRef.current.getBoundingClientRect().width > 0) init();
+    };
+
+    idle(() => requestAnimationFrame(init));
+    return () => {
+      cancelled = true;
+      window.removeEventListener("resize", onResize);
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

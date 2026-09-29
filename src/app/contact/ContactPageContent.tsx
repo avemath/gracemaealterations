@@ -82,7 +82,7 @@ const labelClass =
   "block font-jost text-xs tracking-[0.12em] uppercase text-charcoal/75 mb-2 group-focus-within:text-gold_ink transition-colors duration-300";
 
 const fieldClass = (hasError: boolean) =>
-  `w-full bg-transparent border-b py-3 min-h-[44px] font-jost text-sm text-charcoal placeholder:text-charcoal/40 outline-none transition-all duration-300 ${
+  `w-full bg-transparent border-b py-3 min-h-[44px] font-jost text-sm text-charcoal placeholder:text-charcoal/60 outline-none transition-all duration-300 ${
     hasError ? "border-red-700 focus:border-red-700" : "border-blush focus:border-gold"
   }`;
 
@@ -100,6 +100,8 @@ function Field({
   placeholder,
   optional,
   autoComplete,
+  required,
+  maxLength,
 }: {
   name: keyof FormData;
   label: string;
@@ -110,6 +112,8 @@ function Field({
   placeholder?: string;
   optional?: boolean;
   autoComplete?: string;
+  required?: boolean;
+  maxLength?: number;
 }) {
   return (
     <div className="group">
@@ -123,6 +127,8 @@ function Field({
         value={value}
         onChange={onChange}
         autoComplete={autoComplete}
+        aria-required={required || undefined}
+        maxLength={maxLength}
         className={`${fieldClass(!!error)} ${type === "date" ? "bg-ivory" : ""}`}
         placeholder={placeholder}
         aria-invalid={!!error}
@@ -232,9 +238,17 @@ export default function ContactPageContent({
 
   // /contact?service=bridal preselects a card. Read on mount so the page stays
   // statically rendered.
+  // Arriving from "Send a bridal party request" and the like, go straight to
+  // the form rather than leaving them at the top of the page.
   useEffect(() => {
     const requested = branchFromParam(new URLSearchParams(window.location.search).get("service"));
-    if (requested) setBranch(requested);
+    if (!requested) return;
+    setBranch(requested);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.setTimeout(
+      () => formRef.current?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" }),
+      150
+    );
   }, []);
 
   const siteWideWaitlist = !site.isAcceptingClients;
@@ -476,7 +490,7 @@ export default function ContactPageContent({
                   image={contactImage}
                   placeholderLabel="CONTACT_IMAGE"
                   placeholderRatio="square"
-                  sizes="(min-width:1024px) 40vw, 100vw"
+                  sizes="(min-width:1024px) 30vw, 100vw"
                 />
               </div>
             </div>
@@ -546,8 +560,8 @@ export default function ContactPageContent({
 
                         <form onSubmit={handleSubmit} noValidate aria-label="Contact request form">
                           <div className="space-y-8">
-                            <Field {...fieldProps("name")} label="Full name" placeholder="Your full name" autoComplete="name" />
-                            <Field {...fieldProps("email")} label="Email address" type="email" placeholder="your@email.com" autoComplete="email" />
+                            <Field {...fieldProps("name")} label="Full name" placeholder="Your full name" autoComplete="name" required maxLength={200} />
+                            <Field {...fieldProps("email")} label="Email address" type="email" placeholder="your@email.com" autoComplete="email" required maxLength={320} />
 
                             {branch === "bridal" && (
                               <>
@@ -675,13 +689,13 @@ export default function ContactPageContent({
                               {attachments.length < MAX_PHOTOS && (
                                 <label
                                   htmlFor="photos"
-                                  className="flex flex-col items-center justify-center gap-2 border border-dashed border-blush hover:border-gold/50 p-7 cursor-pointer transition-colors duration-300 group"
+                                  className="flex flex-col items-center justify-center gap-2 border border-dashed border-blush hover:border-gold/50 p-7 cursor-pointer transition-colors duration-300 group has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-gold_ink has-[:focus-visible]:outline-offset-2"
                                 >
                                   <span className="text-charcoal/75 group-hover:text-gold_ink transition-colors duration-300">
                                     <UploadIcon />
                                   </span>
                                   <span className="font-jost text-charcoal/75 text-xs">
-                                    {preparing ? "Preparing photos" : "Click to attach photos"}
+                                    {preparing ? "Preparing photos" : "Add photos"}
                                   </span>
                                   <span className="font-jost text-charcoal/75 text-xs">JPG, PNG, HEIC, WEBP</span>
                                   <input
@@ -710,7 +724,7 @@ export default function ContactPageContent({
                                       <button
                                         type="button"
                                         onClick={() => removeAttachment(i)}
-                                        className="absolute -top-3 -right-3 w-11 h-11 flex items-center justify-center opacity-0 focus-visible:opacity-100 group-hover/thumb:opacity-100 transition-opacity duration-200"
+                                        className="absolute -top-3 -right-3 w-11 h-11 flex items-center justify-center opacity-100 lg:opacity-0 touch:opacity-100 focus-visible:opacity-100 group-hover/thumb:opacity-100 transition-opacity duration-200"
                                         aria-label={`Remove ${file.filename}`}
                                       >
                                         <span className="w-6 h-6 bg-charcoal text-ivory text-xs flex items-center justify-center rounded-full" aria-hidden="true">

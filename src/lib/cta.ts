@@ -45,3 +45,23 @@ export function ctas(site: CtaSettings): Ctas {
     secondary: { label: "View services", href: "/services" },
   };
 }
+
+/** Pages where a visitor is plainly thinking about a wedding gown. */
+const BRIDAL_PAGES = /^\/(guides\/(wedding-dress|what-to-bring)|david-s-bridal)/;
+
+/**
+ * The sticky buttons, matched to the page: on a bridal page in limited mode
+ * the main action is the waitlist (not tailoring), on the bridal party page it
+ * is a party request, and the other lane is offered as a quiet text link.
+ */
+export function pageCtas(pathname: string, site: CtaSettings): { main: Cta; alt: Cta | null } {
+  const { primary, secondary } = ctas(site);
+  if (!site.limitedMode) return { main: primary, alt: null };
+  if (pathname === "/bridal-party-alterations") {
+    return { main: { label: "Send a bridal party request", href: "/contact?service=party" }, alt: secondary };
+  }
+  if (BRIDAL_PAGES.test(pathname)) {
+    return { main: secondary, alt: { label: "Tailoring and repairs are open now", href: primary.href } };
+  }
+  return { main: primary, alt: { ...secondary, label: `or ${secondary.label.charAt(0).toLowerCase()}${secondary.label.slice(1)}` } };
+}

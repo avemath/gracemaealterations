@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ctas } from "@/lib/cta";
+import { pageCtas } from "@/lib/cta";
 
 const EXCLUDED = ["/contact", "/studio"];
 
@@ -15,10 +15,11 @@ interface Props {
 }
 
 export default function StickyDesktopCTA({ limitedMode = false, reopensLabel = "" }: Props) {
-  const { primary, secondary } = ctas({ limitedMode, reopensLabel });
   const [visible, setVisible] = useState(false);
   const pathname = usePathname();
-  const excluded = EXCLUDED.includes(pathname) || pathname.startsWith("/studio");
+  // One button, matched to the page: two stacked ones sat on top of the text.
+  const { main } = pageCtas(pathname, { limitedMode, reopensLabel });
+  const excluded = EXCLUDED.includes(pathname) || pathname.startsWith("/studio") || pathname.startsWith("/care");
 
   useEffect(() => {
     if (excluded) { setVisible(false); return; }
@@ -46,19 +47,11 @@ export default function StickyDesktopCTA({ limitedMode = false, reopensLabel = "
           transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
           className="fixed right-6 bottom-8 z-40 hidden lg:flex flex-col items-end gap-2"
         >
-          {limitedMode && (
-            <Link
-              href={secondary.href}
-              className="font-jost text-[10px] tracking-[0.16em] uppercase text-charcoal bg-ivory/95 backdrop-blur-sm px-3 py-2 border border-blush hover:border-gold transition-colors"
-            >
-              {secondary.label}
-            </Link>
-          )}
           <Link
-            href={primary.href}
+            href={main.href}
             className="btn-gold shadow-[0_4px_24px_rgba(201,168,76,0.32)] whitespace-nowrap"
           >
-            {primary.label}
+            {main.label}
           </Link>
         </motion.div>
       )}
