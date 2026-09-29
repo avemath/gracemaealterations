@@ -2,6 +2,7 @@ import { defineConfig } from "sanity";
 import { deskTool } from "sanity/desk";
 import { visionTool } from "@sanity/vision";
 import { schemaTypes } from "./sanity/schemaTypes";
+import { StartHere } from "./sanity/components/StartHere";
 
 const SINGLETONS = new Set(["siteSettings", "homePage", "aboutPage", "servicesPage", "contactPage", "portfolioPage", "policies", "siteText", "formsText", "toolsText"]);
 const SINGLETON_ACTIONS = new Set(["publish", "discardChanges", "restore"]);
@@ -24,6 +25,13 @@ export default defineConfig({
         S.list()
           .title("Content")
           .items([
+            S.listItem()
+              .title("Start here")
+              .id("startHere")
+              .child(S.component(StartHere).title("Start here")),
+
+            S.divider(),
+
             // ── PAGE SETTINGS (one of each) ───────────────────
             S.listItem()
               .title("Site Settings")
