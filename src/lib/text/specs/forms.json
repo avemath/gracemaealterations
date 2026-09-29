@@ -3,14 +3,38 @@
   "title": "Contact form & emails",
   "description": "Everything a client reads while sending a request, and the emails they get back. Leave a field empty to use the original wording. Words in {curly brackets} are filled in automatically, so keep them as they are.",
   "groups": [
-    { "name": "choose", "title": "Choosing a request type" },
-    { "name": "fields", "title": "Form fields" },
-    { "name": "photos", "title": "Photos" },
-    { "name": "photoCheck", "title": "Photo check" },
-    { "name": "buttons", "title": "Buttons and messages" },
-    { "name": "contact", "title": "Contact details and questions" },
-    { "name": "emails", "title": "Confirmation emails" },
-    { "name": "care", "title": "Care pages" }
+    {
+      "name": "choose",
+      "title": "Choosing a request type"
+    },
+    {
+      "name": "fields",
+      "title": "Form fields"
+    },
+    {
+      "name": "photos",
+      "title": "Photos"
+    },
+    {
+      "name": "photoCheck",
+      "title": "Photo check"
+    },
+    {
+      "name": "buttons",
+      "title": "Buttons and messages"
+    },
+    {
+      "name": "contact",
+      "title": "Contact details and questions"
+    },
+    {
+      "name": "emails",
+      "title": "Confirmation emails"
+    },
+    {
+      "name": "care",
+      "title": "Care pages"
+    }
   ],
   "fields": {
     "chooseHeading": {
@@ -98,7 +122,6 @@
       "description": "Not shown on screen. A screen reader says this when it reaches the form.",
       "default": "Contact request form"
     },
-
     "nameLabel": {
       "group": "fields",
       "title": "Name: label",
@@ -321,7 +344,6 @@
       "long": true,
       "default": "Google\nInstagram\nBridal shop\nWedding planner\nThe Knot / WeddingWire\nA friend who was a client\nOther"
     },
-
     "photosLabel": {
       "group": "photos",
       "title": "Photos: label",
@@ -376,7 +398,6 @@
       "long": true,
       "default": "One of those photos could not be read. Please try another."
     },
-
     "pcButton": {
       "group": "photoCheck",
       "title": "Check button",
@@ -513,7 +534,6 @@
       "long": true,
       "default": "Anything wrong? Untick it, or say so in your notes. It’s a starting point, not a quote."
     },
-
     "submitSend": {
       "group": "buttons",
       "title": "Send button",
@@ -589,7 +609,6 @@
       "title": "Policies link words",
       "default": "policies"
     },
-
     "contactHeroAria": {
       "group": "contact",
       "title": "Top of the page, read aloud",
@@ -639,7 +658,6 @@
       "title": "Questions: heading",
       "default": "Frequently asked"
     },
-
     "confirmSubject": {
       "group": "emails",
       "title": "Request received: subject line",
@@ -794,7 +812,6 @@
       "long": true,
       "default": "Grace Mae Alterations · Pittsburgh, PA · By appointment only"
     },
-
     "careTabTitle": {
       "group": "care",
       "title": "Care page: browser tab title",
@@ -943,6 +960,33 @@
       "group": "care",
       "title": "Print page: link to the care page",
       "default": "See the page it opens"
+    },
+    "pcErrHourly": {
+      "group": "photoCheck",
+      "title": "Photo check: too many checks in an hour",
+      "long": true,
+      "default": "That's a lot of checks for one hour. Send the request as it is, and Grace will look at the photos herself."
+    },
+    "pcErrPhotos": {
+      "group": "photoCheck",
+      "title": "Photo check: photos it can't open",
+      "default": "Those photos can't be checked. JPG or PNG photos work best."
+    },
+    "pcErrDeclined": {
+      "group": "photoCheck",
+      "title": "Photo check: it couldn't read the photos",
+      "long": true,
+      "default": "The check couldn't read these photos. Send them as they are and Grace will look herself."
+    },
+    "pcErrUnfinished": {
+      "group": "photoCheck",
+      "title": "Photo check: it didn't finish",
+      "default": "The check didn't finish. Please try again."
+    },
+    "pcErrBusy": {
+      "group": "photoCheck",
+      "title": "Photo check: busy right now",
+      "default": "The check is busy right now. Please try again in a minute."
     }
   }
 }
