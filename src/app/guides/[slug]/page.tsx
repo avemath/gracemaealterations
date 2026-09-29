@@ -8,7 +8,7 @@ import {
   getPublishedBustleStyles,
   getMergedSite,
 } from "@/lib/sanity.queries";
-import { pageMetadata, SITE_URL, FALLBACK_OG_IMAGE, jsonLdHtml } from "@/lib/metadata";
+import { pageMetadata, SITE_URL, jsonLdHtml } from "@/lib/metadata";
 import SanityImage from "@/components/ui/SanityImage";
 import BustleExplorer from "@/components/sections/BustleExplorer";
 import FittingChecklist, { type ChecklistItem } from "@/components/sections/FittingChecklist";
@@ -48,7 +48,7 @@ export async function generateMetadata({
     path: `/guides/${guide.slug}`,
     title: guide.seo?.title ?? `${guide.title} | Grace Mae`,
     description: guide.seo?.description ?? guide.summary ?? "",
-    image: FALLBACK_OG_IMAGE,
+
   });
 }
 

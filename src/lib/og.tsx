@@ -50,9 +50,11 @@ export async function ogCard({
     // Fall back to the flat ivory card
   }
 
+  // Gelasio stands in for Georgia (the site's headings) and Source Sans for
+  // its plain sans body; the card can't use the visitor's system fonts.
   const [serif, sans] = await Promise.all([
-    loadFont("Cormorant+Garamond:ital,wght@1,400"),
-    loadFont("Jost:wght@300"),
+    loadFont("Gelasio:ital,wght@1,400"),
+    loadFont("Source+Sans+3:wght@400"),
   ]);
 
   // satori needs at least one font. If Google Fonts is unreachable, serve the
@@ -64,8 +66,9 @@ export async function ogCard({
     });
   }
 
-  // Long headlines need to step down a size to stay on two lines.
-  const fontSize = headline.length > 26 ? 68 : headline.length > 16 ? 88 : 112;
+  // Long headlines need to step down a size to stay on two or three lines.
+  // Gelasio (a close cousin of the site's Georgia) runs wide.
+  const fontSize = headline.length > 40 ? 50 : headline.length > 26 ? 58 : headline.length > 16 ? 76 : 96;
 
   const card = new ImageResponse(
     (
@@ -108,7 +111,7 @@ export async function ogCard({
         >
           <div
             style={{
-              fontFamily: sans ? "Jost" : "sans-serif",
+              fontFamily: sans ? "Source Sans" : "sans-serif",
               fontSize: "14px",
               letterSpacing: "0.22em",
               textTransform: "uppercase",
@@ -121,7 +124,7 @@ export async function ogCard({
 
           <div
             style={{
-              fontFamily: serif ? "Cormorant" : "Georgia, serif",
+              fontFamily: serif ? "Gelasio" : "Georgia, serif",
               fontStyle: "italic",
               fontSize: `${fontSize}px`,
               color: CHARCOAL,
@@ -137,7 +140,7 @@ export async function ogCard({
 
           <div
             style={{
-              fontFamily: sans ? "Jost" : "sans-serif",
+              fontFamily: sans ? "Source Sans" : "sans-serif",
               fontSize: "20px",
               color: "rgba(28,28,28,0.62)",
               letterSpacing: "0.02em",
@@ -153,8 +156,8 @@ export async function ogCard({
     {
       ...OG_SIZE,
       fonts: [
-        ...(serif ? [{ name: "Cormorant", data: serif, style: "italic" as const }] : []),
-        ...(sans ? [{ name: "Jost", data: sans, weight: 300 as const, style: "normal" as const }] : []),
+        ...(serif ? [{ name: "Gelasio", data: serif, style: "italic" as const }] : []),
+        ...(sans ? [{ name: "Source Sans", data: sans, weight: 400 as const, style: "normal" as const }] : []),
       ],
     }
   );

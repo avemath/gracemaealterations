@@ -1,5 +1,6 @@
 "use client";
 
+import { analytics } from "@/lib/analytics";
 import { useEffect, useState } from "react";
 import { fill } from "@/lib/text/fill";
 import type { Text } from "@/lib/text";
@@ -94,6 +95,7 @@ export default function FittingChecklist({ items, text }: { items: ChecklistItem
   const toggle = (i: number) =>
     setPacked((prev) => {
       const next = prev.map((v, j) => (j === i ? !v : v));
+      if (next.every(Boolean) && !prev.every(Boolean)) analytics.bagPacked();
       try {
         window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
       } catch {
