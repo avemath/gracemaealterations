@@ -141,16 +141,20 @@ export default function HomePageContent({ data, siteText: t }: { data: HomePageD
         {/* One portrait for both layouts: full width under the copy on mobile,
             a full-height column on the right from lg up. Rendering it twice
             shipped two <img> elements and two priority preloads.
-            From lg up the photo starts 32px past the copy column (48px
-            padding + 520px copy + 32px, inside the centred 80rem container)
-            rather than at a fixed 52%, which left a wide empty band between
-            the words and Grace on laptop and desktop screens. */}
+            From lg up the photo starts just past the copy (48px padding +
+            512px, inside the centred 80rem container; the longest line, the
+            eyebrow, is under 400px) rather than at a fixed 52%, which left a
+            wide empty band between the words and Grace on laptop and desktop
+            screens. */}
         <div
-          className="relative z-[2] w-full aspect-[1024/1210] -mt-4 overflow-hidden lg:mt-0 lg:absolute lg:inset-y-0 lg:right-0 lg:w-auto lg:left-[min(52%,calc(max(0px,50%_-_40rem)_+_600px))] lg:aspect-auto"
+          className="relative z-[2] w-full aspect-[1024/1210] -mt-4 overflow-hidden lg:mt-0 lg:absolute lg:inset-y-0 lg:right-0 lg:w-auto lg:left-[min(52%,calc(max(0px,50%_-_40rem)_+_560px))] lg:aspect-auto"
           aria-hidden="true"
         >
-          {/* Parallax inner — taller than container so there's room to translate */}
-          <motion.div className="absolute inset-x-0 top-0" style={{ height: "120%", y: heroParallaxY }}>
+          {/* Parallax inner, taller than the frame so there's room to
+              translate. From lg up it is also wider and pinned right, so the
+              frame crops off the bright window on the left of the portrait,
+              which read as more empty ivory, and Grace sits nearer the words. */}
+          <motion.div className="absolute right-0 top-0 w-full lg:w-[130%]" style={{ height: "120%", y: heroParallaxY }}>
             <SanityImage
               image={heroImage}
               fill
