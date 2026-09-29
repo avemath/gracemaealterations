@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import type { SanityTestimonial } from "@/lib/sanity.queries";
 import type { TextFor } from "@/lib/cta";
 import { fill } from "@/lib/text/fill";

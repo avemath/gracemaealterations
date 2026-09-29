@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import Link from "next/link";
-import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { m as motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import SanityImage from "@/components/ui/SanityImage";
 import CTABanner from "@/components/sections/CTABanner";
 import { ctas, type TextFor } from "@/lib/cta";

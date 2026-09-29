@@ -1,5 +1,6 @@
 "use client";
 
+import { analytics } from "@/lib/analytics";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { fill } from "@/lib/text/fill";
 import type { Text } from "@/lib/text";
@@ -184,6 +185,7 @@ export default function BustleExplorer({
 
   const pick = (next: BustleStyleId) => {
     if (next === style) return;
+    analytics.toolUse("bustle", next);
     setStyle(next);
     // Show the new style doing its thing from the start.
     setT(0);
@@ -192,6 +194,7 @@ export default function BustleExplorer({
 
   const pickTrain = (next: TrainId) => {
     if (next === train) return;
+    analytics.toolUse("bustle_train", next);
     setTrain(next);
     setT(0);
     animateTo(1, 0);

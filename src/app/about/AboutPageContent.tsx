@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { m as motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import SanityImage from "@/components/ui/SanityImage";
 import CTABanner from "@/components/sections/CTABanner";
 import type { SanityImage as SanityImageType, SanityValue } from "@/lib/sanity.queries";
