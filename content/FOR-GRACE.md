@@ -28,7 +28,7 @@ Everything below is in the Studio at **gracemaealterations.com/studio**. Nothing
 
 20. **Almost every word on the site is now yours to change.** In the Studio, open **Start here** for a map of where everything lives. The small print (buttons, labels, the contact form, the emails clients get, the guides' tools) is under **Words around the site**, in three documents: Site-wide words, Contact form & emails, and Guides & tools. Each box starts with today's wording and shows the original underneath, so you can always put it back. Leaving a box empty uses the original.
 21. Words in {curly brackets}, like {reopens} or {name}, are filled in by the site. Keep them as they are. The Studio warns you (without stopping you) if one goes missing, or if an em dash sneaks in.
-22. The trouser hem guide's writing is now an ordinary guide under **Guides**, like the others, and each service can choose which guides it lists underneath it (**Services**, then the service, then **Guides to show**).
+22. The trouser hem guide's writing is now an ordinary guide under **Guides**, like the others, and each service can choose which guides it lists underneath it (**Services**, then the service, then **Helpful guides**).
 23. In any document's menu, **Open preview** opens the page it appears on. Once you publish, the site updates within a minute or two (instantly, once Avery switches on instant updates).
 
 ---
