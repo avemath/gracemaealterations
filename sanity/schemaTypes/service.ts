@@ -60,6 +60,15 @@ export const service = defineType({
       type: "string",
     }),
     defineField({
+      name: "worksWith",
+      title: "Designers and brands I've worked on",
+      description:
+        'Optional. Shown under this service as "Gowns I\'ve worked on" (for example Maggie Sottero, Allure, Pronovias, David\'s Bridal). It reassures brides and helps people who search for their designer\'s name. One name per entry.',
+      type: "array",
+      of: [{ type: "string" }],
+      options: { layout: "tags" },
+    }),
+    defineField({
       name: "guides",
       title: "Helpful guides",
       description:

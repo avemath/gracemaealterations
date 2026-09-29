@@ -2,6 +2,13 @@
 
 Newest first. Grace facing notes live in `site/content/FOR-GRACE.md`.
 
+## Ready when Grace is, September 2026
+
+- `feat: "Gowns I've worked on"`: a designers and brands list on each Service, shown under that service once filled in.
+- `feat: "Where fittings happen"` on the About page: photos of the room and short details (where, parking, guests, kids and pets), hidden until there is at least one photo or detail.
+- `feat: "Needed by" on tailoring requests`, shown in Grace's email as Needed By.
+- `seo: image sitemap` at /image-sitemap.xml, listed in robots.txt, so Google Images can find the portfolio.
+
 ## Bustle helper on care cards, September 2026
 
 - `feat: "How to bustle your dress" on care pages`: a care card can hold the gown's bustle style, train length, number of points, step-by-step notes and a short video. The care page then shows the bustle drawing locked to that style (with that many points), the steps and the video, and the printed card adds "Scan it for how to bustle your dress, too." All of its wording is in Contact form & emails.

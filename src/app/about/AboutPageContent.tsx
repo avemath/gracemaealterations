@@ -27,6 +27,11 @@ interface AboutData {
   ctaHeadline: string;
   ctaSubhead: string;
   ctaButton: string;
+  fittingLabel: string;
+  fittingHeading: string;
+  fittingText: string;
+  fittingPhotos: SanityImageType[];
+  fittingDetails: { label?: string; text?: string }[];
 }
 
 interface Props {
@@ -204,6 +209,50 @@ export default function AboutPageContent({ site, about, values, text }: Props) {
           </div>
         </div>
       </section>
+
+      {/* ── WHERE FITTINGS HAPPEN (only once Grace fills it in) ── */}
+      {(about.fittingPhotos.length > 0 || about.fittingDetails.length > 0) && (
+        <section className="bg-ivory py-16 lg:py-24 px-6" aria-labelledby="fitting-heading">
+          <div className="max-w-5xl mx-auto">
+            <p className="section-label mb-4">{about.fittingLabel}</p>
+            <h2 id="fitting-heading" className="font-cormorant italic text-charcoal text-[clamp(2rem,3.5vw,3rem)] leading-tight mb-5">
+              {about.fittingHeading}
+            </h2>
+            {about.fittingText && (
+              <p className="font-jost text-charcoal/75 text-base leading-[1.7] max-w-[60ch] mb-10 whitespace-pre-line">{about.fittingText}</p>
+            )}
+            {about.fittingPhotos.length > 0 && (
+              <ul
+                className={`grid gap-4 mb-10 ${about.fittingPhotos.length === 1 ? "grid-cols-1 max-w-xl" : about.fittingPhotos.length === 2 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1 sm:grid-cols-3"}`}
+                role="list"
+              >
+                {about.fittingPhotos.map((photo, i) => (
+                  <li key={i} className="relative aspect-[4/5] overflow-hidden">
+                    <SanityImage
+                      image={photo}
+                      fill
+                      placeholderLabel="FITTING_PHOTO"
+                      sizes="(min-width: 640px) 33vw, 100vw"
+                    />
+                  </li>
+                ))}
+              </ul>
+            )}
+            {about.fittingDetails.length > 0 && (
+              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 border-t border-blush">
+                {about.fittingDetails.map((d, i) => (
+                  <div key={i} className="py-4 border-b border-blush">
+                    {d.label && (
+                      <dt className="font-jost font-medium text-charcoal text-xs tracking-[0.18em] uppercase mb-1">{d.label}</dt>
+                    )}
+                    {d.text && <dd className="font-jost text-charcoal/80 text-base leading-[1.6]">{d.text}</dd>}
+                  </div>
+                ))}
+              </dl>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* ── WHY INDEPENDENT ───────────────────────────────────── */}
       <section className="bg-near_black py-16 lg:py-24 px-6" aria-labelledby="independent-heading">

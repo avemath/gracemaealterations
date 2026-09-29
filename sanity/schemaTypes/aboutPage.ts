@@ -9,6 +9,7 @@ export const aboutPage = defineType({
     { name: "story", title: "Background Story" },
     { name: "values", title: "Values Section" },
     { name: "independence", title: "Why Independent Section" },
+    { name: "fitting", title: "Where Fittings Happen" },
     { name: "cta", title: "CTA Banner" },
   ],
   fields: [
@@ -143,6 +144,66 @@ export const aboutPage = defineType({
       rows: 6,
       initialValue:
         "When I worked in a corporate shop, the pressure was to move fast, book more, and never slow down. I got very good at working quickly, but I missed the part of this craft that actually matters: giving a garment the attention it deserves, and giving a client the time to feel comfortable. Going independent let me do both. I don't overbook. I don't rush. And I don't work for a quota. I work for the people who trust me with something that matters to them.",
+    }),
+
+    // ── Where fittings happen ───────────────────────────────────
+    defineField({
+      name: "fittingLabel",
+      title: "Where Fittings Happen: Section Label",
+      description:
+        "This whole section stays hidden until it has at least one photo or detail below. Home-based fittings win trust when people can picture the room before they come.",
+      group: "fitting",
+      type: "string",
+      initialValue: "Your fitting",
+    }),
+    defineField({
+      name: "fittingHeading",
+      title: "Where Fittings Happen: Heading",
+      group: "fitting",
+      type: "string",
+      initialValue: "Where fittings happen",
+    }),
+    defineField({
+      name: "fittingText",
+      title: "Where Fittings Happen: A few words",
+      description: "Optional. What the room is like and what to expect when you arrive.",
+      group: "fitting",
+      type: "text",
+      rows: 3,
+    }),
+    defineField({
+      name: "fittingPhotos",
+      title: "Where Fittings Happen: Photos",
+      description: "One to three photos: the fitting mirror, the room, the entrance. Nothing that shows your street or house number.",
+      group: "fitting",
+      type: "array",
+      of: [
+        {
+          type: "image",
+          options: { hotspot: true },
+          fields: [{ name: "alt", title: "Alt text", type: "string" }],
+        },
+      ],
+      validation: (rule) => rule.max(3),
+    }),
+    defineField({
+      name: "fittingDetails",
+      title: "Where Fittings Happen: Details",
+      description:
+        'Short facts people ask about, for example "Where" and "In Squirrel Hill; the full address comes with your booking", "Parking", "Guests" and "Room for two guests", "Kids and pets".',
+      group: "fitting",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          name: "fittingDetail",
+          fields: [
+            { name: "label", title: "Label", type: "string" },
+            { name: "text", title: "Text", type: "string" },
+          ],
+          preview: { select: { title: "label", subtitle: "text" } },
+        },
+      ],
     }),
 
     // ── CTA Banner ──────────────────────────────────────────────

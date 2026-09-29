@@ -48,3 +48,14 @@ test("favicon, app icon and apple touch icon are linked and served", async ({ re
     expect((await request.get(path)).status()).toBe(200);
   }
 });
+
+test("the image sitemap lists portfolio photos and robots.txt points to it", async ({ request }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "one width is enough");
+  const robots = await (await request.get("/robots.txt")).text();
+  expect(robots).toContain("/image-sitemap.xml");
+  const res = await request.get("/image-sitemap.xml");
+  expect(res.status()).toBe(200);
+  const xml = await res.text();
+  expect(xml).toContain("<urlset");
+  expect(xml).toContain("sitemap-image/1.1");
+});
