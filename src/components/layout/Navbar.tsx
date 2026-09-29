@@ -5,14 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useFocusTrap } from "@/lib/useFocusTrap";
-import { ctas } from "@/lib/cta";
-
-const BASE_NAV_LINKS = [
-  { label: "Services", href: "/services" },
-  { label: "Portfolio", href: "/portfolio" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-];
+import { ctas, type TextFor } from "@/lib/cta";
+import { fill } from "@/lib/text/fill";
 
 interface NavbarProps {
   siteName: string;
@@ -21,6 +15,8 @@ interface NavbarProps {
   reopensLabel?: string;
   /** Guides appear in the nav only once one is published. */
   hasGuides?: boolean;
+  /** The Studio's words for the menu and its button. */
+  text: TextFor<"nav" | "cta">;
 }
 
 export default function Navbar({
@@ -29,11 +25,16 @@ export default function Navbar({
   limitedMode = false,
   reopensLabel = "",
   hasGuides = false,
+  text,
 }: NavbarProps) {
-  const NAV_LINKS = hasGuides
-    ? [...BASE_NAV_LINKS.slice(0, 2), { label: "Guides", href: "/guides" }, ...BASE_NAV_LINKS.slice(2)]
-    : BASE_NAV_LINKS;
-  const { primary } = ctas({ limitedMode, reopensLabel });
+  const NAV_LINKS = [
+    { label: text.navServices, href: "/services" },
+    { label: text.navPortfolio, href: "/portfolio" },
+    ...(hasGuides ? [{ label: text.navGuides, href: "/guides" }] : []),
+    { label: text.navAbout, href: "/about" },
+    { label: text.navContact, href: "/contact" },
+  ];
+  const { primary } = ctas({ limitedMode, reopensLabel }, text);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -79,14 +80,14 @@ export default function Navbar({
 
         <nav
           className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between h-16 lg:h-20"
-          aria-label="Main navigation"
+          aria-label={text.navMainLabel}
         >
           {/* Logo / Name */}
           <Link
             href="/"
             className={`font-cormorant italic text-xl lg:text-2xl transition-colors duration-300 tracking-wide ${showBg ? "text-gold_ink hover:text-charcoal" : "text-gold_light hover:text-ivory"}`}
             style={showBg ? undefined : { textShadow: "0 1px 3px rgba(0,0,0,0.55)" }}
-            aria-label={`${businessName}, home`}
+            aria-label={fill(text.navHomeLabel, { business: businessName })}
           >
             {siteName}
           </Link>
@@ -123,7 +124,7 @@ export default function Navbar({
             type="button"
             className="lg:hidden relative w-11 h-11 flex flex-col items-center justify-center gap-[5px]"
             onClick={() => setMenuOpen((p) => !p)}
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-label={menuOpen ? text.navCloseMenu : text.navOpenMenu}
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
           >
@@ -158,12 +159,12 @@ export default function Navbar({
             className="fixed inset-0 z-40 bg-ivory flex flex-col items-center justify-center"
             role="dialog"
             aria-modal="true"
-            aria-label="Mobile navigation menu"
+            aria-label={text.navMenuLabel}
           >
             {/* Decorative gold rule */}
             <div className="w-px h-16 bg-gold/30 mb-10" aria-hidden="true" />
 
-            <nav className="flex flex-col items-center gap-2" aria-label="Mobile navigation">
+            <nav className="flex flex-col items-center gap-2" aria-label={text.navMobileLabel}>
               {NAV_LINKS.map((link, i) => (
                 <motion.div
                   key={link.href}
@@ -202,7 +203,7 @@ export default function Navbar({
               transition={{ delay: 0.55, duration: 0.4 }}
               className="absolute bottom-10 font-jost text-xs text-charcoal/75 tracking-widest uppercase"
             >
-              Pittsburgh, PA &nbsp;·&nbsp; By Appointment
+              {text.navMenuFooter}
             </motion.p>
           </motion.div>
         )}

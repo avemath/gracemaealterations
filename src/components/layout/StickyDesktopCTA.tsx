@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { pageCtas } from "@/lib/cta";
+import { pageCtas, type CtaText } from "@/lib/cta";
 
 const EXCLUDED = ["/contact", "/studio"];
 
@@ -12,13 +12,15 @@ interface Props {
   /** Limited availability: some services are waitlisted, the rest book normally. */
   limitedMode?: boolean;
   reopensLabel?: string;
+  /** The Studio's button words. */
+  text?: CtaText;
 }
 
-export default function StickyDesktopCTA({ limitedMode = false, reopensLabel = "" }: Props) {
+export default function StickyDesktopCTA({ limitedMode = false, reopensLabel = "", text }: Props) {
   const [visible, setVisible] = useState(false);
   const pathname = usePathname();
   // One button, matched to the page: two stacked ones sat on top of the text.
-  const { main } = pageCtas(pathname, { limitedMode, reopensLabel });
+  const { main } = pageCtas(pathname, { limitedMode, reopensLabel }, text);
   const excluded = EXCLUDED.includes(pathname) || pathname.startsWith("/studio") || pathname.startsWith("/care");
 
   useEffect(() => {

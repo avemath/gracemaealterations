@@ -3,6 +3,8 @@ import Link from "next/link";
 import { PortableText, type PortableTextBlock } from "@portabletext/react";
 import { notFound } from "next/navigation";
 import { getPolicies } from "@/lib/sanity.queries";
+import { getText } from "@/lib/text";
+import { aroundLink } from "@/lib/cta";
 import { pageMetadata, FALLBACK_OG_IMAGE } from "@/lib/metadata";
 
 // Unpublished policies are a 404, so they shouldn't claim a canonical URL.
@@ -18,17 +20,19 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PoliciesPage() {
-  const policies = await getPolicies();
+  const [policies, text] = await Promise.all([getPolicies(), getText("site")]);
   if (!policies) notFound();
   const sections = policies.sections ?? [];
+  const [emptyBefore, emptyAfter] = aroundLink(text.policiesEmpty);
+  const [closingBefore, closingAfter] = aroundLink(text.policiesClosing);
 
   return (
     <>
-      <section className="bg-near_black" aria-label="Policies hero">
+      <section className="bg-near_black" aria-label={text.policiesHeroRegion}>
         <div className="max-w-3xl mx-auto px-6 lg:px-12 pt-36 lg:pt-44 pb-14">
-          <p className="section-label text-gold mb-4">Good to know</p>
+          <p className="section-label text-gold mb-4">{text.policiesEyebrow}</p>
           <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-ivory">
-            {policies.heading ?? "Policies"}
+            {policies.heading ?? text.policiesHeading}
           </h1>
           {policies.intro && (
             <p className="font-jost text-ivory/75 text-base leading-[1.65] max-w-[65ch] mt-6">
@@ -38,15 +42,15 @@ export default async function PoliciesPage() {
         </div>
       </section>
 
-      <section className="bg-ivory py-14 lg:py-20 px-6" aria-label="Policy details">
+      <section className="bg-ivory py-14 lg:py-20 px-6" aria-label={text.policiesDetailsRegion}>
         <div className="max-w-3xl mx-auto">
           {sections.length === 0 ? (
             <p className="font-jost text-charcoal/75 text-base leading-[1.65]">
-              Policies are being written. In the meantime, ask me anything through the{" "}
+              {emptyBefore}
               <Link href="/contact" className="text-gold_ink underline">
-                contact form
+                {text.policiesEmptyLink}
               </Link>
-              .
+              {emptyAfter}
             </p>
           ) : (
             <div className="space-y-12">
@@ -64,11 +68,11 @@ export default async function PoliciesPage() {
           )}
 
           <p className="mt-16 pt-8 border-t border-blush font-jost text-charcoal/75 text-sm leading-[1.65]">
-            Questions about any of this?{" "}
+            {closingBefore}
             <Link href="/contact" className="text-gold_ink underline">
-              Send a request
-            </Link>{" "}
-            and I will answer plainly.
+              {text.policiesLink}
+            </Link>
+            {closingAfter}
           </p>
         </div>
       </section>

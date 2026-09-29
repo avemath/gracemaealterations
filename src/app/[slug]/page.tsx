@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getLandingPage } from "@/lib/sanity.queries";
+import { getText } from "@/lib/text";
+import { aroundLink } from "@/lib/cta";
 import { pageMetadata, FALLBACK_OG_IMAGE, LANDING_SLUGS as ALLOWED, shortDescription } from "@/lib/metadata";
 
 export const revalidate = 60;
@@ -33,12 +35,13 @@ export async function generateMetadata({
 
 export default async function LandingPageRoute({ params }: { params: { slug: string } }) {
   if (!ALLOWED.includes(params.slug)) notFound();
-  const page = await getLandingPage(params.slug);
+  const [page, text] = await Promise.all([getLandingPage(params.slug), getText("site")]);
   if (!page) notFound();
+  const [beforeLink, afterLink] = aroundLink(text.landingClosing);
 
   return (
     <article>
-      <section className="bg-near_black" aria-label="Page hero">
+      <section className="bg-near_black" aria-label={text.landingHeroRegion}>
         <div className="max-w-3xl mx-auto px-6 lg:px-12 pt-36 lg:pt-44 pb-14">
           <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-ivory">
             {page.title}
@@ -65,10 +68,11 @@ export default async function LandingPageRoute({ params }: { params: { slug: str
           ))}
 
           <p className="pt-8 border-t border-blush font-jost text-charcoal/75 text-sm leading-[1.65]">
+            {beforeLink}
             <Link href="/contact" className="text-gold_ink underline">
-              Send a request
-            </Link>{" "}
-            and I will reply with an honest answer.
+              {text.landingLink}
+            </Link>
+            {afterLink}
           </p>
         </div>
       </section>

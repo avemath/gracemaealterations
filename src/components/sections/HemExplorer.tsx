@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { fill } from "@/lib/text/fill";
+import type { Text } from "@/lib/text";
 import { HemDrawing, VIEW, lerpGeo, targetGeo, type Geo } from "./hemDrawing";
 
 /**
@@ -13,78 +15,47 @@ export type BreakId = "none" | "quarter" | "half" | "full";
 export type ShoeId = "dress" | "sneaker" | "heel";
 export type LegId = "slim" | "straight" | "wide";
 
-const BREAKS: { id: BreakId; label: string; caption: string; desc: string }[] = [
-  {
-    id: "none",
-    label: "No break",
-    caption:
-      "The hem just skims the top of the shoe, so the leg falls in one clean line with no fold. I love it on slim, modern suits and cropped trousers.",
-    desc: "The front of the hem just grazes the top of the shoe with no fold, and the back sits at the top of the heel.",
-  },
-  {
-    id: "quarter",
-    label: "Quarter break",
-    caption:
-      "The hem just touches the shoe, leaving a barely-there dimple at the front. It’s the length I suggest most often for suits and chinos today.",
-    desc: "The front of the hem rests lightly on the shoe with a small dimple, and the back covers the top of the heel.",
-  },
-  {
-    id: "half",
-    label: "Half break",
-    caption:
-      "One soft fold sits just above the shoe, and the back of the hem covers about half the heel. It’s the classic suit length, and a safe choice if you’re unsure.",
-    desc: "One soft horizontal fold sits above the shoe at the front, and the back of the hem covers about half of the heel.",
-  },
-  {
-    id: "full",
-    label: "Full break",
-    caption:
-      "The front folds into a deep crease across the shoe, and the back covers most of the heel. I keep it for fuller, traditional trousers; on a slim leg it just looks too long.",
-    desc: "A deep fold creases across the front above the shoe, and the back of the hem covers most of the heel.",
-  },
+interface BreakOption {
+  id: BreakId;
+  label: string;
+  caption: string;
+  desc: string;
+}
+interface ShoeOption {
+  id: ShoeId;
+  label: string;
+  noun: string;
+  note: string;
+}
+interface LegOption {
+  id: LegId;
+  label: string;
+  note: string;
+}
+
+/** The explorer's own wording from the Studio (Guides & tools): every "hem" field. */
+export type HemText = Pick<Text<"tools">, Extract<keyof Text<"tools">, `hem${string}`>>;
+
+// The wording lives in the Studio (Guides & tools); these just line it up
+// with the choices the drawing knows how to draw.
+const breakOptions = (text: HemText): BreakOption[] => [
+  { id: "none", label: text.hemBreakNone, caption: text.hemBreakNoneCaption, desc: text.hemBreakNoneSpoken },
+  { id: "quarter", label: text.hemBreakQuarter, caption: text.hemBreakQuarterCaption, desc: text.hemBreakQuarterSpoken },
+  { id: "half", label: text.hemBreakHalf, caption: text.hemBreakHalfCaption, desc: text.hemBreakHalfSpoken },
+  { id: "full", label: text.hemBreakFull, caption: text.hemBreakFullCaption, desc: text.hemBreakFullSpoken },
 ];
 
-const SHOE_OPTIONS: { id: ShoeId; label: string; noun: string; note: string }[] = [
-  {
-    id: "dress",
-    label: "Dress shoe",
-    noun: "a dress shoe",
-    note: "Dress shoes are low and sleek, so small changes in length show. Most suit hems I pin are pinned over a pair like these.",
-  },
-  {
-    id: "sneaker",
-    label: "Sneaker",
-    noun: "a sneaker",
-    note: "Sneakers are chunkier and higher at the back, so the same trousers break sooner. I usually take casual pants a touch shorter for them.",
-  },
-  {
-    id: "heel",
-    label: "Heel",
-    noun: "a heeled pump",
-    note: "A heel lifts the back of your foot and tips it forward, so the hem lands somewhere quite different than it does in flats. Bring the shoes you’ll wear, and I’ll pin to those.",
-  },
+const shoeOptions = (text: HemText): ShoeOption[] => [
+  { id: "dress", label: text.hemShoeDress, noun: text.hemShoeDressSpoken, note: text.hemShoeDressNote },
+  { id: "sneaker", label: text.hemShoeSneaker, noun: text.hemShoeSneakerSpoken, note: text.hemShoeSneakerNote },
+  { id: "heel", label: text.hemShoeHeel, noun: text.hemShoeHeelSpoken, note: text.hemShoeHeelNote },
 ];
 
-const LEG_OPTIONS: { id: LegId; label: string; note: string }[] = [
-  {
-    id: "slim",
-    label: "Slim",
-    note: "A slim opening sits right on the shoe, so every bit of break shows. Slim trousers look sharpest with a little break or none.",
-  },
-  {
-    id: "straight",
-    label: "Straight",
-    note: "A straight leg is the middle ground. Most suits and chinos are cut this way, and any of these breaks can work.",
-  },
-  {
-    id: "wide",
-    label: "Wide",
-    note: "A wide leg falls past the shoe instead of resting on it, so it barely folds. I usually hem wide legs longer, just clear of the floor.",
-  },
+const legOptions = (text: HemText): LegOption[] => [
+  { id: "slim", label: text.hemLegSlim, note: text.hemLegSlimNote },
+  { id: "straight", label: text.hemLegStraight, note: text.hemLegStraightNote },
+  { id: "wide", label: text.hemLegWide, note: text.hemLegWideNote },
 ];
-
-const SLANT_NOTE =
-  "The hem is angled a little longer at the back than the front, so it covers more of the heel without piling up on the shoe. It’s a nice finish on slim trousers.";
 
 const ease = (p: number) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
 const DURATION = 750;
@@ -98,7 +69,7 @@ interface Choice {
 
 const START: Choice = { brk: "half", shoe: "dress", leg: "straight", slanted: false };
 
-export default function HemExplorer() {
+export default function HemExplorer({ text }: { text: HemText }) {
   const uid = useId();
   const [choice, setChoice] = useState<Choice>(START);
   const [geo, setGeo] = useState<Geo>(() => targetGeo(START.brk, START.shoe, START.leg, START.slanted));
@@ -153,12 +124,18 @@ export default function HemExplorer() {
     update(next, choice.shoe);
   };
 
-  const brk = BREAKS.find((b) => b.id === choice.brk)!;
-  const shoe = SHOE_OPTIONS.find((s) => s.id === choice.shoe)!;
-  const leg = LEG_OPTIONS.find((l) => l.id === choice.leg)!;
-  const label = `Side view of a ${leg.label.toLowerCase()} trouser leg over ${shoe.noun}, hemmed with ${
-    brk.id === "none" ? "no break" : `a ${brk.label.toLowerCase()}`
-  }${choice.slanted ? " and a slanted hem" : ""}.`;
+  const breaks = breakOptions(text);
+  const shoes = shoeOptions(text);
+  const legs = legOptions(text);
+  const brk = breaks.find((b) => b.id === choice.brk)!;
+  const shoe = shoes.find((s) => s.id === choice.shoe)!;
+  const leg = legs.find((l) => l.id === choice.leg)!;
+  const legName = fill(text.hemLegName, { leg: leg.label });
+  const label = fill(choice.slanted ? text.hemDrawingNameSlanted : text.hemDrawingName, {
+    leg: leg.label.toLowerCase(),
+    shoe: shoe.noun,
+    break: brk.id === "none" ? brk.label.toLowerCase() : `a ${brk.label.toLowerCase()}`,
+  });
   const descId = `${uid}-desc`;
 
   return (
@@ -186,12 +163,20 @@ export default function HemExplorer() {
             </radialGradient>
           </defs>
           <rect x={VIEW.x} y={VIEW.y} width={VIEW.w} height={VIEW.h} fill={`url(#${uid}-glow)`} />
-          <HemDrawing geo={geo} brk={choice.brk} shoe={choice.shoe} fadingShoe={fading} uid={uid} />
+          <HemDrawing
+            geo={geo}
+            brk={choice.brk}
+            shoe={choice.shoe}
+            fadingShoe={fading}
+            uid={uid}
+            labels={{ breakLabel: text.hemLabelBreak, noBreak: text.hemLabelNoBreak, hem: text.hemLabelHem }}
+          />
         </svg>
 
         <div className="px-4 sm:px-6 pb-5 pt-1">
           <p className="font-jost text-[0.65rem] tracking-[0.18em] uppercase text-gold">
-            {brk.label} · {shoe.label} · {leg.label} leg{choice.slanted ? " · Slanted" : ""}
+            {brk.label} · {shoe.label} · {legName}
+            {choice.slanted ? ` · ${text.hemSlantShort}` : ""}
           </p>
           <p
             className="font-cormorant italic text-ivory text-lg sm:text-xl leading-snug mt-1 min-h-[4.1em] sm:min-h-[2.75em]"
@@ -205,25 +190,25 @@ export default function HemExplorer() {
       {/* ── Controls and notes ── */}
       <div className="min-w-0">
         <ChipGroup
-          legend="Break"
+          legend={text.hemBreakLegend}
           name={`${uid}-break`}
-          options={BREAKS}
+          options={breaks}
           value={choice.brk}
           onChange={(id) => set({ brk: id })}
         />
         <ChipGroup
           className="mt-4 lg:mt-6"
-          legend="Shoe"
+          legend={text.hemShoeLegend}
           name={`${uid}-shoe`}
-          options={SHOE_OPTIONS}
+          options={shoes}
           value={choice.shoe}
           onChange={(id) => set({ shoe: id })}
         />
         <ChipGroup
           className="mt-4 lg:mt-6"
-          legend="Leg"
+          legend={text.hemLegLegend}
           name={`${uid}-leg`}
-          options={LEG_OPTIONS}
+          options={legs}
           value={choice.leg}
           onChange={(id) => set({ leg: id })}
         />
@@ -248,11 +233,13 @@ export default function HemExplorer() {
               }`}
             />
           </span>
-          Slanted hem
+          {text.hemSlantLabel}
         </label>
 
         <p className="sr-only" aria-live="polite">
-          {`${brk.label}, ${shoe.label.toLowerCase()}, ${leg.label.toLowerCase()} leg${choice.slanted ? ", slanted hem" : ""}. ${brk.caption}`}
+          {`${brk.label}, ${shoe.label.toLowerCase()}, ${legName.toLowerCase()}${
+            choice.slanted ? `, ${text.hemSlantLabel.toLowerCase()}` : ""
+          }. ${brk.caption}`}
         </p>
 
         <dl className="mt-8 border-t border-blush pt-6 space-y-3 font-jost text-sm text-charcoal/75 leading-[1.65] max-w-[60ch]">
@@ -261,13 +248,13 @@ export default function HemExplorer() {
             <dd className="inline">{shoe.note}</dd>
           </div>
           <div>
-            <dt className="inline font-medium text-charcoal">{leg.label} leg: </dt>
+            <dt className="inline font-medium text-charcoal">{legName}: </dt>
             <dd className="inline">{leg.note}</dd>
           </div>
           {choice.slanted && (
             <div>
-              <dt className="inline font-medium text-charcoal">Slanted hem: </dt>
-              <dd className="inline">{SLANT_NOTE}</dd>
+              <dt className="inline font-medium text-charcoal">{text.hemSlantLabel}: </dt>
+              <dd className="inline">{text.hemSlantNote}</dd>
             </div>
           )}
         </dl>

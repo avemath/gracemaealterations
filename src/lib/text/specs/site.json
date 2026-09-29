@@ -1,0 +1,748 @@
+{
+  "id": "siteText",
+  "title": "Site-wide words",
+  "description": "Buttons, labels and small bits of text used across the site. Leave a field empty to use the original wording. Words in {curly brackets} are filled in automatically, so keep them as they are.",
+  "groups": [
+    { "name": "buttons", "title": "Buttons" },
+    { "name": "sticky", "title": "Sticky buttons" },
+    { "name": "banner", "title": "Closing banner" },
+    { "name": "header", "title": "Header and menu" },
+    { "name": "footer", "title": "Footer" },
+    { "name": "home", "title": "Home page" },
+    { "name": "services", "title": "Services page" },
+    { "name": "portfolio", "title": "Portfolio page" },
+    { "name": "slider", "title": "Before and after slider" },
+    { "name": "about", "title": "About page" },
+    { "name": "other", "title": "Landing and policies pages" },
+    { "name": "notFound", "title": "Page not found" }
+  ],
+  "fields": {
+    "ctaTailoring": {
+      "group": "buttons",
+      "title": "Book tailoring (while bridal is on the waitlist)",
+      "description": "The main button across the site while bridal is on the waitlist: the home page, the menu, the sticky button and the end of each service.",
+      "default": "Book tailoring or a repair"
+    },
+    "ctaWaitlistYear": {
+      "group": "buttons",
+      "title": "Join the bridal waitlist (with the year)",
+      "description": "The second button while bridal is on the waitlist. {year} becomes the year from the reopening time in Site Settings, such as \"2027\".",
+      "default": "Join the {year} bridal waitlist"
+    },
+    "ctaWaitlist": {
+      "group": "buttons",
+      "title": "Join the bridal waitlist (no year known)",
+      "description": "Used instead of the one above when the reopening time in Site Settings has no year in it.",
+      "default": "Join the bridal waitlist"
+    },
+    "ctaConsult": {
+      "group": "buttons",
+      "title": "Book a consultation (everything open)",
+      "description": "The main button across the site when every service is open.",
+      "default": "Book a consultation"
+    },
+    "ctaServices": {
+      "group": "buttons",
+      "title": "View services (everything open)",
+      "description": "The second button on the home page when every service is open.",
+      "default": "View services"
+    },
+    "ctaParty": {
+      "group": "buttons",
+      "title": "Send a bridal party request",
+      "description": "Under \"Bridal party & mother of the bride\" on the services page, and the sticky button on the bridal party page while bridal is on the waitlist.",
+      "default": "Send a bridal party request"
+    },
+    "ctaTailoringOpen": {
+      "group": "sticky",
+      "title": "Small link on bridal pages: tailoring is open",
+      "description": "On phones, the small link under the sticky waitlist button on the wedding dress guides and the David's Bridal page, while bridal is on the waitlist.",
+      "default": "Tailoring and repairs are open now"
+    },
+    "ctaOr": {
+      "group": "sticky",
+      "title": "Small link under the sticky button: the other choice",
+      "description": "On phones, the small link under the sticky button while bridal is on the waitlist. {action} becomes the waitlist button's words starting with a small letter, such as \"join the 2027 bridal waitlist\".",
+      "default": "or {action}"
+    },
+    "bannerHeadlineYear": {
+      "group": "banner",
+      "title": "Headline (with the year)",
+      "description": "The dark banner at the bottom of the home, services, portfolio and about pages, while bridal is on the waitlist. (When everything is open, the banner uses each page's own wording.) {year} becomes the reopening year, such as \"2027\".",
+      "default": "Getting married in {year}?"
+    },
+    "bannerHeadline": {
+      "group": "banner",
+      "title": "Headline (no year known)",
+      "description": "Used instead of the one above when the reopening time in Site Settings has no year in it.",
+      "default": "Getting married after bridal reopens?"
+    },
+    "bannerSubhead": {
+      "group": "banner",
+      "title": "Line under the headline",
+      "description": "{reopens} becomes the reopening time from Site Settings, such as \"early 2027\".",
+      "long": true,
+      "default": "Bridal fittings reopen {reopens}. Waitlist brides get first choice of fitting dates, in the order they joined."
+    },
+    "bannerButton": {
+      "group": "banner",
+      "title": "Button",
+      "default": "Save my place"
+    },
+    "navServices": {
+      "group": "header",
+      "title": "Menu: Services",
+      "description": "In the header, the phone menu, the footer links and the page-not-found links.",
+      "default": "Services"
+    },
+    "navPortfolio": {
+      "group": "header",
+      "title": "Menu: Portfolio",
+      "default": "Portfolio"
+    },
+    "navGuides": {
+      "group": "header",
+      "title": "Menu: Guides",
+      "description": "Shown once at least one guide is published.",
+      "default": "Guides"
+    },
+    "navAbout": {
+      "group": "header",
+      "title": "Menu: About",
+      "default": "About"
+    },
+    "navContact": {
+      "group": "header",
+      "title": "Menu: Contact",
+      "default": "Contact"
+    },
+    "navMenuFooter": {
+      "group": "header",
+      "title": "Phone menu: line at the bottom",
+      "description": "The small line at the bottom of the open menu on phones.",
+      "default": "Pittsburgh, PA  ·  By Appointment"
+    },
+    "navHomeLabel": {
+      "group": "header",
+      "title": "Read aloud: your name in the header",
+      "description": "What screen readers say for your name at the top left, which goes to the home page. {business} becomes the business name from Site Settings.",
+      "default": "{business}, home"
+    },
+    "navOpenMenu": {
+      "group": "header",
+      "title": "Read aloud: open the phone menu",
+      "default": "Open menu"
+    },
+    "navCloseMenu": {
+      "group": "header",
+      "title": "Read aloud: close the phone menu",
+      "default": "Close menu"
+    },
+    "navMainLabel": {
+      "group": "header",
+      "title": "Read aloud: the header links",
+      "default": "Main navigation"
+    },
+    "navMenuLabel": {
+      "group": "header",
+      "title": "Read aloud: the open phone menu",
+      "default": "Mobile navigation menu"
+    },
+    "navMobileLabel": {
+      "group": "header",
+      "title": "Read aloud: the links in the phone menu",
+      "default": "Mobile navigation"
+    },
+    "navSkip": {
+      "group": "header",
+      "title": "Skip link",
+      "description": "Appears only for people using a keyboard: the first thing they reach on every page, to jump past the header.",
+      "default": "Skip to main content"
+    },
+    "footerTagline": {
+      "group": "footer",
+      "title": "Line under your name",
+      "default": "Bridal & Clothing Alterations"
+    },
+    "footerStudioHeading": {
+      "group": "footer",
+      "title": "Studio column: heading",
+      "default": "Studio"
+    },
+    "footerStudioLine": {
+      "group": "footer",
+      "title": "Studio column: where",
+      "description": "{location} becomes the location from Site Settings. Your availability line from Site Settings shows below it.",
+      "default": "{location} · By appointment"
+    },
+    "footerContactHeading": {
+      "group": "footer",
+      "title": "Contact column: heading",
+      "default": "Contact"
+    },
+    "footerSendRequest": {
+      "group": "footer",
+      "title": "Contact column: link to the contact form",
+      "description": "Under your email address.",
+      "default": "Send a request"
+    },
+    "footerGuidesHeading": {
+      "group": "footer",
+      "title": "Guides column: heading",
+      "default": "Guides"
+    },
+    "footerPoliciesHeading": {
+      "group": "footer",
+      "title": "Last column: heading (policies published)",
+      "default": "Policies"
+    },
+    "footerElsewhereHeading": {
+      "group": "footer",
+      "title": "Last column: heading (no policies yet)",
+      "description": "Used until the Policies page is published.",
+      "default": "Elsewhere"
+    },
+    "footerPoliciesLink": {
+      "group": "footer",
+      "title": "Link to the policies page",
+      "default": "Policies"
+    },
+    "footerReview": {
+      "group": "footer",
+      "title": "Link to leave a Google review",
+      "description": "Shown when a Google review link is set in Site Settings.",
+      "default": "Leave a Google review"
+    },
+    "footerCopyright": {
+      "group": "footer",
+      "title": "Copyright line",
+      "description": "{year} becomes this year and {business} the business name from Site Settings.",
+      "default": "© {year} {business}. All rights reserved."
+    },
+    "footerNavLabel": {
+      "group": "footer",
+      "title": "Read aloud: the footer links",
+      "description": "The links themselves use the Menu words under \"Header and menu\".",
+      "default": "Footer navigation"
+    },
+    "homeEyebrow": {
+      "group": "home",
+      "title": "Small line above the headline",
+      "description": "The small capitals above your big headline at the top of the home page. (The \"Hero: Section Label\" on the Home Page document is not shown on the site; this is.)",
+      "default": "Pittsburgh bridal alterations & tailoring"
+    },
+    "homeIntro": {
+      "group": "home",
+      "title": "Line under the headline",
+      "description": "The sentence between the headline and the buttons. (The \"Hero: Credential Body Text\" on the Home Page document is not shown on the site; this is.)",
+      "long": true,
+      "default": "A formally trained designer and former Lead Alterations Specialist at David’s Bridal, fitting one client at a time."
+    },
+    "homeScroll": {
+      "group": "home",
+      "title": "\"Scroll\" hint",
+      "description": "The tiny word at the bottom of the first screen on a computer.",
+      "default": "Scroll"
+    },
+    "homeHeroAlt": {
+      "group": "home",
+      "title": "Portrait description",
+      "description": "Read by screen readers only when the portrait on the Home Page document has no alt text of its own. {name} becomes your name from Site Settings.",
+      "default": "{name}, Pittsburgh bridal seamstress"
+    },
+    "homeHeroRegion": {
+      "group": "home",
+      "title": "Read aloud: the top section",
+      "default": "Hero section"
+    },
+    "homeStatsRegion": {
+      "group": "home",
+      "title": "Read aloud: the row of numbers",
+      "default": "Experience and credentials"
+    },
+    "pillTailoring": {
+      "group": "home",
+      "title": "Availability badge: tailoring line",
+      "description": "The small bordered badge above the headline while bridal is on the waitlist. (When everything is open it shows the booking note from Site Settings.)",
+      "default": "Tailoring & repairs: booking now"
+    },
+    "pillBridal": {
+      "group": "home",
+      "title": "Availability badge: bridal line",
+      "description": "{reopens} becomes the reopening time from Site Settings, such as \"early 2027\".",
+      "default": "Bridal: {reopens} waitlist open"
+    },
+    "homeWaitlistTag": {
+      "group": "home",
+      "title": "Service card: waitlist tag",
+      "description": "Above the title of a service card that is on the waitlist. {reopens} becomes the reopening time from Site Settings.",
+      "default": "Waitlist for {reopens}"
+    },
+    "homeTailoringLine": {
+      "group": "home",
+      "title": "Service card: tailoring description",
+      "description": "The tailoring card uses this line instead of the service's short description.",
+      "long": true,
+      "default": "Hems, waists, sleeves and zips, done cleanly, usually within two weeks."
+    },
+    "homeTailoringPrice": {
+      "group": "home",
+      "title": "Service card: tailoring starting price",
+      "default": "from $25"
+    },
+    "homeCardWaitlist": {
+      "group": "home",
+      "title": "Service card link: waitlist",
+      "default": "Join the Waitlist"
+    },
+    "homeCardWaitlistFor": {
+      "group": "home",
+      "title": "Read aloud after the waitlist link",
+      "description": "Screen readers hear this straight after the link, so it says which service. {service} becomes the service name.",
+      "default": "for {service}"
+    },
+    "homeCardMore": {
+      "group": "home",
+      "title": "Service card link: learn more",
+      "default": "Learn More"
+    },
+    "homeCardMoreAbout": {
+      "group": "home",
+      "title": "Read aloud after the learn more link",
+      "description": "{service} becomes the service name.",
+      "default": "about {service}"
+    },
+    "homeViewAll": {
+      "group": "home",
+      "title": "Portfolio preview: link beside the heading",
+      "description": "On computers and tablets.",
+      "default": "View All"
+    },
+    "homeViewPortfolio": {
+      "group": "home",
+      "title": "Portfolio preview: button under the photos",
+      "description": "On phones.",
+      "default": "View Full Portfolio"
+    },
+    "homeAboutText": {
+      "group": "home",
+      "title": "About teaser: paragraph",
+      "description": "Under the pull quote in the pink About section.",
+      "long": true,
+      "default": "I trained as a designer at IUP and spent a year as Lead Alterations Specialist at David’s Bridal. Now I work for myself, one client at a time, out of a studio in Pittsburgh. Every quote is itemized in writing before I cut a thread."
+    },
+    "homeReadStory": {
+      "group": "home",
+      "title": "About teaser: link",
+      "default": "Read Grace’s story"
+    },
+    "reviewsMarried": {
+      "group": "home",
+      "title": "Reviews: wedding month",
+      "description": "In the line under each review. {month} becomes the month from the testimonial, such as \"August 2024\".",
+      "default": "Married {month}"
+    },
+    "reviewsVia": {
+      "group": "home",
+      "title": "Reviews: where it was posted",
+      "description": "The small tag under a review that came from somewhere else. {source} becomes the source, such as \"Google\".",
+      "default": "via {source}"
+    },
+    "reviewsLabel": {
+      "group": "home",
+      "title": "Read aloud: the reviews carousel",
+      "default": "Client testimonials"
+    },
+    "reviewsPrevious": {
+      "group": "home",
+      "title": "Read aloud: previous review arrow",
+      "default": "Previous testimonial"
+    },
+    "reviewsNext": {
+      "group": "home",
+      "title": "Read aloud: next review arrow",
+      "default": "Next testimonial"
+    },
+    "reviewsSlide": {
+      "group": "home",
+      "title": "Read aloud: which review is showing",
+      "description": "{number} becomes the review's position and {total} how many there are.",
+      "default": "{number} of {total}"
+    },
+    "reviewsDot": {
+      "group": "home",
+      "title": "Read aloud: the dots under the reviews",
+      "default": "Show testimonial {number} of {total}"
+    },
+    "instaHeading": {
+      "group": "home",
+      "title": "Instagram row: heading",
+      "description": "Above the row of Instagram photos, shown once photos are added in Site Settings.",
+      "default": "From the studio"
+    },
+    "instaAlt": {
+      "group": "home",
+      "title": "Instagram row: photo description",
+      "description": "Read by screen readers when an Instagram photo has no alt text of its own.",
+      "default": "Instagram post from the studio"
+    },
+    "servicesHeading": {
+      "group": "services",
+      "title": "Page headline",
+      "description": "The big headline at the top of the services page. (The \"Hero Heading\" on the Services Page document is not shown on the site; this is.)",
+      "default": "Bridal alterations & tailoring in Pittsburgh"
+    },
+    "servicesWaitlistNote": {
+      "group": "services",
+      "title": "Waitlist box: note",
+      "description": "The bordered box at the top of a service that is on the waitlist. {service} becomes the service name and {reopens} the reopening time from Site Settings.",
+      "long": true,
+      "default": "{service} booking reopens {reopens}. I'm taking a limited waitlist now and will reach out in order as dates open."
+    },
+    "servicesWaitlistLink": {
+      "group": "services",
+      "title": "Waitlist box: link",
+      "description": "{first} becomes the first word of the service name, such as \"Bridal\".",
+      "default": "Join the {first} Waitlist"
+    },
+    "servicesCustomNote": {
+      "group": "services",
+      "title": "Custom & repairs note (while bridal is on the waitlist)",
+      "description": "Under the custom & repairs description when that service is still open. {reopens} becomes the reopening time from Site Settings.",
+      "long": true,
+      "default": "Small repairs are open now. Larger construction and restoration projects reopen in {reopens}, and you can join the waitlist today."
+    },
+    "servicesWhatIDo": {
+      "group": "services",
+      "title": "Heading over the list of services",
+      "default": "What I do"
+    },
+    "servicesPricing": {
+      "group": "services",
+      "title": "Heading over the price",
+      "default": "Pricing"
+    },
+    "servicesTimeline": {
+      "group": "services",
+      "title": "Label before the typical timeline",
+      "description": "Shown before each service's typical timeline.",
+      "default": "Typical timeline:"
+    },
+    "servicesGuides": {
+      "group": "services",
+      "title": "Heading over the guide links",
+      "description": "Under each service that has guides. Pick which guides appear on each Service document.",
+      "default": "Helpful guides"
+    },
+    "servicesGuidesFor": {
+      "group": "services",
+      "title": "Read aloud: the guide links",
+      "description": "{service} becomes the service name in small letters.",
+      "default": "Guides for {service}"
+    },
+    "servicesPartyHeading": {
+      "group": "services",
+      "title": "Bridal party: heading",
+      "description": "The block at the end of the bridal section. Its button uses \"Send a bridal party request\" under Buttons.",
+      "default": "Bridal party & mother of the bride"
+    },
+    "servicesPartyBody": {
+      "group": "services",
+      "title": "Bridal party: text",
+      "long": true,
+      "default": "Bridesmaids, mothers, flower girls: one point of contact, one pickup day. Open now, separate from the bridal waitlist."
+    },
+    "servicesHeroRegion": {
+      "group": "services",
+      "title": "Read aloud: the top section",
+      "default": "Services hero"
+    },
+    "portfolioFilterAll": {
+      "group": "portfolio",
+      "title": "Filter button: everything",
+      "default": "All Work"
+    },
+    "portfolioFilterBridal": {
+      "group": "portfolio",
+      "title": "Filter button: bridal",
+      "default": "Bridal"
+    },
+    "portfolioFilterTailoring": {
+      "group": "portfolio",
+      "title": "Filter button: tailoring",
+      "default": "Tailoring"
+    },
+    "portfolioFilterCustom": {
+      "group": "portfolio",
+      "title": "Filter button: custom",
+      "default": "Custom"
+    },
+    "portfolioEmpty": {
+      "group": "portfolio",
+      "title": "When a filter has no pieces",
+      "default": "No items in this category yet."
+    },
+    "portfolioCaseStudy": {
+      "group": "portfolio",
+      "title": "Link on a photo to its case study",
+      "default": "Read the case study"
+    },
+    "portfolioCountOne": {
+      "group": "portfolio",
+      "title": "Read aloud after filtering: one piece",
+      "default": "{count} piece shown"
+    },
+    "portfolioCountMany": {
+      "group": "portfolio",
+      "title": "Read aloud after filtering: several pieces",
+      "description": "{count} becomes how many pieces are showing.",
+      "default": "{count} pieces shown"
+    },
+    "portfolioView": {
+      "group": "portfolio",
+      "title": "Read aloud: open a photo",
+      "description": "{item} becomes the piece's label.",
+      "default": "View {item}"
+    },
+    "portfolioLightbox": {
+      "group": "portfolio",
+      "title": "Read aloud: the enlarged photo",
+      "default": "Lightbox: {item}"
+    },
+    "portfolioClose": {
+      "group": "portfolio",
+      "title": "Read aloud: close the enlarged photo",
+      "default": "Close lightbox"
+    },
+    "portfolioPrevious": {
+      "group": "portfolio",
+      "title": "Read aloud: previous photo arrow",
+      "default": "Previous image"
+    },
+    "portfolioNext": {
+      "group": "portfolio",
+      "title": "Read aloud: next photo arrow",
+      "default": "Next image"
+    },
+    "portfolioHeroRegion": {
+      "group": "portfolio",
+      "title": "Read aloud: the top section",
+      "default": "Portfolio hero"
+    },
+    "portfolioFilterRegion": {
+      "group": "portfolio",
+      "title": "Read aloud: the filter section",
+      "default": "Filter portfolio by type"
+    },
+    "portfolioFilterGroup": {
+      "group": "portfolio",
+      "title": "Read aloud: the filter buttons",
+      "default": "Filter by garment type"
+    },
+    "portfolioFeaturedRegion": {
+      "group": "portfolio",
+      "title": "Read aloud: the featured before and after",
+      "default": "Featured transformation"
+    },
+    "portfolioGalleryRegion": {
+      "group": "portfolio",
+      "title": "Read aloud: the photo grid",
+      "default": "Portfolio gallery"
+    },
+    "caseBreadcrumb": {
+      "group": "portfolio",
+      "title": "Case study: link back to the portfolio",
+      "description": "Above the title of each case study page.",
+      "default": "Portfolio"
+    },
+    "caseBreadcrumbNav": {
+      "group": "portfolio",
+      "title": "Case study: read aloud for that link",
+      "default": "Breadcrumb"
+    },
+    "caseSliderLabel": {
+      "group": "portfolio",
+      "title": "Case study: label over the before and after",
+      "default": "Before and after"
+    },
+    "caseDesigner": {
+      "group": "portfolio",
+      "title": "Case study facts: designer",
+      "default": "Designer"
+    },
+    "caseSilhouette": {
+      "group": "portfolio",
+      "title": "Case study facts: silhouette",
+      "default": "Silhouette"
+    },
+    "caseFittings": {
+      "group": "portfolio",
+      "title": "Case study facts: fittings",
+      "default": "Fittings"
+    },
+    "caseWeeksLabel": {
+      "group": "portfolio",
+      "title": "Case study facts: how long",
+      "default": "First fitting to pickup"
+    },
+    "caseWeeks": {
+      "group": "portfolio",
+      "title": "Case study facts: number of weeks",
+      "description": "{weeks} becomes the number of weeks.",
+      "default": "{weeks} weeks"
+    },
+    "caseVenue": {
+      "group": "portfolio",
+      "title": "Case study facts: venue",
+      "default": "Venue"
+    },
+    "caseWhatWasDone": {
+      "group": "portfolio",
+      "title": "Case study: heading over the alterations",
+      "default": "What was done"
+    },
+    "caseHeroRegion": {
+      "group": "portfolio",
+      "title": "Case study: read aloud for the top section",
+      "default": "Case study hero"
+    },
+    "sliderBefore": {
+      "group": "slider",
+      "title": "\"Before\" tag",
+      "description": "On the before and after slider on the portfolio page, case studies and care cards.",
+      "default": "Before"
+    },
+    "sliderAfter": {
+      "group": "slider",
+      "title": "\"After\" tag",
+      "default": "After"
+    },
+    "sliderComingSoon": {
+      "group": "slider",
+      "title": "When a photo is missing",
+      "default": "Photo coming soon"
+    },
+    "sliderUploadHint": {
+      "group": "slider",
+      "title": "Reminder when both photos are missing",
+      "default": "Upload photos in Studio → Portfolio Page"
+    },
+    "sliderName": {
+      "group": "slider",
+      "title": "Read aloud: the slider handle",
+      "default": "Before and after comparison"
+    },
+    "sliderValue": {
+      "group": "slider",
+      "title": "Read aloud: where the handle is",
+      "description": "{before} and {after} become how much of each photo is showing, out of 100.",
+      "default": "{before}% before, {after}% after"
+    },
+    "sliderBeforeAlt": {
+      "group": "slider",
+      "title": "Before photo description",
+      "description": "Read by screen readers when the before photo has no alt text of its own.",
+      "default": "Before alteration"
+    },
+    "sliderAfterAlt": {
+      "group": "slider",
+      "title": "After photo description",
+      "default": "After alteration"
+    },
+    "aboutHeroAlt": {
+      "group": "about",
+      "title": "Top photo description",
+      "description": "Read by screen readers only when the top photo on the About Page document has no alt text of its own. {name} becomes your name from Site Settings.",
+      "default": "{name}, Pittsburgh seamstress at work"
+    },
+    "aboutHeroRegion": {
+      "group": "about",
+      "title": "Read aloud: the top section",
+      "default": "About hero"
+    },
+    "landingClosing": {
+      "group": "other",
+      "title": "Landing pages: closing line",
+      "description": "The last line on the landing pages, such as the bridal party page. {link} becomes the link below.",
+      "long": true,
+      "default": "{link} and I will reply with an honest answer."
+    },
+    "landingLink": {
+      "group": "other",
+      "title": "Landing pages: link to the contact form",
+      "default": "Send a request"
+    },
+    "landingHeroRegion": {
+      "group": "other",
+      "title": "Landing pages: read aloud for the top section",
+      "default": "Page hero"
+    },
+    "policiesEyebrow": {
+      "group": "other",
+      "title": "Policies: small line above the heading",
+      "default": "Good to know"
+    },
+    "policiesHeading": {
+      "group": "other",
+      "title": "Policies: heading when none is set",
+      "description": "Used when the Policies document has no heading of its own.",
+      "default": "Policies"
+    },
+    "policiesEmpty": {
+      "group": "other",
+      "title": "Policies: before any are written",
+      "description": "Shown when the Policies document has no sections yet. {link} becomes the link below.",
+      "long": true,
+      "default": "Policies are being written. In the meantime, ask me anything through the {link}."
+    },
+    "policiesEmptyLink": {
+      "group": "other",
+      "title": "Policies: link in that line",
+      "default": "contact form"
+    },
+    "policiesClosing": {
+      "group": "other",
+      "title": "Policies: closing line",
+      "description": "{link} becomes the link below.",
+      "long": true,
+      "default": "Questions about any of this? {link} and I will answer plainly."
+    },
+    "policiesLink": {
+      "group": "other",
+      "title": "Policies: link in the closing line",
+      "default": "Send a request"
+    },
+    "policiesHeroRegion": {
+      "group": "other",
+      "title": "Policies: read aloud for the top section",
+      "default": "Policies hero"
+    },
+    "policiesDetailsRegion": {
+      "group": "other",
+      "title": "Policies: read aloud for the policy sections",
+      "default": "Policy details"
+    },
+    "notFoundHeading": {
+      "group": "notFound",
+      "title": "Heading",
+      "default": "This page has come undone."
+    },
+    "notFoundBody": {
+      "group": "notFound",
+      "title": "Line under the heading",
+      "long": true,
+      "default": "The link may have moved or no longer exists. Let’s get you back to the right place."
+    },
+    "notFoundHome": {
+      "group": "notFound",
+      "title": "Link to the home page",
+      "description": "The other links use the Menu words under \"Header and menu\".",
+      "default": "Home"
+    },
+    "notFoundNav": {
+      "group": "notFound",
+      "title": "Read aloud: the links",
+      "default": "Recovery navigation"
+    }
+  }
+}

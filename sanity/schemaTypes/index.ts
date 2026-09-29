@@ -14,6 +14,7 @@ import { guide } from "./guide";
 import { bustleStyle } from "./bustleStyle";
 import { landingPage } from "./landingPage";
 import { careCard } from "./careCard";
+import { siteText, formsText, toolsText } from "./textDocument";
 
 export const schemaTypes = [
   // Singletons (one of each)
@@ -24,6 +25,9 @@ export const schemaTypes = [
   contactPage,
   portfolioPage,
   policies,
+  siteText,
+  formsText,
+  toolsText,
   // Lists
   service,
   testimonial,

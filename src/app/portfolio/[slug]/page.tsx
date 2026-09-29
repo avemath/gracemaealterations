@@ -5,6 +5,8 @@ import { getCaseStudy, getCaseStudies } from "@/lib/sanity.queries";
 import { pageMetadata, SITE_URL, FALLBACK_OG_IMAGE, jsonLdHtml } from "@/lib/metadata";
 import SanityImage from "@/components/ui/SanityImage";
 import BeforeAfterSlider from "@/components/ui/BeforeAfterSlider";
+import { getText, fill } from "@/lib/text";
+import { pickText } from "@/lib/cta";
 
 export const revalidate = 60;
 
@@ -29,7 +31,7 @@ export async function generateMetadata({
 }
 
 export default async function CaseStudyPage({ params }: { params: { slug: string } }) {
-  const item = await getCaseStudy(params.slug);
+  const [item, text] = await Promise.all([getCaseStudy(params.slug), getText("site")]);
   if (!item) notFound();
 
   const jsonLd = {
@@ -48,11 +50,11 @@ export default async function CaseStudyPage({ params }: { params: { slug: string
   };
 
   const facts: [string, string][] = [
-    ["Designer", item.designer ?? ""],
-    ["Silhouette", item.silhouette ?? ""],
-    ["Fittings", item.fittings ? String(item.fittings) : ""],
-    ["First fitting to pickup", item.weeks ? `${item.weeks} weeks` : ""],
-    ["Venue", item.venue ?? ""],
+    [text.caseDesigner, item.designer ?? ""],
+    [text.caseSilhouette, item.silhouette ?? ""],
+    [text.caseFittings, item.fittings ? String(item.fittings) : ""],
+    [text.caseWeeksLabel, item.weeks ? fill(text.caseWeeks, { weeks: item.weeks }) : ""],
+    [text.caseVenue, item.venue ?? ""],
   ];
   const shownFacts = facts.filter(([, value]) => value !== "");
 
@@ -61,11 +63,11 @@ export default async function CaseStudyPage({ params }: { params: { slug: string
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }} />
 
       <article>
-        <section className="bg-near_black" aria-label="Case study hero">
+        <section className="bg-near_black" aria-label={text.caseHeroRegion}>
           <div className="max-w-4xl mx-auto px-6 lg:px-12 pt-36 lg:pt-44 pb-14">
-            <nav aria-label="Breadcrumb" className="mb-6">
+            <nav aria-label={text.caseBreadcrumbNav} className="mb-6">
               <Link href="/portfolio" className="section-label text-gold hover:text-gold_light transition-colors">
-                Portfolio
+                {text.caseBreadcrumb}
               </Link>
             </nav>
             <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-ivory">
@@ -85,7 +87,8 @@ export default async function CaseStudyPage({ params }: { params: { slug: string
               <BeforeAfterSlider
                 beforeImage={item.beforeImage}
                 afterImage={item.afterImage}
-                label="Before and after"
+                label={text.caseSliderLabel}
+                text={pickText(text, "slider")}
               />
             ) : (
               item.image && (
@@ -111,7 +114,7 @@ export default async function CaseStudyPage({ params }: { params: { slug: string
             {item.alterations && item.alterations.length > 0 && (
               <div className="mt-10">
                 <h2 className="font-jost font-medium text-charcoal text-xs tracking-[0.22em] uppercase mb-4">
-                  What was done
+                  {text.caseWhatWasDone}
                 </h2>
                 <ul className="space-y-2">
                   {item.alterations.map((line, i) => (

@@ -3,6 +3,10 @@
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import type { TextFor } from "@/lib/cta";
+
+/** The Studio's words for the header, the footer and the menu button. */
+export type ChromeText = TextFor<"nav" | "footer" | "cta">;
 
 interface SiteData {
   siteName: string;
@@ -22,9 +26,10 @@ interface SiteData {
 interface Props {
   children: React.ReactNode;
   site: SiteData;
+  text: ChromeText;
 }
 
-export default function SiteChrome({ children, site }: Props) {
+export default function SiteChrome({ children, site, text }: Props) {
   const pathname = usePathname();
   const isStudio = pathname?.startsWith("/studio");
 
@@ -38,6 +43,7 @@ export default function SiteChrome({ children, site }: Props) {
         limitedMode={site.limitedMode}
         reopensLabel={site.reopensLabel}
         hasGuides={(site.guides?.length ?? 0) > 0}
+        text={text}
       />
       {children}
       <Footer
@@ -51,6 +57,7 @@ export default function SiteChrome({ children, site }: Props) {
         googleReviewUrl={site.googleReviewUrl}
         guides={site.guides}
         hasPolicies={site.hasPolicies}
+        text={text}
       />
     </>
   );

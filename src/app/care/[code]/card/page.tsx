@@ -3,14 +3,18 @@ import { notFound } from "next/navigation";
 import QRCode from "qrcode";
 import { getCareCard } from "@/lib/sanity.queries";
 import { SITE_URL } from "@/lib/metadata";
+import { getText, fill } from "@/lib/text";
 import PrintButton from "./PrintButton";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Print care card",
-  robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const text = await getText("forms");
+  return {
+    title: text.careCardPrintTabTitle,
+    robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
+  };
+}
 
 /**
  * The printable card: business-card size (3.5 × 2 in), one side, with the QR
@@ -18,8 +22,9 @@ export const metadata: Metadata = {
  * page, and a dashed line marks where to trim.
  */
 export default async function CareCardPrint({ params }: { params: { code: string } }) {
-  const card = await getCareCard(params.code);
+  const [card, text] = await Promise.all([getCareCard(params.code), getText("forms")]);
   if (!card) notFound();
+  const garment = { garment: card.garment };
 
   const url = `${SITE_URL}/care/${card.code}`;
   const qr = await QRCode.toString(url, {
@@ -41,11 +46,8 @@ export default async function CareCardPrint({ params }: { params: { code: string
       `}</style>
 
       <div className="max-w-2xl mx-auto">
-        <h1 className="font-cormorant italic text-charcoal text-3xl mb-2">Care card for the {card.garment}</h1>
-        <p className="font-jost text-charcoal/75 text-sm leading-[1.65] mb-8 max-w-[55ch]">
-          Prints at business-card size on its own. Heavy cardstock works best. Trim along the dashed
-          line and tuck it in the garment bag.
-        </p>
+        <h1 className="font-cormorant italic text-charcoal text-3xl mb-2">{fill(text.careCardPrintHeading, garment)}</h1>
+        <p className="font-jost text-charcoal/75 text-sm leading-[1.65] mb-8 max-w-[55ch]">{text.careCardPrintNote}</p>
 
         <div
           className="care-card bg-white shadow-[0_8px_30px_rgba(28,28,28,0.12)] outline outline-1 outline-dashed outline-charcoal/30 outline-offset-[6px]"
@@ -58,16 +60,16 @@ export default async function CareCardPrint({ params }: { params: { code: string
                   Grace Mae
                 </p>
                 <p className="font-jost uppercase text-charcoal/75 mt-[3pt]" style={{ fontSize: "5.5pt", letterSpacing: "0.2em" }}>
-                  Bridal &amp; clothing alterations
+                  {text.careCardSubtitle}
                 </p>
               </div>
               <div className="h-px bg-[#C9A84C] w-[0.4in]" aria-hidden="true" />
               <div>
                 <p className="font-cormorant italic text-charcoal leading-tight" style={{ fontSize: "10.5pt" }}>
-                  Care notes for your {card.garment}
+                  {fill(text.careCardHeading, garment)}
                 </p>
                 <p className="font-jost text-charcoal/75 leading-snug mt-[3pt]" style={{ fontSize: "6.5pt" }}>
-                  Scan for how to store and clean it, and your before and after.
+                  {text.careCardScan}
                 </p>
               </div>
             </div>
@@ -81,9 +83,9 @@ export default async function CareCardPrint({ params }: { params: { code: string
         </div>
 
         <div className="mt-10 flex flex-wrap items-center gap-4 print:hidden">
-          <PrintButton />
+          <PrintButton label={text.careCardPrintButton} />
           <a href={`/care/${card.code}`} className="font-jost text-xs text-gold_ink tracking-[0.18em] uppercase py-2">
-            See the page it opens
+            {text.careCardPrintOpen}
           </a>
         </div>
       </div>

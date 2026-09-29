@@ -1,3 +1,6 @@
+import type { TextFor } from "@/lib/cta";
+import { fill } from "@/lib/text/fill";
+
 interface Props {
   limitedMode: boolean;
   reopensLabel: string;
@@ -6,6 +9,8 @@ interface Props {
   /** Fallback line when the whole site is open. */
   bookingNote: string;
   className?: string;
+  /** The Studio's words for the two lanes. */
+  text: TextFor<"pill">;
 }
 
 /**
@@ -18,14 +23,15 @@ export default function AvailabilityPill({
   limitedNote,
   bookingNote,
   className = "",
+  text,
 }: Props) {
   // One line per lane at every width: on one line, desktop wrapped
   // "waitlist open" onto a line of its own.
   const label = limitedMode ? (
     <>
-      <span className="block">Tailoring &amp; repairs: booking now</span>
+      <span className="block">{text.pillTailoring}</span>
       <span className="sr-only">. </span>
-      <span className="block">Bridal: {reopensLabel} waitlist open</span>
+      <span className="block">{fill(text.pillBridal, { reopens: reopensLabel })}</span>
     </>
   ) : (
     bookingNote

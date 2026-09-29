@@ -1,4 +1,6 @@
 import Link from "next/link";
+import type { TextFor } from "@/lib/cta";
+import { fill } from "@/lib/text/fill";
 
 const InstagramIcon = () => (
   <svg
@@ -39,6 +41,8 @@ interface FooterProps {
   guides?: GuideLink[];
   /** Hidden until the policies singleton is published. */
   hasPolicies?: boolean;
+  /** The Studio's words; the bottom links reuse the header's. */
+  text: TextFor<"footer" | "nav">;
 }
 
 const columnHeading = "font-jost font-medium text-ivory text-xs tracking-[0.22em] uppercase mb-4";
@@ -61,6 +65,7 @@ export default function Footer({
   googleReviewUrl,
   guides = [],
   hasPolicies = false,
+  text,
 }: FooterProps) {
   const year = new Date().getFullYear();
 
@@ -75,35 +80,35 @@ export default function Footer({
             {siteName}
           </Link>
           <p className="font-jost text-xs tracking-[0.22em] uppercase text-ivory/75 mt-1">
-            Bridal &amp; Clothing Alterations
+            {text.footerTagline}
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 py-10">
           {/* Studio */}
           <div>
-            <h2 className={columnHeading}>Studio</h2>
+            <h2 className={columnHeading}>{text.footerStudioHeading}</h2>
             <p className="font-jost text-ivory/75 text-sm leading-[1.65]">
-              {location} · By appointment
+              {fill(text.footerStudioLine, { location })}
             </p>
             <p className="font-jost text-ivory/75 text-sm leading-[1.65] mt-2">{availability}</p>
           </div>
 
           {/* Contact: email only, by design. No phone anywhere on this site. */}
           <div>
-            <h2 className={columnHeading}>Contact</h2>
+            <h2 className={columnHeading}>{text.footerContactHeading}</h2>
             <a href={`mailto:${email}`} className={`${linkClass} block break-words`}>
               {email}
             </a>
             <Link href="/contact" className={`${linkClass} block`}>
-              Send a request
+              {text.footerSendRequest}
             </Link>
           </div>
 
           {/* Guides: hidden until at least one is published */}
           {guides.length > 0 && (
             <div>
-              <h2 className={columnHeading}>Guides</h2>
+              <h2 className={columnHeading}>{text.footerGuidesHeading}</h2>
               <ul>
                 {guides.map((guide) => (
                   <li key={guide.slug}>
@@ -118,12 +123,12 @@ export default function Footer({
 
           {/* Policies */}
           <div>
-            <h2 className={columnHeading}>{hasPolicies ? "Policies" : "Elsewhere"}</h2>
+            <h2 className={columnHeading}>{hasPolicies ? text.footerPoliciesHeading : text.footerElsewhereHeading}</h2>
             <ul>
               {hasPolicies && (
                 <li>
                   <Link href="/policies" className={`${linkClass} inline-block`}>
-                    Policies
+                    {text.footerPoliciesLink}
                   </Link>
                 </li>
               )}
@@ -146,7 +151,7 @@ export default function Footer({
                     rel="noopener noreferrer"
                     className={`${linkClass} inline-block`}
                   >
-                    Leave a Google review
+                    {text.footerReview}
                   </a>
                 </li>
               )}
@@ -156,16 +161,16 @@ export default function Footer({
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-8 border-t border-ivory/10">
           <p className="font-jost text-xs text-ivory/75">
-            &copy; {year} {businessName}. All rights reserved.
+            {fill(text.footerCopyright, { year, business: businessName })}
           </p>
-          <nav aria-label="Footer navigation">
+          <nav aria-label={text.footerNavLabel}>
             <ul className="flex flex-wrap justify-center gap-x-5 gap-y-1">
               {[
-                { label: "Services", href: "/services" },
-                { label: "Portfolio", href: "/portfolio" },
-                ...(guides.some((g) => !g.href) ? [{ label: "Guides", href: "/guides" }] : []),
-                { label: "About", href: "/about" },
-                { label: "Contact", href: "/contact" },
+                { label: text.navServices, href: "/services" },
+                { label: text.navPortfolio, href: "/portfolio" },
+                ...(guides.some((g) => !g.href) ? [{ label: text.navGuides, href: "/guides" }] : []),
+                { label: text.navAbout, href: "/about" },
+                { label: text.navContact, href: "/contact" },
               ].map((link) => (
                 <li key={link.href}>
                   <Link
