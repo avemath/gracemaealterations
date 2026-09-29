@@ -22,14 +22,14 @@ export const servicesPage = defineType({
     }),
     defineField({
       name: "heroLabel",
-      title: "Hero — Section Label",
+      title: "Hero: Section Label",
       group: "hero",
       type: "string",
       initialValue: "What I Offer",
     }),
     defineField({
       name: "heroHeading",
-      title: "Hero — Heading",
+      title: "Hero: Heading",
       group: "hero",
       type: "string",
       initialValue: "Services",
@@ -38,14 +38,14 @@ export const servicesPage = defineType({
     // ── Pricing Section ─────────────────────────────────────────
     defineField({
       name: "pricingLabel",
-      title: "Pricing Section — Label",
+      title: "Pricing Section: Label",
       group: "pricing",
       type: "string",
       initialValue: "Transparency First",
     }),
     defineField({
       name: "pricingHeading",
-      title: "Pricing Section — Heading",
+      title: "Pricing Section: Heading",
       group: "pricing",
       type: "string",
       initialValue: "How Pricing Works",
@@ -67,9 +67,9 @@ export const servicesPage = defineType({
         },
       ],
       initialValue: [
-        { _key: "pc0", title: "Consultation First", body: "Every project starts with a consultation so I can assess the garment, understand your needs, and give you an accurate quote — not a ballpark." },
+        { _key: "pc0", title: "Consultation First", body: "Every project starts with a consultation so I can assess the garment, understand your needs, and give you an accurate quote: not a ballpark." },
         { _key: "pc1", title: "No Surprise Charges", body: "The price I quote is the price you pay. If something unexpected comes up, I'll discuss it with you before proceeding." },
-        { _key: "pc2", title: "Complexity & Timeline", body: "Pricing reflects fabric type, alteration complexity, and your timeline. Rush requests may carry an additional fee — always communicated upfront." },
+        { _key: "pc2", title: "Complexity & Timeline", body: "Pricing reflects fabric type, alteration complexity, and your timeline. Rush requests may carry an additional fee: always communicated upfront." },
       ],
     }),
 
@@ -101,21 +101,21 @@ export const servicesPage = defineType({
     }),
     defineField({
       name: "ctaHeadline",
-      title: "CTA Banner — Headline",
+      title: "CTA Banner: Headline",
       group: "cta",
       type: "string",
       initialValue: "Ready to get started?",
     }),
     defineField({
       name: "ctaSubhead",
-      title: "CTA Banner — Subheadline",
+      title: "CTA Banner: Subheadline",
       group: "cta",
       type: "string",
-      initialValue: "Book your consultation — no commitment, just a conversation.",
+      initialValue: "Book your consultation, no commitment, just a conversation.",
     }),
     defineField({
       name: "ctaButton",
-      title: "CTA Banner — Button Label",
+      title: "CTA Banner: Button Label",
       group: "cta",
       type: "string",
       initialValue: "Book a Consultation",
