@@ -2,6 +2,24 @@
 
 Newest first. Grace facing notes live in `site/content/FOR-GRACE.md`.
 
+## Guides, honest dates and prices, September 2026
+
+- `feat: "Your dates" calculator` on the timing guide: enter a wedding date and see when each fitting falls, with an honest one-line read (good timing, plenty of time, due now, under eight weeks, or before bridal reopens) and an "Add these to my calendar" file. The date stays on that device.
+- `feat: date-aware bridal form`: the contact form gives the same honest note as soon as a bride enters her date. If it is under eight weeks away or before bridal reopens, the button says "Ask about my date" and her confirmation email says Grace will tell her honestly whether she can fit it in, with a referral if not, instead of "you're on my waitlist".
+- `feat: trouser hem guide` at /guides/trouser-hem-length: a drawing of no, quarter, half and full break over a dress shoe, sneaker or heel, slim, straight or wide leg, and a slanted hem, with notes in Grace's voice.
+- `change: guides live on the Guides page`: the bustle explorer moved off the services page to the bustle guide, and each service lists its guides underneath (bridal: timing, bustles, what to bring; tailoring: trouser hems).
+- `change: prices at current rates`: bridal $300 to $900+ (2026 US brides typically pay $300 to $800, more for full or complex work), tailoring $25 to $175, home page "from $25". Live in Sanity once `npm run copy:fixes` runs, along with the copy polish below.
+- `fix: second audit`:
+  - Text can no longer stay invisible if scripts fail: the fade-in only arms once it's running, after showing what's already on screen (this also stops holding back the portfolio's first image).
+  - A Sanity outage no longer caches placeholder boxes: reads retry, then fail so the last good page stays up; friendly error pages added.
+  - Unknown root paths are proper 404s. Unpublished-page 404s no longer render blank without JavaScript.
+  - The stitch timeline measures its path in small idle slices and skips phones, removing the home page's slowest task. Hero parallax stays still for reduced motion.
+  - Phones: the sticky button matches the page (the waitlist on bridal pages, with tailoring as a quiet link; a party request on the bridal party page), focus is never hidden under the sticky bars, and the bar steps aside on very short screens. Desktop shows one floating button instead of two stacked over the text.
+  - Contact form: links like "Send a bridal party request" land on the form, photos can be removed on phones, the photo button shows keyboard focus, name and email are marked required with length limits, placeholders are darker.
+  - High-contrast mode shows which option is chosen; hover colors pass contrast; portfolio filters are proper toggle buttons with a spoken count; the testimonial carousel announces changes.
+  - Guides print cleanly, the site has a web app manifest and theme color, the About portrait keeps her face in frame, the availability pill no longer wraps awkwardly, and "All work" in the portfolio leads with bridal.
+- `copy`: "What I do" instead of "What's included in every fitting", hem types (plain, lace-edged, horsehair), "a real quote for your garment", a rush answer that no longer contradicts the waitlist, "The alterations" for step 4, "By appointment / One client at a time" instead of "Proudly local", sentence-case headings, a plainer portfolio line.
+
 ## Fitting bag checklist and audit fixes, September 2026
 
 - `feat: the what-to-bring guide is a fitting bag checklist`: each item gets a small line drawing (shoes, hanger, veil, camera, two people) and a box to tick while packing, with "3 of 5 packed" and "All packed. See you at the fitting." Ticks stay on that phone only. The words still come from the guide in the Studio.

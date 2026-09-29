@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import SanityImage from "@/components/ui/SanityImage";
 import CTABanner from "@/components/sections/CTABanner";
 import type { SanityImage as SanityImageType, SanityValue } from "@/lib/sanity.queries";
@@ -53,7 +53,10 @@ export default function AboutPageContent({ site, about, values }: Props) {
     target: heroRef,
     offset: ["start start", "end start"],
   });
-  const heroParallaxY = useTransform(heroScroll, [0, 1], ["0%", "-15%"]);
+  // Still for anyone who has asked for less motion (MotionConfig does not
+  // cover motion values passed through style).
+  const reduceMotion = useReducedMotion();
+  const heroParallaxY = useTransform(heroScroll, [0, 1], ["0%", reduceMotion ? "0%" : "-15%"]);
 
   return (
     <>
@@ -141,6 +144,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
                       sizes="(min-width:1024px) 40vw, 100vw"
                       placeholderLabel="ABOUT_PORTRAIT_IMAGE"
                       placeholderRatio="square"
+                      keepTop
                     />
                   </div>
                 </div>
@@ -165,7 +169,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
           <div data-reveal
               className="mb-8"
             >
-            <h2 id="values-heading" className="section-label text-base">{about.valuesLabel}</h2>
+            <h2 id="values-heading" className="section-label">{about.valuesLabel}</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14">

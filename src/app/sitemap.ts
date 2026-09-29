@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { sanityClient } from "@/lib/sanity.client";
 import { SITE_URL, LANDING_SLUGS } from "@/lib/metadata";
+import { BUILT_IN_GUIDES } from "@/lib/builtInGuides";
 import {
   getPublishedGuides,
   getCaseStudies,
@@ -59,16 +60,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  if ((guides ?? []).length > 0) {
+  // The index always has the built-in guides on it.
+  dynamicEntries.push({
+    url: `${SITE_URL}/guides`,
+    lastModified: new Date(),
+    changeFrequency: "monthly",
+    priority: 0.6,
+  });
+
+  const builtInSlugs = new Set(BUILT_IN_GUIDES.map((g) => g.slug));
+  for (const guide of BUILT_IN_GUIDES) {
     dynamicEntries.push({
-      url: `${SITE_URL}/guides`,
-      lastModified: new Date(),
+      url: `${SITE_URL}/guides/${guide.slug}`,
+      lastModified: new Date(guide.updated),
       changeFrequency: "monthly",
       priority: 0.6,
     });
   }
 
-  for (const guide of guides ?? []) {
+  // A built-in page owns its URL, so a Studio guide with the same slug is skipped.
+  for (const guide of (guides ?? []).filter((g) => !builtInSlugs.has(g.slug))) {
     dynamicEntries.push({
       url: `${SITE_URL}/guides/${guide.slug}`,
       lastModified: guide._updatedAt ? new Date(guide._updatedAt) : new Date(),

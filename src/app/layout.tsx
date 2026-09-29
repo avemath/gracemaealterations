@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import "@/styles/globals.css";
 import SiteChrome from "@/components/layout/SiteChrome";
@@ -14,12 +14,16 @@ import {
   getPolicies,
 } from "@/lib/sanity.queries";
 import { SITE_URL, jsonLdHtml, LANDING_SLUGS } from "@/lib/metadata";
+import { BUILT_IN_GUIDES } from "@/lib/builtInGuides";
 
 /** First dollar figure in a range like "$75 – $450+", or null when quoted. */
 function minPrice(range?: string): number | null {
   const match = range?.match(/\$\s?([\d,]+)/);
   return match ? Number(match[1].replace(/,/g, "")) : null;
 }
+
+// Colors the phone's browser bar to match the dark header.
+export const viewport: Viewport = { themeColor: "#242020" };
 
 // ── METADATA ──────────────────────────────────────────────────
 export async function generateMetadata(): Promise<Metadata> {
@@ -65,9 +69,14 @@ export default async function RootLayout({
     getPolicies(),
     getPublishedLandingPages(),
   ]);
-  // Guides, then the landing pages, which otherwise nothing on the site links to.
+  // Guides (the Studio's, then the built-in ones), then the landing pages,
+  // which otherwise nothing on the site links to.
+  const builtInSlugs = new Set(BUILT_IN_GUIDES.map((guide) => guide.slug));
   const guideLinks = [
-    ...(guides ?? []).map((guide) => ({ title: guide.title, slug: guide.slug })),
+    ...(guides ?? [])
+      .filter((guide) => !builtInSlugs.has(guide.slug))
+      .map((guide) => ({ title: guide.title, slug: guide.slug })),
+    ...BUILT_IN_GUIDES.map((guide) => ({ title: guide.title, slug: guide.slug })),
     ...(landingPages ?? [])
       .filter((page) => LANDING_SLUGS.includes(page.slug))
       .map((page) => ({ title: page.title, slug: page.slug, href: `/${page.slug}` })),
@@ -154,11 +163,6 @@ export default async function RootLayout({
         {/* Every hero and portfolio image comes from here; opening the
             connection early saves a round trip on the LCP image. */}
         <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="anonymous" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: "document.documentElement.classList.add('js')",
-          }}
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }}

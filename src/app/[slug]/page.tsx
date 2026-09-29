@@ -1,19 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getLandingPage, getPublishedLandingPages } from "@/lib/sanity.queries";
+import { getLandingPage } from "@/lib/sanity.queries";
 import { pageMetadata, FALLBACK_OG_IMAGE, LANDING_SLUGS as ALLOWED, shortDescription } from "@/lib/metadata";
 
 export const revalidate = 60;
-// Only the landing pages in LANDING_SLUGS exist at the root; anything else
-// 404s below rather than becoming a catch-all. Params stay dynamic so a page
-// published after a deploy (or missed by a build that couldn't reach Sanity)
-// still appears.
-export const dynamicParams = true;
+// Only the landing pages in LANDING_SLUGS exist at the root, and they are
+// always built (a page not yet published in Sanity renders as a 404 and is
+// picked up by the next refresh once it is). Any other root path is a normal
+// static 404: with dynamic params, those rendered as a blank page without JS.
+export const dynamicParams = false;
 
-export async function generateStaticParams() {
-  const pages = (await getPublishedLandingPages()) ?? [];
-  return pages.filter((page) => ALLOWED.includes(page.slug)).map((page) => ({ slug: page.slug }));
+export function generateStaticParams() {
+  return ALLOWED.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({

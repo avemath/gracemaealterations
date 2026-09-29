@@ -15,6 +15,8 @@ interface SanityImageProps {
   height?: number;
   priority?: boolean;
   sizes?: string;
+  /** Overrides the hotspot's vertical position, for frames that must keep the top of the photo (a face). */
+  keepTop?: boolean;
   "aria-hidden"?: boolean;
 }
 
@@ -29,6 +31,7 @@ export default function SanityImage({
   height,
   priority = false,
   sizes,
+  keepTop = false,
   "aria-hidden": ariaHidden,
 }: SanityImageProps) {
   // Show real image if Sanity asset exists
@@ -70,8 +73,8 @@ export default function SanityImage({
     const hotspot = image.hotspot;
     const pct = (n: number) => `${Math.round(n * 10000) / 100}%`;
     const objectPosition = hotspot
-      ? `${pct(hotspot.x)} ${pct(hotspot.y)}`
-      : "50% 50%";
+      ? `${pct(hotspot.x)} ${keepTop ? "18%" : pct(hotspot.y)}`
+      : keepTop ? "50% 18%" : "50% 50%";
 
     if (fill) {
       return (

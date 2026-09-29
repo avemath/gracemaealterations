@@ -5,10 +5,10 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { pageCtas } from "@/lib/cta";
+
 // Pages where the sticky CTA is not useful
 const EXCLUDED = ["/contact", "/studio"];
-
-import { ctas } from "@/lib/cta";
 
 interface Props {
   /** Limited availability: some services are waitlisted, the rest book normally. */
@@ -17,12 +17,12 @@ interface Props {
 }
 
 export default function StickyMobileCTA({ limitedMode = false, reopensLabel = "" }: Props) {
-  const { primary } = ctas({ limitedMode, reopensLabel });
   const [visible, setVisible] = useState(false);
   const pathname = usePathname();
+  const { main, alt } = pageCtas(pathname, { limitedMode, reopensLabel });
 
   const excluded =
-    EXCLUDED.includes(pathname) || pathname.startsWith("/studio");
+    EXCLUDED.includes(pathname) || pathname.startsWith("/studio") || pathname.startsWith("/care");
 
   useEffect(() => {
     if (excluded) { setVisible(false); return; }
@@ -48,7 +48,7 @@ export default function StickyMobileCTA({ limitedMode = false, reopensLabel = ""
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 96, opacity: 0 }}
           transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed bottom-0 left-0 right-0 z-40 lg:hidden"
+          className="fixed bottom-0 left-0 right-0 z-40 lg:hidden [@media(max-height:500px)]:hidden"
         >
           {/* bg-ivory/97 and pb-safe are not real Tailwind classes, so this bar
               rendered transparent and ignored the iPhone home indicator. */}
@@ -56,14 +56,17 @@ export default function StickyMobileCTA({ limitedMode = false, reopensLabel = ""
             className="bg-ivory/95 backdrop-blur-md border-t border-charcoal/10 px-4 py-3"
             style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
           >
-            {limitedMode && reopensLabel && (
-              <p className="font-jost text-[10px] tracking-[0.16em] uppercase text-charcoal/75 text-center mb-2">
-                Bridal booking reopens {reopensLabel}
-              </p>
-            )}
-            <Link href={primary.href} className="btn-gold w-full text-center">
-              {primary.label}
+            <Link href={main.href} className="btn-gold w-full text-center">
+              {main.label}
             </Link>
+            {alt && (
+              <Link
+                href={alt.href}
+                className="block text-center font-jost text-xs text-charcoal/75 underline underline-offset-4 decoration-charcoal/25 pt-2 pb-0.5 hover:text-charcoal"
+              >
+                {alt.label}
+              </Link>
+            )}
           </div>
         </motion.div>
       )}

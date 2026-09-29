@@ -19,8 +19,12 @@ Everything below is in the Studio at **gracemaealterations.com/studio**. Nothing
 11. The contact form was broken for a while: typing in any box kept only the first letter. That is fixed. If anyone mentioned they could not get through, this is why.
 12. Bridal requests ask a few optional questions again: dress size ordered, usual street size, what they think the dress needs, and whether they have shoes and undergarments yet. The answers appear in your email under "The Dress".
 13. Photos people attach are shrunk on their phone before sending, so five photos always go through. They are still plenty sharp to judge a hem.
-14. The services page has an interactive bustle drawing: brides pick American, French, Austrian, ballroom or a detachable train and watch the train lift into it. It ends by saying you choose the bustle at the first fitting, so it never commits you to a style.
-15. Once it is switched on, people who attach photos can press **Check my photos**. It tells them what the photos show: the kind of garment, the likely fabric (and how sure it is), visible details like buttons or lace, and the train length. It never suggests work, prices or dates, and it never comments on the person. If they choose to send it along, it appears in your email under **Photo Check**, clearly marked as automated. Treat it as their description of the dress, not a diagnosis.
+14. The bustle guide has an interactive bustle drawing: brides pick American, French, Austrian, ballroom or a detachable train and watch the train lift into it. It ends by saying you choose the bustle at the first fitting, so it never commits you to a style.
+15. Each service on the services page now lists its guides underneath (bridal: timing, bustles, what to bring; tailoring: trouser hem length), and the guides themselves live on the Guides page.
+16. The price ranges are now $300 to $900+ for bridal and $25 to $175 for tailoring, in line with what brides and clients pay in 2026. Every garment is still quoted at the fitting.
+17. The timing guide has a "Your dates" calculator: a bride enters her wedding date and sees when each fitting falls, with an honest note if her date is before bridal reopens, and can add the dates to her calendar. The contact form gives the same honest note as soon as she enters her date.
+18. There is a new trouser hem guide with a drawing that shows no break, quarter, half and full break over different shoes.
+19. Once it is switched on, people who attach photos can press **Check my photos**. It tells them what the photos show: the kind of garment, the likely fabric (and how sure it is), visible details like buttons or lace, and the train length. It never suggests work, prices or dates, and it never comments on the person. If they choose to send it along, it appears in your email under **Photo Check**, clearly marked as automated. Treat it as their description of the dress, not a diagnosis.
 
 ---
 
@@ -39,9 +43,9 @@ This is what puts you on Google Maps and in "seamstress near me" searches, and i
 
 At **Content, then Policies**. The deposit, the 48 hour cancellation window, rush fees, the pickup window and the "if something I sewed doesn't hold, I fix it at no charge" guarantee are all written as a starting point, not as your rules. Change anything that isn't how you work, then either switch **Published** on or ask Avery to run `npm run content:publish -- --policies`.
 
-### 3. Photos that are really you
+### 3. More photos of you at work
 
-The About page shows your portrait, but the home and contact pages show a different woman with dark hair. Anyone who meets you at a fitting will notice. Swap those two for photos of you, your hands at work, or the studio, at **Content, then Home Page** and **Content, then Contact Page**.
+The portraits are you: the home and contact photos now, and the About photo from college. A few more real photos would still help more than anything else on the site: your hands pinning a hem, the fitting mirror, a bustle being done. Add them at **Content, then Home Page** and **Content, then Portfolio Items**. Before and after pairs work best taken from the same spot and angle.
 
 ### 4. Testimonials
 

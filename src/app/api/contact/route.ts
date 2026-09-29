@@ -6,6 +6,7 @@ import {
 } from "@/lib/contactOptions";
 import { sanitizePhotoCheck, photoCheckLines } from "@/lib/photoCheck";
 import { getMergedSite } from "@/lib/sanity.queries";
+import { dateFit, parseDateInput } from "@/lib/bridalDates";
 
 interface ContactPayload {
   name: string;
@@ -260,6 +261,14 @@ export async function POST(req: NextRequest) {
   const shoesUndergarments = clean(raw.shoesUndergarments);
   const garmentCount = clean(raw.garmentCount).slice(0, 20);
   const timing = eventDate ? timingNote(eventDate, serviceType) : null;
+  // A waitlisted bride whose date is under eight weeks away, or before bridal
+  // reopens, asked about her date rather than joining the queue, so her
+  // confirmation says that instead of "you're on my waitlist".
+  const weddingDate = isWaitlist && serviceType === "bridal" ? parseDateInput(eventDate) : null;
+  const fitKind = weddingDate
+    ? dateFit(weddingDate, { limitedMode: true, bridalWaitlisted: true, reopensLabel }).kind
+    : null;
+  const askedAboutDate = fitKind === "rush" || fitKind === "beforeReopen";
   const alterationsNeeded = Array.isArray(raw.alterationsNeeded)
     ? raw.alterationsNeeded.map(clean).filter(Boolean).slice(0, 20)
     : [];
@@ -372,7 +381,9 @@ export async function POST(req: NextRequest) {
 
   const waitlistServiceWord = serviceType === "bridal" ? "bridal " : "";
 
-  const waitlistIntro = reopensLabel
+  const waitlistIntro = askedAboutDate
+    ? `${hello}I have your request and your date. I'll tell you honestly whether I can fit it in, and if I can't, I'll suggest someone who can.`
+    : reopensLabel
     ? `${hello}you're on my ${waitlistServiceWord}waitlist. I'll reach out in order as dates open for ${escapeHtml(reopensLabel)}.`
     : `${hello}your request has been received and you're on my waitlist. I'll reach out as soon as a spot opens up.`;
 
@@ -386,7 +397,7 @@ export async function POST(req: NextRequest) {
     ? `
       <div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;color:#1C1C1C;">
         <div style="border-top:3px solid ${GOLD};padding:32px 0 16px;">
-          <h1 style="font-size:26px;font-weight:400;font-style:italic;margin:0 0 8px;">You're on my waitlist.</h1>
+          <h1 style="font-size:26px;font-weight:400;font-style:italic;margin:0 0 8px;">${askedAboutDate ? "I have your date." : "You're on my waitlist."}</h1>
           <p style="font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:#767676;margin:0;">Grace Mae Alterations · Pittsburgh, PA</p>
         </div>
         <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
@@ -474,7 +485,9 @@ export async function POST(req: NextRequest) {
       from: FROM_EMAIL,
       to: email,
       replyTo: CONTACT_EMAIL,
-      subject: isWaitlist
+      subject: askedAboutDate
+        ? "About your date · Grace Mae Alterations"
+        : isWaitlist
         ? "You're on my waitlist · Grace Mae Alterations"
         : "Your request was received · Grace Mae Alterations",
       html: confirmationEmail,

@@ -115,6 +115,23 @@ test.describe("contact form", () => {
     });
   });
 
+  test("a wedding date gets an honest note, and a close one asks rather than joins", async ({ page }) => {
+    await openBranch(page, /^Bridal(?! party)/);
+    const note = page.getByTestId("date-note");
+    const inWeeks = (weeks: number) => {
+      const d = new Date(Date.now() + weeks * 7 * 86400000);
+      return d.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+    };
+
+    await page.getByLabel("Wedding date").fill(inWeeks(3));
+    await expect(note).toContainText("under eight weeks");
+    await expect(page.getByRole("button", { name: "Ask about my date" })).toBeVisible();
+
+    await page.getByLabel("Wedding date").fill(inWeeks(60));
+    await expect(note).toContainText("Plenty of time");
+    await expect(page.getByRole("button", { name: "Ask about my date" })).toHaveCount(0);
+  });
+
   test("bridal party branch sends the garment count", async ({ page }) => {
     const payload = await captureSubmit(page);
     await openBranch(page, /Bridal party or special occasion/);

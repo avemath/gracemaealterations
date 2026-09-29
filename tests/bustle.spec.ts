@@ -1,13 +1,13 @@
 import { test, expect } from "@playwright/test";
 
 /**
- * The bustle explorer on the services page: pick a style, the train lifts
+ * The bustle explorer on the bustle guide: pick a style, the train lifts
  * into it, and the slider, button and drawing's accessible name all agree.
  */
 test.describe("bustle explorer", () => {
   test("bustles on arrival, lets down, and replays for a new style", async ({ page }) => {
-    await page.goto("/services");
-    const section = page.locator("#bustles");
+    await page.goto("/guides/wedding-dress-bustle-types");
+    const section = page.locator('section[aria-label="Try each bustle"]');
     const slider = section.getByRole("slider");
     const drawing = section.getByRole("img");
 
@@ -27,8 +27,8 @@ test.describe("bustle explorer", () => {
   });
 
   test("the slider moves the train by hand", async ({ page }) => {
-    await page.goto("/services");
-    const section = page.locator("#bustles");
+    await page.goto("/guides/wedding-dress-bustle-types");
+    const section = page.locator('section[aria-label="Try each bustle"]');
     await section.getByRole("img").scrollIntoViewIfNeeded();
     const slider = section.getByRole("slider");
     await expect(slider).toHaveValue("100", { timeout: 5000 });
@@ -41,8 +41,8 @@ test.describe("bustle explorer", () => {
   test.describe("reduced motion", () => {
     test.use({ reducedMotion: "reduce" });
     test("does not play by itself and jumps straight to the result", async ({ page }) => {
-      await page.goto("/services");
-      const section = page.locator("#bustles");
+      await page.goto("/guides/wedding-dress-bustle-types");
+      const section = page.locator('section[aria-label="Try each bustle"]');
       await section.getByRole("img").scrollIntoViewIfNeeded();
       const slider = section.getByRole("slider");
       await page.waitForTimeout(1200);
@@ -56,8 +56,8 @@ test.describe("bustle explorer", () => {
 test.describe("bustle explorer paths", () => {
   test.use({ reducedMotion: "reduce" });
   test("shows which way each point is pulled, then clears the arrows once bustled", async ({ page }) => {
-    await page.goto("/services");
-    const section = page.locator("#bustles");
+    await page.goto("/guides/wedding-dress-bustle-types");
+    const section = page.locator('section[aria-label="Try each bustle"]');
     await section.getByRole("img").scrollIntoViewIfNeeded();
     const slider = section.getByRole("slider");
     const sidePath = section.locator('[data-testid="path-side-loop"]');
@@ -75,4 +75,13 @@ test.describe("bustle explorer paths", () => {
     await slider.fill("40");
     await expect(caption).toContainText("tucked up underneath the skirt");
   });
+});
+
+test("services points to the guides instead of carrying the explorer", async ({ page }) => {
+  await page.goto("/services");
+  await expect(page.locator("#bustles")).toHaveCount(0);
+  const bridalGuides = page.getByRole("navigation", { name: /guides for bridal/i });
+  await expect(bridalGuides.getByRole("link", { name: /bustle/i })).toHaveAttribute("href", "/guides/wedding-dress-bustle-types");
+  const tailoringGuides = page.getByRole("navigation", { name: /guides for everyday tailoring/i });
+  await expect(tailoringGuides.getByRole("link", { name: /trouser hem/i })).toHaveAttribute("href", "/guides/trouser-hem-length");
 });

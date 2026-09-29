@@ -27,6 +27,12 @@ interface PortfolioPageDataProps {
 
 type FilterType = "all" | "bridal" | "tailoring" | "custom";
 
+const TYPE_ORDER = ["bridal", "tailoring"];
+const TYPE_RANK = (type?: string) => {
+  const rank = TYPE_ORDER.indexOf(type ?? "");
+  return rank === -1 ? TYPE_ORDER.length : rank;
+};
+
 const FILTERS: { label: string; value: FilterType }[] = [
   { label: "All Work", value: "all" },
   { label: "Bridal", value: "bridal" },
@@ -65,7 +71,11 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
   const closeLightbox = useCallback(() => setLightboxIndex(null), []);
   const lightboxRef = useFocusTrap<HTMLDivElement>(lightboxIndex !== null, closeLightbox);
 
-  const filtered = activeFilter === "all" ? items : items.filter((i) => i.type === activeFilter);
+  // "All" leads with bridal work, then tailoring, then everything else.
+  const filtered =
+    activeFilter === "all"
+      ? [...items].sort((a, b) => TYPE_RANK(a.type) - TYPE_RANK(b.type))
+      : items.filter((i) => i.type === activeFilter);
   filteredRef.current = filtered;
 
   // Close lightbox when filter changes
@@ -115,22 +125,25 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
       {/* ── FILTER PILLS ───────────────────────────────────────── */}
       <section className="bg-ivory px-6 py-6 border-b border-blush" aria-label="Filter portfolio by type">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-wrap gap-2" role="tablist" aria-label="Filter by garment type">
+          <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filter by garment type">
             {FILTERS.map((f) => (
               <button
                 key={f.value}
-                role="tab"
-                aria-selected={activeFilter === f.value}
+                type="button"
+                aria-pressed={activeFilter === f.value}
                 onClick={() => setActiveFilter(f.value)}
                 className={`px-5 min-h-[44px] font-jost font-medium text-xs tracking-[0.16em] uppercase transition-all duration-300 rounded-none ${
                   activeFilter === f.value
-                    ? "bg-gold text-charcoal"
+                    ? "bg-gold text-charcoal forced-colors:outline forced-colors:outline-2 forced-colors:outline-offset-2"
                     : "border border-blush text-charcoal/75 hover:border-gold/40 hover:text-charcoal"
                 }`}
               >
                 {f.label}
               </button>
             ))}
+            <p className="sr-only" aria-live="polite">
+              {filtered.length} {filtered.length === 1 ? "piece" : "pieces"} shown
+            </p>
           </div>
         </div>
       </section>

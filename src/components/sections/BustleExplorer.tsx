@@ -396,7 +396,7 @@ export default function BustleExplorer({
         </p>
 
         <div className="mt-10 border-t border-blush pt-8 lg:mt-0 lg:border-t-0 lg:pt-0">
-          <h3 className="font-cormorant italic text-charcoal text-3xl">{info.name}</h3>
+          <h2 className="font-cormorant italic text-charcoal text-3xl">{info.name}</h2>
           <p className="font-jost text-charcoal/75 text-xs mt-1">Also called: {info.alsoCalled}</p>
           <p className="font-jost text-charcoal text-base leading-[1.7] mt-5 max-w-[60ch]">{info.how}</p>
           <dl className="mt-5 space-y-2.5 font-jost text-sm text-charcoal/75 leading-[1.65] max-w-[60ch]">

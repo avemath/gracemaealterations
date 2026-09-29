@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import SanityImage from "@/components/ui/SanityImage";
@@ -124,7 +124,10 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
     target: heroRef,
     offset: ["start start", "end start"],
   });
-  const heroParallaxY = useTransform(heroScroll, [0, 1], ["0%", "-12%"]);
+  // Still for anyone who has asked for less motion (MotionConfig does not
+  // cover motion values passed through style).
+  const reduceMotion = useReducedMotion();
+  const heroParallaxY = useTransform(heroScroll, [0, 1], ["0%", reduceMotion ? "0%" : "-12%"]);
 
   return (
     <>
@@ -303,7 +306,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                         : service.shortDescription}
                     </p>
                     {service.id === "tailoring" && (
-                      <p className="font-cormorant text-ivory text-xl lining-nums mt-4">from $20</p>
+                      <p className="font-cormorant text-ivory text-xl lining-nums mt-4">from $25</p>
                     )}
                     <Link
                       href={`/services#${service.id}`}
@@ -346,7 +349,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
             >
               <Link
                 href="/portfolio"
-                className="inline-flex items-center gap-2 font-jost text-xs text-gold_ink tracking-[0.18em] uppercase hover:text-gold_dark transition-colors duration-300"
+                className="inline-flex items-center gap-2 font-jost text-xs text-gold_ink tracking-[0.18em] uppercase hover:text-charcoal transition-colors duration-300"
               >
                 View All <ArrowRight />
               </Link>
@@ -433,7 +436,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               </p>
               <Link
                 href="/about"
-                className="inline-flex items-center gap-2 py-2 font-jost text-xs text-gold_ink tracking-[0.18em] uppercase hover:text-gold_dark transition-colors duration-300 group"
+                className="inline-flex items-center gap-2 py-2 font-jost text-xs text-gold_ink tracking-[0.18em] uppercase hover:text-charcoal transition-colors duration-300 group"
               >
                 Read Grace&rsquo;s story
                 <span className="transition-transform duration-300 group-hover:translate-x-1"><ArrowRight /></span>
