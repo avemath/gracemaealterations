@@ -3,6 +3,10 @@
 import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { SanityTestimonial } from "@/lib/sanity.queries";
+import type { TextFor } from "@/lib/cta";
+import { fill } from "@/lib/text/fill";
+
+type ReviewsText = TextFor<"reviews">;
 
 const ChevronLeft = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -16,10 +20,10 @@ const ChevronRight = () => (
 );
 
 /** "Sarah M. · Married August 2024 · Allure · Bustle and hem · Springwood" */
-function credentialLine(t: SanityTestimonial): string {
+function credentialLine(t: SanityTestimonial, text: ReviewsText): string {
   return [
     t.name,
-    t.month ? `Married ${t.month}` : null,
+    t.month ? fill(text.reviewsMarried, { month: t.month }) : null,
     t.dressDesigner,
     t.alterations,
     t.venue,
@@ -28,7 +32,14 @@ function credentialLine(t: SanityTestimonial): string {
     .join(" · ");
 }
 
-export default function TestimonialCarousel({ testimonials }: { testimonials: SanityTestimonial[] }) {
+export default function TestimonialCarousel({
+  testimonials,
+  text,
+}: {
+  testimonials: SanityTestimonial[];
+  /** The Studio's words for the labels and the line under each review. */
+  text: ReviewsText;
+}) {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const touchStartX = useRef<number | null>(null);
@@ -72,7 +83,7 @@ export default function TestimonialCarousel({ testimonials }: { testimonials: Sa
       className="relative"
       role="region"
       aria-roledescription="carousel"
-      aria-label="Client testimonials"
+      aria-label={text.reviewsLabel}
       onKeyDown={onKeyDown}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
@@ -82,7 +93,7 @@ export default function TestimonialCarousel({ testimonials }: { testimonials: Sa
           type="button"
           onClick={prev}
           className={`${arrowClass} -left-14`}
-          aria-label="Previous testimonial"
+          aria-label={text.reviewsPrevious}
           aria-controls="testimonial-slide"
         >
           <ChevronLeft />
@@ -108,7 +119,7 @@ export default function TestimonialCarousel({ testimonials }: { testimonials: Sa
             id="testimonial-slide"
             role="group"
             aria-roledescription="slide"
-            aria-label={`${index + 1} of ${count}`}
+            aria-label={fill(text.reviewsSlide, { number: index + 1, total: count })}
             custom={direction}
             variants={variants}
             initial="enter"
@@ -122,7 +133,7 @@ export default function TestimonialCarousel({ testimonials }: { testimonials: Sa
             </blockquote>
             <div className="w-8 h-px bg-gold mb-5" aria-hidden="true" />
             <p className="font-jost text-charcoal text-sm font-medium tracking-wide max-w-[48ch]">
-              {credentialLine(current)}
+              {credentialLine(current, text)}
             </p>
             {current.occasion && (
               <p className="font-jost text-charcoal/75 text-xs tracking-[0.18em] uppercase mt-1">
@@ -131,7 +142,7 @@ export default function TestimonialCarousel({ testimonials }: { testimonials: Sa
             )}
             {current.source && current.source !== "Direct" && (
               <p className="mt-3 border border-gold/40 px-2.5 py-1 font-jost text-[10px] tracking-[0.16em] uppercase text-gold_ink">
-                via {current.source}
+                {fill(text.reviewsVia, { source: current.source })}
               </p>
             )}
           </motion.div>
@@ -144,7 +155,7 @@ export default function TestimonialCarousel({ testimonials }: { testimonials: Sa
           type="button"
           onClick={next}
           className={`${arrowClass} -right-14`}
-          aria-label="Next testimonial"
+          aria-label={text.reviewsNext}
           aria-controls="testimonial-slide"
         >
           <ChevronRight />
@@ -157,7 +168,7 @@ export default function TestimonialCarousel({ testimonials }: { testimonials: Sa
             <button
               key={i}
               type="button"
-              aria-label={`Show testimonial ${i + 1} of ${count}`}
+              aria-label={fill(text.reviewsDot, { number: i + 1, total: count })}
               aria-current={i === index ? "true" : undefined}
               onClick={() => go(i)}
               className="w-11 h-11 flex items-center justify-center group"

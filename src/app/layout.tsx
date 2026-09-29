@@ -15,6 +15,8 @@ import {
 } from "@/lib/sanity.queries";
 import { SITE_URL, jsonLdHtml, LANDING_SLUGS } from "@/lib/metadata";
 import { BUILT_IN_GUIDES } from "@/lib/builtInGuides";
+import { getText } from "@/lib/text";
+import { pickText } from "@/lib/cta";
 
 /** First dollar figure in a range like "$75 – $450+", or null when quoted. */
 function minPrice(range?: string): number | null {
@@ -62,13 +64,17 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [site, services, guides, policies, landingPages] = await Promise.all([
+  const [site, services, guides, policies, landingPages, text] = await Promise.all([
     getMergedSite(),
     getMergedServices(),
     getPublishedGuides(),
     getPolicies(),
     getPublishedLandingPages(),
+    getText("site"),
   ]);
+  // The header, footer and sticky buttons are client components: each gets
+  // only its own words from the Studio.
+  const ctaText = pickText(text, "cta");
   // Guides (the Studio's, then the built-in ones), then the landing pages,
   // which otherwise nothing on the site links to.
   const builtInSlugs = new Set(BUILT_IN_GUIDES.map((guide) => guide.slug));
@@ -173,7 +179,7 @@ export default async function RootLayout({
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-ivory focus:text-charcoal focus:px-5 focus:py-3 focus:border focus:border-charcoal focus:font-jost focus:text-sm"
         >
-          Skip to main content
+          {text.navSkip}
         </a>
         <RevealObserver />
         <MotionProvider>
@@ -192,12 +198,13 @@ export default async function RootLayout({
             limitedMode: site.limitedMode,
             reopensLabel: site.reopensLabel,
           }}
+          text={pickText(text, "nav", "footer", "cta")}
         >
           <main id="main-content">{children}</main>
         </SiteChrome>
         </MotionProvider>
-        <StickyMobileCTA limitedMode={site.limitedMode} reopensLabel={site.reopensLabel} />
-        <StickyDesktopCTA limitedMode={site.limitedMode} reopensLabel={site.reopensLabel} />
+        <StickyMobileCTA limitedMode={site.limitedMode} reopensLabel={site.reopensLabel} text={ctaText} />
+        <StickyDesktopCTA limitedMode={site.limitedMode} reopensLabel={site.reopensLabel} text={ctaText} />
         <Analytics />
       </body>
     </html>

@@ -5,6 +5,8 @@ import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion
 import SanityImage from "@/components/ui/SanityImage";
 import CTABanner from "@/components/sections/CTABanner";
 import type { SanityImage as SanityImageType, SanityValue } from "@/lib/sanity.queries";
+import type { TextFor } from "@/lib/cta";
+import { fill } from "@/lib/text/fill";
 
 interface AboutData {
   heroImage: SanityImageType | null;
@@ -31,6 +33,8 @@ interface Props {
   site: { name: string; limitedMode: boolean; reopensLabel: string };
   about: AboutData;
   values: SanityValue[];
+  /** The Studio's site-wide words this page and its banner use. */
+  text: TextFor<"about" | "banner">;
 }
 
 const valNum = {
@@ -46,7 +50,7 @@ const valText = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
 };
 
-export default function AboutPageContent({ site, about, values }: Props) {
+export default function AboutPageContent({ site, about, values, text }: Props) {
   // ── Hero parallax ───────────────────────────────────────────
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress: heroScroll } = useScroll({
@@ -65,7 +69,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
         ref={heroRef}
         className="relative flex items-end overflow-hidden"
         style={{ minHeight: "72vh" }}
-        aria-label="About hero"
+        aria-label={text.aboutHeroRegion}
       >
         <div className="absolute inset-0 z-0 overflow-hidden">
           <motion.div className="absolute inset-x-0 top-0" style={{ height: "120%", y: heroParallaxY }}>
@@ -75,7 +79,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
               priority
               placeholderLabel="ABOUT_HERO_IMAGE"
               placeholderRatio="landscape"
-              alt={about.heroImage?.alt ?? `${site.name}, Pittsburgh seamstress at work`}
+              alt={about.heroImage?.alt ?? fill(text.aboutHeroAlt, { name: site.name })}
               sizes="100vw"
             />
           </motion.div>
@@ -228,6 +232,7 @@ export default function AboutPageContent({ site, about, values }: Props) {
         buttonLabel={about.ctaButton}
         limitedMode={site.limitedMode}
         reopensLabel={site.reopensLabel}
+        text={text}
       />
     </>
   );

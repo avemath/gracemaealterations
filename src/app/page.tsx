@@ -9,12 +9,14 @@ import {
   getMergedPortfolioItems,
   getMergedAboutPage,
 } from "@/lib/sanity.queries";
+import { getText } from "@/lib/text";
+import { pickText } from "@/lib/cta";
 
 export const metadata: Metadata = pageMetadata(PAGE_META.home);
 
 
 export default async function HomePage() {
-  const [site, home, services, testimonials, portfolioItems, about] =
+  const [site, home, services, testimonials, portfolioItems, about, siteText] =
     await Promise.all([
       getMergedSite(),
       getMergedHomePage(),
@@ -22,10 +24,12 @@ export default async function HomePage() {
       getMergedTestimonials(),
       getMergedPortfolioItems(),
       getMergedAboutPage(),
+      getText("site"),
     ]);
 
   return (
     <HomePageContent
+      siteText={pickText(siteText, "home", "pill", "reviews", "insta", "banner", "cta")}
       data={{
         site: {
           name: site.name,

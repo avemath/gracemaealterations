@@ -5,7 +5,8 @@ import Link from "next/link";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import SanityImage from "@/components/ui/SanityImage";
 import CTABanner from "@/components/sections/CTABanner";
-import { ctas } from "@/lib/cta";
+import { ctas, type TextFor } from "@/lib/cta";
+import { fill } from "@/lib/text/fill";
 import type {
   SanityService,
   SanityImage as SanityImageType,
@@ -43,6 +44,8 @@ interface Props {
   availability: Availability;
   /** Guides to point to under each service, by service id. */
   guideLinks?: Record<string, { title: string; href: string }[]>;
+  /** The Studio's site-wide words this page and its banner use. */
+  text: TextFor<"services" | "banner" | "cta">;
 }
 
 export default function ServicesPageContent({
@@ -50,11 +53,12 @@ export default function ServicesPageContent({
   page,
   availability,
   guideLinks = {},
+  text,
 }: Props) {
   const { limitedMode, waitlistServices, reopensLabel } = availability;
   const isWaitlisted = (serviceId: string) =>
     limitedMode && waitlistServices.includes(serviceId);
-  const { primary, secondary } = ctas({ limitedMode, reopensLabel });
+  const { primary, secondary } = ctas({ limitedMode, reopensLabel }, text);
   // ── Hero parallax ───────────────────────────────────────────
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress: heroScroll } = useScroll({
@@ -73,7 +77,7 @@ export default function ServicesPageContent({
         ref={heroRef}
         className="relative flex items-end overflow-hidden"
         style={{ minHeight: "48vh" }}
-        aria-label="Services hero"
+        aria-label={text.servicesHeroRegion}
       >
         <div className="absolute inset-0 z-0 overflow-hidden">
           <motion.div className="absolute inset-x-0 top-0" style={{ height: "120%", y: heroParallaxY }}>
@@ -110,7 +114,7 @@ export default function ServicesPageContent({
             >
             <p className="section-label text-gold_ink mb-4">{page.heroLabel}</p>
               <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-charcoal mb-5">
-              Bridal alterations &amp; tailoring in Pittsburgh
+              {text.servicesHeading}
             </h1>
             <div className="w-12 h-px bg-gold" aria-hidden="true" />
           </div>
@@ -140,14 +144,13 @@ export default function ServicesPageContent({
                 {isWaitlisted(service.id) && (
                   <div className="border border-gold/30 bg-gold/5 p-5 mb-8 max-w-2xl">
                     <p className="font-jost text-charcoal/70 text-sm leading-relaxed">
-                      {service.title} booking reopens {reopensLabel}. I&apos;m taking a limited
-                      waitlist now and will reach out in order as dates open.
+                      {fill(text.servicesWaitlistNote, { service: service.title, reopens: reopensLabel })}
                     </p>
                     <Link
                       href={`/contact?service=${service.id}`}
                       className="mt-4 inline-flex items-center gap-2 font-jost text-xs text-gold_ink tracking-[0.18em] uppercase hover:text-charcoal transition-colors duration-300"
                     >
-                      Join the {service.title.split(" ")[0]} Waitlist
+                      {fill(text.servicesWaitlistLink, { first: service.title.split(" ")[0] })}
                     </Link>
                   </div>
                 )}
@@ -165,8 +168,7 @@ export default function ServicesPageContent({
 
                   {limitedMode && service.id === "custom" && !isWaitlisted(service.id) && (
                     <p className="font-jost text-charcoal/75 text-base leading-relaxed max-w-2xl mt-4">
-                      Small repairs are open now. Larger construction and restoration projects
-                      reopen in {reopensLabel}, and you can join the waitlist today.
+                      {fill(text.servicesCustomNote, { reopens: reopensLabel })}
                     </p>
                   )}
                 </div>
@@ -174,7 +176,7 @@ export default function ServicesPageContent({
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
                   <div>
                     <h3 className="font-jost font-medium text-charcoal text-xs tracking-[0.22em] uppercase mb-5">
-                      What I do
+                      {text.servicesWhatIDo}
                     </h3>
                     <ul className="space-y-3" role="list">
                       {service.services.map((item, j) => (
@@ -188,7 +190,7 @@ export default function ServicesPageContent({
 
                   <div className="lg:border-l lg:border-blush lg:pl-16">
                     <h3 className="font-jost font-medium text-charcoal text-xs tracking-[0.22em] uppercase mb-5">
-                      Pricing
+                      {text.servicesPricing}
                     </h3>
                     <p className="font-cormorant font-medium text-charcoal leading-none mb-2 lining-nums text-[1.5rem]">
                       {service.priceRange}
@@ -197,7 +199,7 @@ export default function ServicesPageContent({
 
                     {service.typicalTimeline && (
                       <p className="mt-6 font-jost text-charcoal/75 text-sm leading-[1.65]">
-                        <span className="font-medium text-charcoal">Typical timeline: </span>
+                        <span className="font-medium text-charcoal">{text.servicesTimeline} </span>
                         {service.typicalTimeline}
                       </p>
                     )}
@@ -226,9 +228,9 @@ export default function ServicesPageContent({
                 </div>
 
                 {(guideLinks[service.id]?.length ?? 0) > 0 && (
-                  <nav aria-label={`Guides for ${service.title.toLowerCase()}`} className="mt-10 max-w-2xl">
+                  <nav aria-label={fill(text.servicesGuidesFor, { service: service.title.toLowerCase() })} className="mt-10 max-w-2xl">
                     <p className="font-jost font-medium text-charcoal text-xs tracking-[0.22em] uppercase mb-3">
-                      Helpful guides
+                      {text.servicesGuides}
                     </p>
                     <ul className="border-t border-gold/40">
                       {guideLinks[service.id].map((guide) => (
@@ -252,14 +254,13 @@ export default function ServicesPageContent({
                   <>
                     <div className="mt-12 border-t border-blush pt-8">
                       <h3 className="font-cormorant italic text-charcoal text-2xl mb-3">
-                        Bridal party &amp; mother of the bride
+                        {text.servicesPartyHeading}
                       </h3>
                       <p className="font-jost text-charcoal/75 text-sm leading-[1.65] max-w-[65ch] mb-5">
-                        Bridesmaids, mothers, flower girls: one point of contact, one pickup day.
-                        Open now, separate from the bridal waitlist.
+                        {text.servicesPartyBody}
                       </p>
                       <Link href="/contact?service=party" className="btn-outline">
-                        Send a bridal party request
+                        {text.ctaParty}
                       </Link>
                     </div>
                   </>
@@ -304,6 +305,7 @@ export default function ServicesPageContent({
         buttonLabel={page.ctaButton}
         limitedMode={limitedMode}
         reopensLabel={reopensLabel}
+        text={text}
       />
     </>
   );

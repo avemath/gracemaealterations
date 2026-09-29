@@ -10,7 +10,8 @@ import CTABanner from "@/components/sections/CTABanner";
 import CountUp from "@/components/ui/CountUp";
 import AvailabilityPill from "@/components/ui/AvailabilityPill";
 import InstagramRow, { type InstagramPost } from "@/components/sections/InstagramRow";
-import { ctas } from "@/lib/cta";
+import { ctas, type TextFor } from "@/lib/cta";
+import { fill } from "@/lib/text/fill";
 import TestimonialCarousel from "@/components/ui/TestimonialCarousel";
 import type {
   SanityImage as SanityImageType,
@@ -102,7 +103,10 @@ const ArrowRight = () => (
   </svg>
 );
 
-export default function HomePageContent({ data }: { data: HomePageData }) {
+/** The Studio's site-wide words this page and its sections use. */
+type HomeSiteText = TextFor<"home" | "pill" | "reviews" | "insta" | "banner" | "cta">;
+
+export default function HomePageContent({ data, siteText: t }: { data: HomePageData; siteText: HomeSiteText }) {
   const { site, heroImage, trustStats, services, instagram, portfolioItems, bio, aboutSecondaryImage, testimonials, text } = data;
 
   // While limited availability is on, some services take waitlist requests
@@ -110,7 +114,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
   const isWaitlisted = (serviceId: string) =>
     site.limitedMode && site.waitlistServices.includes(serviceId);
 
-  const { primary, secondary } = ctas(site);
+  const { primary, secondary } = ctas(site, t);
 
   // Grace picks the home page preview with the "featured" toggle; before anyone
   // has picked, fall back to the first four in display order.
@@ -132,7 +136,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
   return (
     <>
       {/* ── HERO ──────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative lg:min-h-screen overflow-hidden bg-ivory linen-overlay" aria-label="Hero section">
+      <section ref={heroRef} className="relative lg:min-h-screen overflow-hidden bg-ivory linen-overlay" aria-label={t.homeHeroRegion}>
 
         {/* One portrait for both layouts: full width under the copy on mobile,
             a full-height column on the right from lg up. Rendering it twice
@@ -149,7 +153,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               priority
               placeholderLabel="HERO_PORTRAIT_IMAGE"
               placeholderRatio="portrait"
-              alt={heroImage?.alt ?? `${site.name}, Pittsburgh bridal seamstress`}
+              alt={heroImage?.alt ?? fill(t.homeHeroAlt, { name: site.name })}
               sizes="(min-width:1024px) 72vw, 100vw"
             />
           </motion.div>
@@ -176,7 +180,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               <p data-reveal
               className="section-label mb-5"
             >
-                Pittsburgh bridal alterations &amp; tailoring
+                {t.homeEyebrow}
               </p>
 
               <AvailabilityPill
@@ -185,6 +189,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                 limitedNote={site.limitedNote}
                 bookingNote={site.bookingNote}
                 className="mb-6"
+                text={t}
               />
 
                 <h1 className="font-cormorant font-light italic text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.02] tracking-[-0.01em] text-charcoal">
@@ -199,8 +204,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               <p data-reveal
               className="font-jost text-charcoal/75 text-base lg:text-lg max-w-sm mb-10 leading-relaxed"
             >
-                A formally trained designer and former Lead Alterations Specialist at
-                David&rsquo;s Bridal, fitting one client at a time.
+                {t.homeIntro}
               </p>
 
               <div data-reveal
@@ -220,7 +224,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
               className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden lg:flex flex-col items-center gap-2"
               aria-hidden="true"
             >
-          <span className="font-jost text-[0.6rem] tracking-[0.25em] uppercase text-charcoal/75">Scroll</span>
+          <span className="font-jost text-[0.6rem] tracking-[0.25em] uppercase text-charcoal/75">{t.homeScroll}</span>
           {/* CSS keyframes rather than a permanent Framer rAF loop. */}
           <span className="block w-px h-8 bg-gold/50 animate-scroll-hint" />
         </div>
@@ -229,7 +233,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
       {/* ── STATS BAR ─────────────────────────────────────────── */}
       {/* Big gold figures, with the garment count ticking up as it scrolls
           in. gold_dark is 3.2:1 on ivory, which passes for text this large. */}
-      <section className="bg-ivory border-y border-blush py-10 lg:py-14" aria-label="Experience and credentials">
+      <section className="bg-ivory border-y border-blush py-10 lg:py-14" aria-label={t.homeStatsRegion}>
         <div className="max-w-5xl mx-auto px-6">
           <ul className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-0">
             {trustStats.map((stat, i) => (
@@ -296,29 +300,30 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                     <div className="w-8 h-px bg-gold/40 mb-6" aria-hidden="true" />
                     {isWaitlisted(service.id) && (
                       <p className="font-jost text-[10px] tracking-[0.2em] uppercase text-gold mb-2">
-                        Waitlist for {site.reopensLabel}
+                        {fill(t.homeWaitlistTag, { reopens: site.reopensLabel })}
                       </p>
                     )}
                     <h3 className="font-cormorant text-ivory text-2xl mb-3">{service.title}</h3>
                     <p className="font-jost text-ivory/70 text-sm leading-relaxed flex-1">
                       {service.id === "tailoring"
-                        ? "Hems, waists, sleeves and zips, done cleanly, usually within two weeks."
+                        ? t.homeTailoringLine
                         : service.shortDescription}
                     </p>
                     {service.id === "tailoring" && (
-                      <p className="font-cormorant text-ivory text-xl lining-nums mt-4">from $25</p>
+                      <p className="font-cormorant text-ivory text-xl lining-nums mt-4">{t.homeTailoringPrice}</p>
                     )}
                     <Link
                       href={`/services#${service.id}`}
                       className="mt-4 py-2 inline-flex items-center gap-2 font-jost text-xs text-gold tracking-[0.18em] uppercase group-hover:text-gold_light transition-colors duration-300"
                     >
                       <span>
-                        {isWaitlisted(service.id) ? "Join the Waitlist" : "Learn More"}
+                        {isWaitlisted(service.id) ? t.homeCardWaitlist : t.homeCardMore}
                         {/* Keeps the link text specific for screen readers and
                             link-text audits without changing the card design.
                             No aria-label: it would replace this text outright. */}
                         <span className="sr-only">
-                          {isWaitlisted(service.id) ? ` for ${service.title}` : ` about ${service.title}`}
+                          {" "}
+                          {fill(isWaitlisted(service.id) ? t.homeCardWaitlistFor : t.homeCardMoreAbout, { service: service.title })}
                         </span>
                       </span>
                       {/* Was an infinite Framer loop on every card: three
@@ -351,7 +356,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                 href="/portfolio"
                 className="inline-flex items-center gap-2 font-jost text-xs text-gold_ink tracking-[0.18em] uppercase hover:text-charcoal transition-colors duration-300"
               >
-                View All <ArrowRight />
+                {t.homeViewAll} <ArrowRight />
               </Link>
             </div>
           </div>
@@ -388,7 +393,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
           <div data-reveal
               className="text-center mt-8 sm:hidden"
             >
-            <Button variant="outline" href="/portfolio">View Full Portfolio</Button>
+            <Button variant="outline" href="/portfolio">{t.homeViewPortfolio}</Button>
           </div>
         </div>
       </section>
@@ -430,15 +435,13 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
                 &ldquo;{bio.pullQuote}&rdquo;
               </blockquote>
               <p className="font-jost text-charcoal/75 text-sm leading-[1.65] mb-10 max-w-[65ch]">
-                I trained as a designer at IUP and spent a year as Lead Alterations Specialist
-                at David&rsquo;s Bridal. Now I work for myself, one client at a time, out of a
-                studio in Pittsburgh. Every quote is itemized in writing before I cut a thread.
+                {t.homeAboutText}
               </p>
               <Link
                 href="/about"
                 className="inline-flex items-center gap-2 py-2 font-jost text-xs text-gold_ink tracking-[0.18em] uppercase hover:text-charcoal transition-colors duration-300 group"
               >
-                Read Grace&rsquo;s story
+                {t.homeReadStory}
                 <span className="transition-transform duration-300 group-hover:translate-x-1"><ArrowRight /></span>
               </Link>
             </div>
@@ -457,7 +460,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
           </div>
           <div data-reveal
             >
-            <TestimonialCarousel testimonials={testimonials} />
+            <TestimonialCarousel testimonials={testimonials} text={t} />
           </div>
         </div>
       </section>
@@ -467,6 +470,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
         posts={instagram.posts}
         handle={instagram.handle}
         profileUrl={instagram.profileUrl}
+        text={t}
       />
 
       {/* ── CTA ───────────────────────────────────────────────── */}
@@ -476,6 +480,7 @@ export default function HomePageContent({ data }: { data: HomePageData }) {
         buttonLabel={text.ctaButton}
         limitedMode={site.limitedMode}
         reopensLabel={site.reopensLabel}
+        text={t}
       />
     </>
   );
