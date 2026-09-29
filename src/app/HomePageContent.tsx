@@ -181,9 +181,10 @@ export default function HomePageContent({ data, siteText: t }: { data: HomePageD
           <div className="lg:min-h-screen flex items-center">
             <div className="w-full lg:max-w-[520px] pt-10 pb-14 lg:py-0">
 
-              <p data-reveal
-              className="section-label mb-5"
-            >
+              {/* No reveal on anything in the hero: it is the first screen, and on
+                  a phone the intro and buttons sat below the reveal line, so
+                  the first screen ended in blank ivory until you scrolled. */}
+              <p className="section-label mb-5">
                 {t.homeEyebrow}
               </p>
 
@@ -200,20 +201,13 @@ export default function HomePageContent({ data, siteText: t }: { data: HomePageD
                   {site.tagline}
                 </h1>
 
-              <div data-reveal
-              className="w-12 h-px bg-gold my-8"
-              aria-hidden="true"
-            />
+              <div className="w-12 h-px bg-gold my-8" aria-hidden="true" />
 
-              <p data-reveal
-              className="font-jost text-charcoal/75 text-base lg:text-lg max-w-sm mb-10 leading-relaxed"
-            >
+              <p className="font-jost text-charcoal/75 text-base lg:text-lg max-w-sm mb-10 leading-relaxed">
                 {t.homeIntro}
               </p>
 
-              <div data-reveal
-              className="flex flex-wrap gap-4"
-            >
+              <div className="flex flex-wrap gap-4">
                 <Button variant="gold" href={primary.href}>{primary.label}</Button>
                 <Button variant="outline" href={secondary.href}>{secondary.label}</Button>
               </div>
