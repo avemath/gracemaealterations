@@ -36,7 +36,7 @@ export const portfolioItem = defineType({
     defineField({
       name: "caption",
       title: "Caption: what was done, e.g. 'French bustle, 5 points, cathedral hem'",
-      description: "The specific work in this photo. Shown under the label on hover and in the lightbox — this is what proves the expertise.",
+      description: "The specific work in this photo. Shown under the label on hover and in the lightbox, this is what proves the expertise.",
       type: "string",
     }),
     defineField({
