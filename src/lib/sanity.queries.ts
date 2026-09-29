@@ -738,6 +738,11 @@ export interface SanityCareCard {
   careNotes?: { heading?: string; body?: string }[] | null;
   beforeImage?: SanityImage | null;
   afterImage?: SanityImage | null;
+  bustleStyle?: string | null;
+  bustleTrain?: string | null;
+  bustlePoints?: number | null;
+  bustleSteps?: string | null;
+  bustleVideo?: { url?: string; mimeType?: string } | null;
 }
 
 const IMAGE_FIELDS = `asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop`;
@@ -751,7 +756,9 @@ export async function getCareCard(code: string): Promise<SanityCareCard | null> 
         code, garment, fabric, workDone, clientFirstName, completedOn,
         careNotes[]{ heading, body },
         beforeImage{ ${IMAGE_FIELDS} },
-        afterImage{ ${IMAGE_FIELDS} }
+        afterImage{ ${IMAGE_FIELDS} },
+        bustleStyle, bustleTrain, bustlePoints, bustleSteps,
+        "bustleVideo": bustleVideo.asset->{ url, mimeType }
       }`,
       { code },
       { next: { revalidate: 60 } }
