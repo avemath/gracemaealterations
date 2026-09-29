@@ -14,6 +14,7 @@ import {
   getPolicies,
 } from "@/lib/sanity.queries";
 import { SITE_URL, jsonLdHtml, LANDING_SLUGS } from "@/lib/metadata";
+import { BUILT_IN_GUIDES } from "@/lib/builtInGuides";
 
 /** First dollar figure in a range like "$75 – $450+", or null when quoted. */
 function minPrice(range?: string): number | null {
@@ -68,9 +69,14 @@ export default async function RootLayout({
     getPolicies(),
     getPublishedLandingPages(),
   ]);
-  // Guides, then the landing pages, which otherwise nothing on the site links to.
+  // Guides (the Studio's, then the built-in ones), then the landing pages,
+  // which otherwise nothing on the site links to.
+  const builtInSlugs = new Set(BUILT_IN_GUIDES.map((guide) => guide.slug));
   const guideLinks = [
-    ...(guides ?? []).map((guide) => ({ title: guide.title, slug: guide.slug })),
+    ...(guides ?? [])
+      .filter((guide) => !builtInSlugs.has(guide.slug))
+      .map((guide) => ({ title: guide.title, slug: guide.slug })),
+    ...BUILT_IN_GUIDES.map((guide) => ({ title: guide.title, slug: guide.slug })),
     ...(landingPages ?? [])
       .filter((page) => LANDING_SLUGS.includes(page.slug))
       .map((page) => ({ title: page.title, slug: page.slug, href: `/${page.slug}` })),
