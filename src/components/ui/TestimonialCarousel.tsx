@@ -99,7 +99,9 @@ export default function TestimonialCarousel({ testimonials }: { testimonials: Sa
           &ldquo;
         </span>
 
-        {/* initial={false} so the first slide is present in the server HTML */}
+        {/* initial={false} so the first slide is present in the server HTML.
+            The live region announces the new quote when someone changes slide. */}
+        <div aria-live="polite">
         <AnimatePresence custom={direction} mode="wait" initial={false}>
           <motion.div
             key={current._id}
@@ -134,6 +136,7 @@ export default function TestimonialCarousel({ testimonials }: { testimonials: Sa
             )}
           </motion.div>
         </AnimatePresence>
+        </div>
       </div>
 
       {count > 1 && (
@@ -161,7 +164,9 @@ export default function TestimonialCarousel({ testimonials }: { testimonials: Sa
             >
               <span
                 className={`block rounded-full transition-all duration-300 ${
-                  i === index ? "w-7 h-1.5 bg-gold" : "w-1.5 h-1.5 bg-charcoal/25 group-hover:bg-gold/70"
+                  i === index
+                    ? "w-7 h-1.5 bg-gold forced-colors:bg-[Highlight]"
+                    : "w-1.5 h-1.5 bg-charcoal/25 group-hover:bg-gold/70 forced-colors:bg-[CanvasText]"
                 }`}
               />
             </button>

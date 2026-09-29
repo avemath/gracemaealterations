@@ -1,6 +1,7 @@
 /**
  * copy-fixes.mjs
- * Small grammar fixes in the live Sanity copy, found in the September audit.
+ * Fixes to the live Sanity copy from the September audits: grammar, prices
+ * brought up to current rates, and small wording and heading-case polish.
  *
  * Usage:
  *   npm run copy:fixes -- --dry-run   # show what would change, write nothing
@@ -42,6 +43,86 @@ const FIXES = [
     path: "description",
     from: "alterations specialist means I've",
     to: "alterations specialist mean I've",
+  },
+  // Prices: brought in line with 2026 bridal rates ($300 to $800 typical, $1,000+ for full or complex work)
+  {
+    id: "service-bridal",
+    path: "priceRange",
+    from: "$75 – $450+",
+    to: "$300 – $900+",
+  },
+  {
+    id: "service-bridal",
+    path: "priceNote",
+    from: "depending on complexity and fabric",
+    to: "for most gowns, depending on fabric, layers and detail",
+  },
+  {
+    id: "service-tailoring",
+    path: "priceRange",
+    from: "$20 – $120",
+    to: "$25 – $175",
+  },
+  // Copy polish from the second audit
+  {
+    id: "service-bridal",
+    path: "services[0]",
+    from: "(standard, cathedral, horsehair)",
+    to: "(plain, lace-edged, horsehair)",
+  },
+  {
+    id: "servicesPage",
+    path: "pricingCards[0].body",
+    from: "an accurate quote, not a ballpark.",
+    to: "a real quote for your garment.",
+  },
+  {
+    id: "faq-rush",
+    path: "answer",
+    from: "Rush services are available on a case-by-case basis depending on my current schedule and the complexity of the work. Rush jobs (under 2 weeks for bridal, under 1 week for tailoring) do carry an additional fee. Please contact me as early as possible if you have a tight deadline. The sooner you reach out, the more options we have.",
+    to: "Sometimes. It depends on my schedule and on the work, so put your date in your first message and I'll tell you honestly whether I can fit it in. Rush work carries an extra fee, which I quote up front. If I can't take it, I'll suggest someone who can.",
+  },
+  {
+    id: "homePage",
+    path: "processSteps[3].title",
+    from: "The Work",
+    to: "The alterations",
+  },
+  {
+    id: "homePage",
+    path: "trustStats[2].value",
+    from: "Pittsburgh, PA",
+    to: "By appointment",
+  },
+  {
+    id: "homePage",
+    path: "trustStats[2].label",
+    from: "Proudly Local",
+    to: "One client at a time",
+  },
+  {
+    id: "homePage",
+    path: "processHeading",
+    from: "What to Expect",
+    to: "What to expect",
+  },
+  {
+    id: "servicesPage",
+    path: "pricingHeading",
+    from: "How Pricing Works",
+    to: "How pricing works",
+  },
+  {
+    id: "contactPage",
+    path: "heroHeading",
+    from: "Let's Talk About Your Garment",
+    to: "Let's talk about your garment",
+  },
+  {
+    id: "portfolioPage",
+    path: "heroSubtext",
+    from: "Each garment is a collaboration between craft and vision.",
+    to: "Real work from my studio: gowns, bridal parties, tailoring and repairs.",
   },
 ];
 

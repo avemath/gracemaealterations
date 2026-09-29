@@ -205,13 +205,25 @@ export interface SanityValue {
 // ── HELPERS ───────────────────────────────────────────────────
 
 // Safe fetch — returns null on error so we can fall back to content.ts
+/**
+ * Reads from Sanity, retrying twice. If Sanity is still unreachable it throws
+ * rather than returning null: a null here means "use the placeholder copy",
+ * and a refresh during an outage would otherwise cache placeholder boxes for
+ * every visitor. Thrown, the refresh fails and Vercel keeps serving the last
+ * good page. With no project configured (local, tests) it returns null.
+ */
 async function safeFetch<T>(query: string): Promise<T | null> {
   if (!sanityClient) return null;
-  try {
-    return await sanityClient.fetch<T>(query, {}, { next: { revalidate: 60 } });
-  } catch {
-    return null;
+  let lastError: unknown;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      return await sanityClient.fetch<T>(query, {}, { next: { revalidate: 60 } });
+    } catch (error) {
+      lastError = error;
+      await new Promise((r) => setTimeout(r, 300 * (attempt + 1)));
+    }
   }
+  throw lastError;
 }
 
 // ── QUERIES ───────────────────────────────────────────────────

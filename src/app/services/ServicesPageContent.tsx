@@ -1,11 +1,10 @@
 "use client";
 
-import { Fragment, useRef } from "react";
+import { useRef } from "react";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import SanityImage from "@/components/ui/SanityImage";
 import CTABanner from "@/components/sections/CTABanner";
-import BustleExplorer, { type BustleCopy } from "@/components/sections/BustleExplorer";
 import { ctas } from "@/lib/cta";
 import type {
   SanityService,
@@ -42,16 +41,15 @@ interface Props {
   services: SanityService[];
   page: ServicesPageData;
   availability: Availability;
-  bustleCopy?: BustleCopy[];
-  hasBustleGuide?: boolean;
+  /** Guides to point to under each service, by service id. */
+  guideLinks?: Record<string, { title: string; href: string }[]>;
 }
 
 export default function ServicesPageContent({
   services,
   page,
   availability,
-  bustleCopy = [],
-  hasBustleGuide = false,
+  guideLinks = {},
 }: Props) {
   const { limitedMode, waitlistServices, reopensLabel } = availability;
   const isWaitlisted = (serviceId: string) =>
@@ -63,7 +61,10 @@ export default function ServicesPageContent({
     target: heroRef,
     offset: ["start start", "end start"],
   });
-  const heroParallaxY = useTransform(heroScroll, [0, 1], ["0%", "-18%"]);
+  // Still for anyone who has asked for less motion (MotionConfig does not
+  // cover motion values passed through style).
+  const reduceMotion = useReducedMotion();
+  const heroParallaxY = useTransform(heroScroll, [0, 1], ["0%", reduceMotion ? "0%" : "-18%"]);
 
   return (
     <>
@@ -119,8 +120,8 @@ export default function ServicesPageContent({
       {/* ── SERVICE SECTIONS ──────────────────────────────────── */}
       <div>
         {services.map((service, i) => (
-          <Fragment key={service._id}>
           <section
+            key={service._id}
             id={service.id}
             className={`scroll-mt-20 py-14 lg:py-20 px-6 ${i % 2 === 1 ? "bg-blush" : "bg-ivory"}`}
             aria-labelledby={`${service.id}-heading`}
@@ -144,7 +145,7 @@ export default function ServicesPageContent({
                     </p>
                     <Link
                       href={`/contact?service=${service.id}`}
-                      className="mt-4 inline-flex items-center gap-2 font-jost text-xs text-gold_ink tracking-[0.18em] uppercase hover:text-gold_dark transition-colors duration-300"
+                      className="mt-4 inline-flex items-center gap-2 font-jost text-xs text-gold_ink tracking-[0.18em] uppercase hover:text-charcoal transition-colors duration-300"
                     >
                       Join the {service.title.split(" ")[0]} Waitlist
                     </Link>
@@ -173,7 +174,7 @@ export default function ServicesPageContent({
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
                   <div>
                     <h3 className="font-jost font-medium text-charcoal text-xs tracking-[0.22em] uppercase mb-5">
-                      What&rsquo;s included in every {service.title.toLowerCase()} fitting
+                      What I do
                     </h3>
                     <ul className="space-y-3" role="list">
                       {service.services.map((item, j) => (
@@ -224,6 +225,29 @@ export default function ServicesPageContent({
                   )}
                 </div>
 
+                {(guideLinks[service.id]?.length ?? 0) > 0 && (
+                  <nav aria-label={`Guides for ${service.title.toLowerCase()}`} className="mt-10 max-w-2xl">
+                    <p className="font-jost font-medium text-charcoal text-xs tracking-[0.22em] uppercase mb-3">
+                      Helpful guides
+                    </p>
+                    <ul className="border-t border-gold/40">
+                      {guideLinks[service.id].map((guide) => (
+                        <li key={guide.href} className="border-b border-gold/25">
+                          <Link
+                            href={guide.href}
+                            className="group flex items-center justify-between gap-4 py-3.5 font-cormorant italic text-charcoal text-lg leading-snug hover:text-gold_ink transition-colors duration-300"
+                          >
+                            {guide.title}
+                            <span aria-hidden="true" className="font-jost not-italic text-gold_ink transition-transform duration-300 group-hover:translate-x-1">
+                              &rarr;
+                            </span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+                )}
+
                 {service.id === "bridal" && (
                   <>
                     <div className="mt-12 border-t border-blush pt-8">
@@ -244,52 +268,6 @@ export default function ServicesPageContent({
             </div>
           </section>
 
-          {service.id === "bridal" && (
-            <section
-              id="bustles"
-              className="scroll-mt-20 bg-ivory border-t border-blush py-14 lg:py-20 px-6"
-              aria-labelledby="bustles-heading"
-            >
-              <div className="max-w-6xl mx-auto">
-                <p className="section-label mb-3">Bustles, explained</p>
-                <h2 id="bustles-heading" className="font-cormorant italic text-charcoal text-[clamp(2rem,4vw,3rem)] leading-tight mb-4">
-                  What happens to your train after the ceremony
-                </h2>
-                <p className="font-jost text-charcoal/75 text-base leading-[1.7] max-w-[62ch] mb-10 lg:mb-14">
-                  A bustle lifts the train off the floor so you can walk, dance and hug everyone
-                  without anyone stepping on it. Pick a style and a train length, then bustle it.
-                </p>
-                <BustleExplorer
-                  copy={bustleCopy}
-                  footer={
-                    <div className="border border-gold/25 bg-gold/5 p-5">
-                      <p className="font-jost text-charcoal/75 text-sm leading-[1.65]">
-                        There is nothing to decide yet. I choose the bustle at your first fitting,
-                        with the dress on you, and show whoever will bustle you on the day how it works.
-                      </p>
-                      <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
-                        <Link
-                          href="/contact?service=bridal"
-                          className="font-jost text-xs text-gold_ink tracking-[0.18em] uppercase py-2 hover:text-gold_dark transition-colors duration-300"
-                        >
-                          {isWaitlisted("bridal") ? secondary.label : "Book a bridal fitting"}
-                        </Link>
-                        {hasBustleGuide && (
-                          <Link
-                            href="/guides/wedding-dress-bustle-types"
-                            className="font-jost text-xs text-gold_ink tracking-[0.18em] uppercase py-2 hover:text-gold_dark transition-colors duration-300"
-                          >
-                            Read the bustle guide
-                          </Link>
-                        )}
-                      </div>
-                    </div>
-                  }
-                />
-              </div>
-            </section>
-          )}
-          </Fragment>
         ))}
       </div>
 

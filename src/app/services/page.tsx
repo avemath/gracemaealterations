@@ -4,7 +4,6 @@ import {
   getMergedServices,
   getMergedServicesPage,
   getMergedSite,
-  getPublishedBustleStyles,
   getPublishedGuides,
 } from "@/lib/sanity.queries";
 import ServicesPageContent from "./ServicesPageContent";
@@ -12,21 +11,34 @@ import ServicesPageContent from "./ServicesPageContent";
 export const metadata: Metadata = pageMetadata(PAGE_META.services);
 
 
+/** Which guides sit under which service. The trouser guide is built into the site, not Sanity. */
+const GUIDES_FOR: Record<string, string[]> = {
+  bridal: ["wedding-dress-alterations-timeline", "wedding-dress-bustle-types", "what-to-bring-to-your-wedding-dress-fitting"],
+  tailoring: ["trouser-hem-length"],
+};
+const BUILT_IN_TITLES: Record<string, string> = { "trouser-hem-length": "Trouser hem length, explained" };
+
 export default async function ServicesPage() {
-  const [services, page, site, bustleStyles, guides] = await Promise.all([
+  const [services, page, site, guides] = await Promise.all([
     getMergedServices(),
     getMergedServicesPage(),
     getMergedSite(),
-    getPublishedBustleStyles(),
     getPublishedGuides(),
   ]);
+  const titles: Record<string, string> = { ...BUILT_IN_TITLES };
+  for (const g of guides ?? []) titles[g.slug] = g.title;
+  const guideLinks = Object.fromEntries(
+    Object.entries(GUIDES_FOR).map(([id, slugs]) => [
+      id,
+      slugs.filter((slug) => titles[slug]).map((slug) => ({ title: titles[slug], href: `/guides/${slug}` })),
+    ])
+  );
 
   return (
     <ServicesPageContent
       services={services}
       page={page}
-      bustleCopy={(bustleStyles ?? []).map((s) => ({ ...s, slug: s.slug ?? "" }))}
-      hasBustleGuide={(guides ?? []).some((g) => g.slug === "wedding-dress-bustle-types")}
+      guideLinks={guideLinks}
       availability={{
         limitedMode: site.limitedMode,
         waitlistServices: site.waitlistServices,

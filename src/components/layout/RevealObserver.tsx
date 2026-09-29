@@ -8,10 +8,11 @@ const SELECTOR = "[data-reveal]";
 /**
  * One shared IntersectionObserver for every [data-reveal] element on the page.
  *
- * The elements are fully visible in the server HTML. The "js" class on <html>
- * (set by an inline script in the head) is what arms the hidden state, so with
- * JavaScript off nothing is ever hidden, and prefers-reduced-motion opts out in
- * CSS regardless.
+ * The elements are fully visible in the server HTML. This component arms the
+ * hidden state (.reveal-armed on <html>) only after showing everything already
+ * on screen, so a slow or failed script never leaves text invisible, the first
+ * screen never flickers, and its largest image isn't held back until hydration.
+ * prefers-reduced-motion opts out in CSS regardless.
  *
  * A MutationObserver picks up elements React mounts after the first pass (the
  * portfolio filter remounts the whole grid, for example). Without it those
@@ -44,18 +45,25 @@ export default function RevealObserver() {
       { threshold: 0, rootMargin: "0px 0px -10% 0px" }
     );
 
+    const onScreen = (el: Element) => {
+      const r = el.getBoundingClientRect();
+      return r.top < window.innerHeight * 0.9 && r.bottom > 0;
+    };
+
     const track = (el: Element) => {
       if (revealed.has(el) || el.classList.contains("is-visible")) {
         revealed.add(el);
         return;
       }
-      if (reduced) show(el);
+      // Already seen before the hidden state was armed: keep it shown.
+      if (reduced || !document.documentElement.classList.contains("reveal-armed") && onScreen(el)) show(el);
       else io.observe(el);
     };
 
     const scan = (root: ParentNode) => root.querySelectorAll(SELECTOR).forEach(track);
 
     scan(document);
+    document.documentElement.classList.add("reveal-armed");
 
     const mo = new MutationObserver((mutations) => {
       for (const m of mutations) {
