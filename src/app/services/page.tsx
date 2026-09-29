@@ -6,6 +6,7 @@ import {
   getMergedSite,
   getPublishedGuides,
 } from "@/lib/sanity.queries";
+import { BUILT_IN_GUIDES } from "@/lib/builtInGuides";
 import ServicesPageContent from "./ServicesPageContent";
 
 export const metadata: Metadata = pageMetadata(PAGE_META.services);
@@ -16,7 +17,6 @@ const GUIDES_FOR: Record<string, string[]> = {
   bridal: ["wedding-dress-alterations-timeline", "wedding-dress-bustle-types", "what-to-bring-to-your-wedding-dress-fitting"],
   tailoring: ["trouser-hem-length"],
 };
-const BUILT_IN_TITLES: Record<string, string> = { "trouser-hem-length": "Trouser hem length, explained" };
 
 export default async function ServicesPage() {
   const [services, page, site, guides] = await Promise.all([
@@ -25,7 +25,7 @@ export default async function ServicesPage() {
     getMergedSite(),
     getPublishedGuides(),
   ]);
-  const titles: Record<string, string> = { ...BUILT_IN_TITLES };
+  const titles: Record<string, string> = Object.fromEntries(BUILT_IN_GUIDES.map((g) => [g.slug, g.title]));
   for (const g of guides ?? []) titles[g.slug] = g.title;
   const guideLinks = Object.fromEntries(
     Object.entries(GUIDES_FOR).map(([id, slugs]) => [

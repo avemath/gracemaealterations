@@ -73,8 +73,8 @@ export default function SanityImage({
     const hotspot = image.hotspot;
     const pct = (n: number) => `${Math.round(n * 10000) / 100}%`;
     const objectPosition = hotspot
-      ? `${pct(hotspot.x)} ${keepTop ? "8%" : pct(hotspot.y)}`
-      : keepTop ? "50% 8%" : "50% 50%";
+      ? `${pct(hotspot.x)} ${keepTop ? "18%" : pct(hotspot.y)}`
+      : keepTop ? "50% 18%" : "50% 50%";
 
     if (fill) {
       return (
