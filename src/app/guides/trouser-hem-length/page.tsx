@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PortableText, type PortableTextBlock, type PortableTextComponents } from "@portabletext/react";
-import { pageMetadata, SITE_URL, FALLBACK_OG_IMAGE, jsonLdHtml } from "@/lib/metadata";
+import { pageMetadata, SITE_URL, jsonLdHtml } from "@/lib/metadata";
 import { builtInGuide } from "@/lib/builtInGuides";
 import { getGuide } from "@/lib/sanity.queries";
 import { getText } from "@/lib/text";
@@ -29,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
     path: PATH,
     title: studio?.seo?.title || SEO_TITLE,
     description: studio?.seo?.description || DESCRIPTION,
-    image: FALLBACK_OG_IMAGE,
+
   });
 }
 

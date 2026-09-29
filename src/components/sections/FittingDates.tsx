@@ -1,5 +1,6 @@
 "use client";
 
+import { analytics } from "@/lib/analytics";
 import { useEffect, useId, useState } from "react";
 import Link from "next/link";
 import {
@@ -10,6 +11,7 @@ import {
   formatRange,
   icsFor,
   parseDateInput,
+  toDateInput as toInput,
   statusText,
   todayInPittsburgh,
   type TimelineStep,
@@ -92,8 +94,15 @@ export default function FittingDates({ steps, limitedMode, bridalWaitlisted, reo
         ? text.datesCtaAsk
         : text.datesCtaBook;
 
+  // Count each kind of answer once per date entered, not once per render.
+  const checkedKind = result ? `${toInput(result.wedding)}:${result.fit.kind}` : "";
+  useEffect(() => {
+    if (checkedKind) analytics.datesChecked(checkedKind.split(":")[1]);
+  }, [checkedKind]);
+
   const download = () => {
     if (!result) return;
+    analytics.datesCalendar();
     const blob = new Blob([icsFor(result.plan, result.wedding, new Date(), text)], { type: "text/calendar;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

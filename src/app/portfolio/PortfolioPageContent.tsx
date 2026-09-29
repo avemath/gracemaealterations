@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useFocusTrap } from "@/lib/useFocusTrap";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import SanityImage from "@/components/ui/SanityImage";
 import BeforeAfterSliderView from "@/components/ui/BeforeAfterSliderView";
