@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getResend, CONTACT_EMAIL, FROM_EMAIL } from "@/lib/resend";
-import {
-  BRIDAL_ALTERATION_LABELS,
-  SHOES_UNDERGARMENT_LABELS,
-} from "@/lib/contactOptions";
+import { bridalAlterationLabels, shoesUndergarmentLabels } from "@/lib/contactOptions";
 import { sanitizePhotoCheck, photoCheckLines } from "@/lib/photoCheck";
 import { getMergedSite } from "@/lib/sanity.queries";
 import { dateFit, parseDateInput } from "@/lib/bridalDates";
+import { getText, textDefaults, fill, type Text } from "@/lib/text";
 
 interface ContactPayload {
   name: string;
@@ -176,31 +174,24 @@ function section(title: string, content: string) {
     </div>`;
 }
 
-function whatToBringHtml(serviceType?: string): string {
-  const lists: Record<string, string[]> = {
-    bridal: [
-      "Your wedding dress",
-      "The shoes you plan to wear on your wedding day, since heel height sets the hem length",
-      "Any undergarments, shapewear, or a strapless bra you plan to wear with the gown",
-      "Any accessories you'd like to try on with the dress",
-    ],
-    tailoring: [
-      "The garment(s) you need altered",
-      "Shoes you plan to wear, if a hem adjustment is involved",
-    ],
-    party: [
-      "Each garment, labelled with who will wear it",
-      "The shoes each person plans to wear, if hems are involved",
-      "Anyone being fitted, or a date when they can come in",
-    ],
+/** A Studio list written one item per line, as escaped <li>s. */
+function listItems(text: string): string {
+  return text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => `<li>${escapeHtml(line)}</li>`)
+    .join("");
+}
+
+function whatToBringHtml(text: Text<"forms">, serviceType?: string): string {
+  const lists: Record<string, string> = {
+    bridal: text.confirmBringBridal,
+    tailoring: text.confirmBringTailoring,
+    party: text.confirmBringParty,
   };
-  const items = lists[serviceType ?? ""] ?? [
-    "The garment(s) you need altered",
-    "Shoes if a hem adjustment is involved",
-  ];
-  return `<ul style="margin:0;padding-left:20px;font-size:14px;line-height:1.8;color:#555;">${items
-    .map((i) => `<li>${i}</li>`)
-    .join("")}</ul>`;
+  const items = lists[serviceType ?? ""] ?? text.confirmBringOther;
+  return `<ul style="margin:0;padding-left:20px;font-size:14px;line-height:1.8;color:#555;">${listItems(items)}</ul>`;
 }
 
 // ── Route handler ─────────────────────────────────────────────
@@ -247,9 +238,18 @@ export async function POST(req: NextRequest) {
   const serviceType = clean(raw.serviceType);
   const isWaitlist = raw.isWaitlist === true;
   // From Sanity, not the browser, since it goes into the confirmation email.
-  const reopensLabel = isWaitlist ? await getMergedSite().then((s) => s.reopensLabel ?? "", () => "") : "";
+  // If the Studio can't be reached the request still goes through, in the
+  // original wording.
+  const [reopensLabel, text] = await Promise.all([
+    isWaitlist ? getMergedSite().then((s) => s.reopensLabel ?? "", () => "") : "",
+    getText("forms").catch(() => textDefaults("forms")),
+  ]);
+  // Studio wording goes into HTML, so it is escaped like anything a client typed.
+  const html = (template: string, vars: Record<string, string> = {}) => fill(escapeHtml(template), vars);
+  const alterationLabels = bridalAlterationLabels(text);
+  const shoesLabels = shoesUndergarmentLabels(text);
   const hi = greetingName(name);
-  const hello = hi ? `Hi ${escapeHtml(hi)}, ` : "Hi, ";
+  const hello = hi ? html(text.confirmGreeting, { name: escapeHtml(hi) }) : html(text.confirmGreetingNoName);
   const eventDate = clean(raw.eventDate);
   const garmentDetails = clean(raw.garmentDetails);
   const referral = clean(raw.referralSource).slice(0, 100);
@@ -295,7 +295,7 @@ export async function POST(req: NextRequest) {
                 ? row(
                     "Thinks It Needs",
                     escapeHtml(
-                      alterationsNeeded.map((a) => BRIDAL_ALTERATION_LABELS[a] ?? a).join(", ")
+                      alterationsNeeded.map((a) => alterationLabels[a] ?? a).join(", ")
                     )
                   )
                 : ""
@@ -304,7 +304,7 @@ export async function POST(req: NextRequest) {
               shoesUndergarments
                 ? row(
                     "Shoes & Undergarments",
-                    escapeHtml(SHOES_UNDERGARMENT_LABELS[shoesUndergarments] ?? shoesUndergarments)
+                    escapeHtml(shoesLabels[shoesUndergarments] ?? shoesUndergarments)
                   )
                 : ""
             }
@@ -379,33 +379,35 @@ export async function POST(req: NextRequest) {
 
   // ── Confirmation email to client ──────────────────────────
 
-  const waitlistServiceWord = serviceType === "bridal" ? "bridal " : "";
-
-  const waitlistIntro = askedAboutDate
-    ? `${hello}I have your request and your date. I'll tell you honestly whether I can fit it in, and if I can't, I'll suggest someone who can.`
-    : reopensLabel
-    ? `${hello}you're on my ${waitlistServiceWord}waitlist. I'll reach out in order as dates open for ${escapeHtml(reopensLabel)}.`
-    : `${hello}your request has been received and you're on my waitlist. I'll reach out as soon as a spot opens up.`;
+  const reopens = { reopens: escapeHtml(reopensLabel) };
+  const waitlistIntro = `${hello} ${
+    askedAboutDate
+      ? html(text.confirmDateIntro)
+      : reopensLabel
+      ? html(serviceType === "bridal" ? text.confirmWaitlistIntroBridal : text.confirmWaitlistIntroReopens, reopens)
+      : html(text.confirmWaitlistIntro)
+  }`;
 
   const signOff = `
         <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
-          <p style="font-size:15px;font-style:italic;color:#1C1C1C;margin:0 0 4px;">Grace Mae</p>
-          <p style="font-size:12px;color:#767676;margin:0;">Grace Mae Alterations · Pittsburgh, PA · By appointment only</p>
+          <p style="font-size:15px;font-style:italic;color:#1C1C1C;margin:0 0 4px;">${html(text.confirmSignName)}</p>
+          <p style="font-size:12px;color:#767676;margin:0;">${html(text.confirmSignLine)}</p>
         </div>`;
+  const tagline = `<p style="font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:#767676;margin:0;">${html(text.confirmTagline)}</p>`;
 
   const confirmationEmail = isWaitlist
     ? `
       <div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;color:#1C1C1C;">
         <div style="border-top:3px solid ${GOLD};padding:32px 0 16px;">
-          <h1 style="font-size:26px;font-weight:400;font-style:italic;margin:0 0 8px;">${askedAboutDate ? "I have your date." : "You're on my waitlist."}</h1>
-          <p style="font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:#767676;margin:0;">Grace Mae Alterations · Pittsburgh, PA</p>
+          <h1 style="font-size:26px;font-weight:400;font-style:italic;margin:0 0 8px;">${html(askedAboutDate ? text.confirmDateHeading : text.confirmWaitlistHeading)}</h1>
+          ${tagline}
         </div>
         <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
           <p style="font-size:15px;line-height:1.7;color:#1C1C1C;margin:0 0 12px;">
             ${waitlistIntro}
           </p>
           <p style="font-size:15px;line-height:1.7;color:#555;margin:0;">
-            In the meantime, feel free to reply to this email with any questions.
+            ${html(text.confirmWaitlistMeantime)}
           </p>
         </div>
         ${signOff}
@@ -413,34 +415,31 @@ export async function POST(req: NextRequest) {
     : `
       <div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;color:#1C1C1C;">
         <div style="border-top:3px solid ${GOLD};padding:32px 0 16px;">
-          <h1 style="font-size:26px;font-weight:400;font-style:italic;margin:0 0 8px;">Your request was received.</h1>
-          <p style="font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:#767676;margin:0;">Grace Mae Alterations · Pittsburgh, PA</p>
+          <h1 style="font-size:26px;font-weight:400;font-style:italic;margin:0 0 8px;">${html(text.confirmHeading)}</h1>
+          ${tagline}
         </div>
 
         <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
           <p style="font-size:15px;line-height:1.7;color:#1C1C1C;margin:0;">
-            ${hello}thank you for reaching out. I've received your request, and I read every message myself. I'll reply as soon as I can.
+            ${hello} ${html(text.confirmIntro)}
           </p>
         </div>
 
         <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
-          <p style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:${GOLD_INK};margin:0 0 16px;">What Happens Next</p>
-          <ol style="font-size:14px;line-height:1.9;color:#555;padding-left:20px;margin:0;">
-            <li>I'll review your request and reach out to schedule your first fitting.</li>
-            <li>At the fitting we'll look at the garment together, talk through the alterations, and I'll give you a quote and a realistic timeline.</li>
-            <li>Alterations begin after the fitting and a deposit. I'll keep you updated along the way.</li>
-          </ol>
+          <p style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:${GOLD_INK};margin:0 0 16px;">${html(text.confirmNextHeading)}</p>
+          <ol style="font-size:14px;line-height:1.9;color:#555;padding-left:20px;margin:0;">${listItems(text.confirmNextSteps)}</ol>
         </div>
 
         <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
-          <p style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:${GOLD_INK};margin:0 0 16px;">What to Bring to Your First Fitting</p>
-          ${whatToBringHtml(serviceType)}
+          <p style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:${GOLD_INK};margin:0 0 16px;">${html(text.confirmBringHeading)}</p>
+          ${whatToBringHtml(text, serviceType)}
         </div>
 
         <div style="border-top:1px solid #E8E0D8;padding:24px 0;">
           <p style="font-size:14px;line-height:1.7;color:#555;margin:0;">
-            Questions in the meantime? Reply to this email or reach me at
-            <a href="mailto:${escapeHtml(CONTACT_EMAIL)}" style="color:${GOLD_INK};">${escapeHtml(CONTACT_EMAIL)}</a>.
+            ${html(text.confirmQuestions, {
+              email: `<a href="mailto:${escapeHtml(CONTACT_EMAIL)}" style="color:${GOLD_INK};">${escapeHtml(CONTACT_EMAIL)}</a>`,
+            })}
           </p>
         </div>
         ${signOff}
@@ -485,11 +484,7 @@ export async function POST(req: NextRequest) {
       from: FROM_EMAIL,
       to: email,
       replyTo: CONTACT_EMAIL,
-      subject: askedAboutDate
-        ? "About your date · Grace Mae Alterations"
-        : isWaitlist
-        ? "You're on my waitlist · Grace Mae Alterations"
-        : "Your request was received · Grace Mae Alterations",
+      subject: askedAboutDate ? text.confirmDateSubject : isWaitlist ? text.confirmWaitlistSubject : text.confirmSubject,
       html: confirmationEmail,
     });
     if (clientError) console.error("Resend error (client confirmation):", clientError);
