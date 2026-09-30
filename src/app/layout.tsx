@@ -34,7 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL("https://gracemaealterations.com"),
     title: {
       default: `${site.name} | Bridal & Clothing Alterations | Pittsburgh, PA`,
-      template: `%s | ${site.businessName}`,
+      template: "%s | Grace Mae",
     },
     description: site.metaDescription,
     openGraph: {

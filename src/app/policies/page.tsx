@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
   if (!(await getPolicies())) return { title: "Page not found", robots: { index: false } };
   return pageMetadata({
     path: "/policies",
-    title: "Policies | Grace Mae Alterations | Pittsburgh, PA",
+    title: "Policies | Grace Mae",
     description:
       "Deposits, rescheduling, rush work, pickup windows and the workmanship guarantee for alterations with Grace Mae in Pittsburgh.",
     image: FALLBACK_OG_IMAGE,

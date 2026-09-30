@@ -127,3 +127,6 @@ Either way the buttons across the site change by themselves. You do not have to 
 ## One last thing
 
 If a number or a paragraph is blank, the site hides that piece rather than inventing something. So there is no rush and no risk in filling this in a bit at a time.
+
+26. The David's Bridal page now ends with one line of small print: "Grace Mae Alterations is independent and not affiliated with David's Bridal." It's there so nobody mistakes the page for an official partner. You can change it in the Studio under the page's **Small print** box, and any other landing page can have its own line the same way.
+27. Every page title in a browser tab or Google result now ends in "| Grace Mae". If you type a title in the Studio with a different ending, like "| Grace Mae | Pittsburgh", the site tidies it for you.
