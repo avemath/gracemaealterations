@@ -544,7 +544,10 @@ export default function ContactPageContent({
                     {t.chooseIntro}
                   </p>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10" role="group" aria-label={t.chooseAria}>
+                  {/* Stacked rows at every width: three cards side by side were
+                      cramped in this column and left it mostly empty beside
+                      the contact details until someone chose. */}
+                  <div className="grid grid-cols-1 gap-3 mb-10" role="group" aria-label={t.chooseAria}>
                     {CARDS.map((card) => {
                       const selected = branch === card.id;
                       return (
@@ -553,18 +556,26 @@ export default function ContactPageContent({
                           type="button"
                           onClick={() => chooseBranch(card.id)}
                           aria-pressed={selected}
-                          className={`text-left p-5 min-h-[44px] border transition-colors duration-300 ${
+                          className={`group flex items-center gap-4 text-left p-5 lg:px-6 min-h-[44px] border transition-colors duration-300 ${
                             selected
                               ? "border-gold bg-gold/10"
                               : "border-blush hover:border-gold/50 bg-transparent"
                           }`}
                         >
-                          <span className="block font-cormorant text-charcoal text-xl leading-tight mb-2">
-                            {card.title}
+                          <span className="min-w-0 flex-1">
+                            <span className="block font-cormorant text-charcoal text-xl leading-tight mb-1.5">
+                              {card.title}
+                            </span>
+                            <span className="block font-jost text-charcoal/75 text-sm leading-[1.5]">
+                              {card.blurb}
+                            </span>
                           </span>
-                          <span className="block font-jost text-charcoal/75 text-xs leading-[1.5]">
-                            {card.blurb}
-                          </span>
+                          <svg
+                            width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"
+                            className={`shrink-0 text-gold_ink transition-transform duration-300 ${selected ? "rotate-90" : "group-hover:translate-x-0.5"}`}
+                          >
+                            <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
                         </button>
                       );
                     })}
