@@ -7,6 +7,15 @@ export const SITE_NAME = "Grace Mae Alterations";
 /** The landing pages allowed at the site root (/[slug]); the sitemap lists only these. */
 export const LANDING_SLUGS = ["david-s-bridal-dress-alterations", "bridal-party-alterations"];
 
+/**
+ * Small print a landing page shows when its Studio "Small print" box is
+ * empty. A page named after another company says plainly that it isn't them.
+ */
+export const LANDING_SMALL_PRINT: Record<string, string> = {
+  "david-s-bridal-dress-alterations":
+    "Grace Mae Alterations is independent and not affiliated with David's Bridal.",
+};
+
 export const FALLBACK_OG_IMAGE = "/opengraph-image";
 
 interface PageMeta {
@@ -21,11 +30,25 @@ interface PageMeta {
   image?: string;
 }
 
+const BRAND_TAIL = /\s*\|\s*(?:Grace Mae(?: Alterations)?|Pittsburgh(?:,\s*PA)?)\s*$/i;
+
+/**
+ * Every tab title ends in exactly "| Grace Mae". Titles typed in the Studio
+ * drift ("| Grace Mae | Pittsburgh", "| Grace Mae Alterations"), so any mix
+ * of those endings is trimmed and the one ending put back.
+ */
+export function brandTitle(title: string): string {
+  let t = title.trim();
+  while (BRAND_TAIL.test(t)) t = t.replace(BRAND_TAIL, "");
+  return `${t} | Grace Mae`;
+}
+
 /**
  * Per-page metadata with a self canonical. Share images come from each
  * route's own opengraph-image file; routes without one pass FALLBACK_OG_IMAGE.
  */
-export function pageMetadata({ title, description, path, image }: PageMeta): Metadata {
+export function pageMetadata({ title: rawTitle, description, path, image }: PageMeta): Metadata {
+  const title = brandTitle(rawTitle);
   const url = path === "/" ? SITE_URL : `${SITE_URL}${path}`;
   return {
     title: { absolute: title },
@@ -58,7 +81,7 @@ export const PAGE_META: Record<string, PageMeta> = {
   },
   services: {
     path: "/services",
-    title: "Wedding Dress Alterations & Prices | Pittsburgh | Grace Mae",
+    title: "Wedding Dress Alterations & Prices in Pittsburgh | Grace Mae",
     description:
       "Hems, bustles, bodice work and everyday tailoring in Pittsburgh, with price ranges and typical timelines.",
   },

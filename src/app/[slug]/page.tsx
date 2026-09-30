@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getLandingPage } from "@/lib/sanity.queries";
 import { getText } from "@/lib/text";
 import { aroundLink } from "@/lib/cta";
-import { pageMetadata, FALLBACK_OG_IMAGE, LANDING_SLUGS as ALLOWED, shortDescription } from "@/lib/metadata";
+import { pageMetadata, FALLBACK_OG_IMAGE, LANDING_SLUGS as ALLOWED, LANDING_SMALL_PRINT, shortDescription } from "@/lib/metadata";
 
 export const revalidate = 60;
 // Only the landing pages in LANDING_SLUGS exist at the root, and they are
@@ -38,6 +38,7 @@ export default async function LandingPageRoute({ params }: { params: { slug: str
   const [page, text] = await Promise.all([getLandingPage(params.slug), getText("site")]);
   if (!page) notFound();
   const [beforeLink, afterLink] = aroundLink(text.landingClosing);
+  const smallPrint = page.smallPrint?.trim() || LANDING_SMALL_PRINT[page.slug];
 
   return (
     <article>
@@ -74,6 +75,12 @@ export default async function LandingPageRoute({ params }: { params: { slug: str
             </Link>
             {afterLink}
           </p>
+
+          {smallPrint && (
+            <p className="!mt-6 font-jost text-charcoal/75 text-xs leading-[1.6]" data-testid="landing-small-print">
+              {smallPrint}
+            </p>
+          )}
         </div>
       </section>
     </article>

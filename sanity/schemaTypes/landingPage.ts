@@ -24,6 +24,13 @@ export const landingPage = defineType({
       ],
     }),
     defineField({
+      name: "smallPrint",
+      title: "Small print",
+      type: "string",
+      description:
+        "One quiet line at the bottom of the page. The David's Bridal page shows \"Grace Mae Alterations is independent and not affiliated with David's Bridal.\" unless you write something else here.",
+    }),
+    defineField({
       name: "faq",
       title: "Related FAQ items",
       type: "array",
