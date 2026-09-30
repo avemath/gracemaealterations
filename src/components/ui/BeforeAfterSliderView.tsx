@@ -19,6 +19,13 @@ export interface SliderProps {
   text: SliderText;
 }
 
+// Two photos load at once here, above the fold on a phone. Sized to the
+// slider rather than the whole screen: "100vw" had a 3x phone fetch both at
+// 1,200px, twice what it can show, which made the portfolio the one slow page.
+// The slider is at most about 620px wide beside the text on desktop.
+const SLIDER_SIZES = "(min-width: 1024px) 620px, 66vw";
+const SLIDER_QUALITY = 70;
+
 function getSrc(img: SanityImageType): string | null {
   try { return urlFor(img).fit("max").url(); }
   catch { return null; }
@@ -110,7 +117,8 @@ export default function BeforeAfterSliderView({
               alt={afterImage?.alt ?? text.sliderAfterAlt}
               fill
               className="object-cover"
-              sizes="(min-width: 1024px) 50vw, 100vw"
+              sizes={SLIDER_SIZES}
+              quality={SLIDER_QUALITY}
               // The largest image above the fold on /portfolio, so the LCP.
               priority
             />
@@ -137,7 +145,8 @@ export default function BeforeAfterSliderView({
               alt={beforeImage?.alt ?? text.sliderBeforeAlt}
               fill
               className="object-cover"
-              sizes="(min-width: 1024px) 50vw, 100vw"
+              sizes={SLIDER_SIZES}
+              quality={SLIDER_QUALITY}
               // The largest image above the fold on /portfolio, so the LCP.
               priority
             />

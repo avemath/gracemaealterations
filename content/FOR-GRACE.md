@@ -38,6 +38,9 @@ Everything below is in the Studio at **gracemaealterations.com/studio**. Nothing
     - **Where fittings happen**: at **About Page**, the "Where Fittings Happen" tab. One to three photos of the room and mirror, plus short details like Where (your neighborhood, not your address), Parking, Guests and Kids and pets.
     - Tailoring requests now have an optional **Needed by** date, shown in your email.
 
+26. The David's Bridal page now ends with one line of small print: "Grace Mae Alterations is independent and not affiliated with David's Bridal." It's there so nobody mistakes the page for an official partner. You can change it in the Studio under the page's **Small print** box, and any other landing page can have its own line the same way.
+27. Every page title in a browser tab or Google result now ends in "| Grace Mae". If you type a title in the Studio with a different ending, like "| Grace Mae | Pittsburgh", the site tidies it for you.
+
 ---
 
 ## Only you can do these

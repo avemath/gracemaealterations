@@ -19,7 +19,7 @@ export const revalidate = 60;
  */
 const builtIn = builtInGuide("trouser-hem-length");
 const PATH = `/guides/${builtIn.slug}`;
-const SEO_TITLE = "Trouser Hem Length & Break, Explained | Grace Mae | Pittsburgh";
+const SEO_TITLE = "Trouser Hem Length & Break, Explained | Grace Mae";
 const DESCRIPTION =
   "No break, quarter, half or full? See how trouser hem length looks over dress shoes, sneakers and heels, from a Pittsburgh tailor.";
 
