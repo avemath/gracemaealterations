@@ -717,7 +717,7 @@
       "group": "guides",
       "title": "Guides page: title in search results",
       "description": "Shown on the browser tab and as the headline in Google.",
-      "default": "Wedding Dress Alteration Guides | Grace Mae | Pittsburgh"
+      "default": "Wedding Dress Alteration Guides | Grace Mae"
     },
     "guidesSeoDescription": {
       "group": "guides",

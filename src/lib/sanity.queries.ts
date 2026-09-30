@@ -389,6 +389,7 @@ export interface SanityLandingPage {
   slug: string;
   intro?: string;
   sections?: { heading: string; body: string }[];
+  smallPrint?: string;
   seo?: { title?: string; description?: string };
 }
 
@@ -450,7 +451,7 @@ export async function getPublishedBustleStyles(): Promise<SanityBustleStyle[] | 
 
 const LANDING_FIELDS = `
   _id, _updatedAt, title, "slug": slug.current, intro,
-  sections[]{ heading, body }, seo
+  sections[]{ heading, body }, smallPrint, seo
 `;
 
 function cleanLandingPage(page: SanityLandingPage): SanityLandingPage {

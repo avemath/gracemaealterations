@@ -1,17 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { reloadOnceForChunkError } from "@/lib/chunkReload";
 
 /**
  * Shown if a page fails to render (for example, Sanity is unreachable the
  * first time a new page is built). Pages that already exist keep serving
- * their last good version, so this is rare.
+ * their last good version, so this is rare. A script file that failed to
+ * download reloads the page once instead (see chunkReload).
  */
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  const [reloading, setReloading] = useState(false);
+
   useEffect(() => {
-    console.error(error);
+    if (reloadOnceForChunkError(error)) setReloading(true);
+    else console.error(error);
   }, [error]);
+
+  // A blank ivory screen for the split second before the reload, rather
+  // than flashing the error message.
+  if (reloading) return <section className="bg-ivory min-h-[80vh]" aria-busy="true" />;
 
   return (
     <section

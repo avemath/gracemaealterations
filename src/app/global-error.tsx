@@ -1,10 +1,27 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { reloadOnceForChunkError } from "@/lib/chunkReload";
+
 /**
  * Last resort, when even the site layout fails. It replaces the whole page,
- * so it carries its own minimal markup and inline styles.
+ * so it carries its own minimal markup and inline styles. A script file that
+ * failed to download reloads the page once instead (see chunkReload).
  */
-export default function GlobalError({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  const [reloading, setReloading] = useState(false);
+  useEffect(() => {
+    if (reloadOnceForChunkError(error)) setReloading(true);
+  }, [error]);
+
+  if (reloading) {
+    return (
+      <html lang="en">
+        <body style={{ margin: 0, minHeight: "100vh", background: "#FAF7F2" }} />
+      </html>
+    );
+  }
+
   return (
     <html lang="en">
       <body
