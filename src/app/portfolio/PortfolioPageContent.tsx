@@ -10,6 +10,7 @@ import CTABanner from "@/components/sections/CTABanner";
 import type { SanityPortfolioItem } from "@/lib/sanity.queries";
 import type { TextFor } from "@/lib/cta";
 import { fill } from "@/lib/text/fill";
+import { balanceColumns } from "@/lib/masonry";
 
 interface PortfolioPageDataProps {
   heroLabel: string;
@@ -79,10 +80,15 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
   const lightboxRef = useFocusTrap<HTMLDivElement>(lightboxIndex !== null, closeLightbox);
 
   // "All" leads with bridal work, then tailoring, then everything else.
-  const filtered =
+  // Split into three columns that end level; the lightbox follows the same
+  // order, down each column in turn.
+  const columns = balanceColumns(
     activeFilter === "all"
       ? [...items].sort((a, b) => TYPE_RANK(a.type) - TYPE_RANK(b.type))
-      : items.filter((i) => i.type === activeFilter);
+      : items.filter((i) => i.type === activeFilter)
+  );
+  const filtered = columns.flat();
+  const offsets = columns.map((_, c) => columns.slice(0, c).reduce((n, col) => n + col.length, 0));
   filteredRef.current = filtered;
 
   // Close lightbox when filter changes
@@ -194,9 +200,14 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
           <AnimatePresence mode="wait">
             <div data-reveal
               key={activeFilter}
-              className="columns-1 sm:columns-2 lg:columns-3 gap-3 lg:gap-4"
+              className="columns-1 sm:columns-2 gap-3 lg:columns-auto lg:flex lg:items-start lg:gap-4"
             >
-              {filtered.map((item, i) => (
+              {/* Three real columns from lg up. Below that the column wrappers
+                  step aside (display: contents) and the photos flow through
+                  CSS columns in the same order. */}
+              {columns.map((col, c) => (
+              <div key={c} className="contents lg:block lg:flex-1 lg:min-w-0">
+              {col.map((item, j) => { const i = offsets[c] + j; return (
                 // The case study link sits beside the photo button, not inside
                 // it: a link nested in a role="button" is an interactive
                 // element inside another, which screen readers mangle.
@@ -258,6 +269,8 @@ export default function PortfolioPageContent({ items, portfolioPageData, availab
                     </Link>
                   )}
                 </div>
+              ); })}
+              </div>
               ))}
             </div>
           </AnimatePresence>
