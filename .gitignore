@@ -45,3 +45,4 @@ assets/prepared/
 
 # lighthouse chrome profiles (WSL writes these with Windows-style names)
 C:\\*
+archive/
