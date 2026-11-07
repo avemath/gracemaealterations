@@ -28,6 +28,9 @@ jobs:
       ANTHROPIC_API_KEY: ci-placeholder-not-a-key
       # A throwaway value so the signed-webhook test runs; the real one lives in Vercel.
       SANITY_REVALIDATE_SECRET: ci-only-webhook-secret
+      # Content comes from tests/fixtures/sanity.json (npm run fixtures:export),
+      # not live Sanity, so a slow or empty Sanity response can't fail CI.
+      SANITY_FIXTURES: tests/fixtures/sanity.json
     steps:
       - uses: actions/checkout@v7
 
@@ -40,6 +43,9 @@ jobs:
 
       - name: Lint
         run: npx next lint
+
+      - name: Unit tests
+        run: npm run test:unit
 
       - name: Build
         run: npm run build

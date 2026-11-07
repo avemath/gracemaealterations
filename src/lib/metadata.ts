@@ -4,7 +4,10 @@ export const SITE_URL = "https://gracemaealterations.com";
 export const SITE_NAME = "Grace Mae Alterations";
 
 /** The home share card, for routes with no opengraph-image of their own. */
-/** The landing pages allowed at the site root (/[slug]); the sitemap lists only these. */
+/**
+ * The landing pages at the site root; the sitemap lists only these. Each one
+ * needs its own route folder, src/app/<slug>/page.tsx (see src/app/_landing).
+ */
 export const LANDING_SLUGS = ["david-s-bridal-dress-alterations", "bridal-party-alterations"];
 
 /**

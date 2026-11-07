@@ -4,26 +4,19 @@ import { notFound } from "next/navigation";
 import { getLandingPage } from "@/lib/sanity.queries";
 import { getText } from "@/lib/text";
 import { aroundLink } from "@/lib/cta";
-import { pageMetadata, FALLBACK_OG_IMAGE, LANDING_SLUGS as ALLOWED, LANDING_SMALL_PRINT, shortDescription } from "@/lib/metadata";
+import { pageMetadata, FALLBACK_OG_IMAGE, LANDING_SMALL_PRINT, shortDescription } from "@/lib/metadata";
 
-export const revalidate = 60;
-// Only the landing pages in LANDING_SLUGS exist at the root, and they are
-// always built (a page not yet published in Sanity renders as a 404 and is
-// picked up by the next refresh once it is). Any other root path is a normal
-// static 404: with dynamic params, those rendered as a blank page without JS.
-export const dynamicParams = false;
+// The landing pages at the root (one route folder per slug in LANDING_SLUGS,
+// each a few lines that render this). They are separate static routes rather
+// than one [slug] route on purpose. Next.js 14 has two bugs a [slug] route
+// can't dodge at once: with dynamicParams = false, any refresh (the publish
+// webhook, or the one-minute revalidation) turns these pages into 404s; with
+// dynamic params, an unknown root path renders a blank page without JS. As
+// static routes they refresh normally, and any other root path gets the
+// static 404. "_landing" starts with an underscore, so it is never a route.
 
-export function generateStaticParams() {
-  return ALLOWED.map((slug) => ({ slug }));
-}
-
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
-  if (!ALLOWED.includes(params.slug)) return {};
-  const page = await getLandingPage(params.slug);
+export async function landingMetadata(slug: string): Promise<Metadata> {
+  const page = await getLandingPage(slug);
   if (!page) return {};
   return pageMetadata({
     path: `/${page.slug}`,
@@ -33,9 +26,13 @@ export async function generateMetadata({
   });
 }
 
-export default async function LandingPageRoute({ params }: { params: { slug: string } }) {
-  if (!ALLOWED.includes(params.slug)) notFound();
-  const [page, text] = await Promise.all([getLandingPage(params.slug), getText("site")]);
+/**
+ * A landing page not yet published in Sanity renders as a 404 and is picked
+ * up by the next refresh once it is. A failed read throws instead, so a
+ * Sanity outage keeps the last good page (see safeFetch).
+ */
+export async function LandingPage({ slug }: { slug: string }) {
+  const [page, text] = await Promise.all([getLandingPage(slug), getText("site")]);
   if (!page) notFound();
   const [beforeLink, afterLink] = aroundLink(text.landingClosing);
   const smallPrint = page.smallPrint?.trim() || LANDING_SMALL_PRINT[page.slug];

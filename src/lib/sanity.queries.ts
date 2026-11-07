@@ -219,20 +219,27 @@ export interface SanityValue {
 // Safe fetch — returns null on error so we can fall back to content.ts
 /**
  * Reads from Sanity, retrying twice. If Sanity is still unreachable it throws
- * rather than returning null: a null here means "use the placeholder copy",
- * and a refresh during an outage would otherwise cache placeholder boxes for
- * every visitor. Thrown, the refresh fails and Vercel keeps serving the last
- * good page. With no project configured (local, tests) it returns null.
+ * rather than returning null: a null here means "the document doesn't exist"
+ * (or "use the placeholder copy"), and a refresh during an outage would
+ * otherwise cache a 404 or placeholder boxes for every visitor. Thrown, the
+ * refresh fails and Vercel keeps serving the last good page, then tries again
+ * on the next revalidation. An undefined result (GROQ answers null, never
+ * undefined, for a missing document) is treated as a failed read too.
+ * With no project configured (local, tests) it returns null.
  */
-async function safeFetch<T>(query: string): Promise<T | null> {
-  if (!sanityClient) return null;
+async function safeFetch<T>(query: string, params: Record<string, unknown> = {}): Promise<T | null> {
+  const client = sanityClient;
+  if (!client) return null;
+  const delay = Number(process.env.SANITY_RETRY_DELAY_MS ?? 300);
   let lastError: unknown;
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      return await sanityClient.fetch<T>(query, {}, { next: { revalidate: 60 } });
+      const result = await client.fetch<T>(query, params, { next: { revalidate: 60 } });
+      if (result === undefined) throw new Error("Sanity returned no result");
+      return result;
     } catch (error) {
       lastError = error;
-      await new Promise((r) => setTimeout(r, 300 * (attempt + 1)));
+      if (attempt < 2) await new Promise((r) => setTimeout(r, delay * (attempt + 1)));
     }
   }
   throw lastError;
@@ -420,17 +427,13 @@ export async function getPublishedGuides(): Promise<SanityGuide[] | null> {
   return guides ? guides.map(cleanGuide) : null;
 }
 
+/** Null only when the guide doesn't exist; a failed read throws (see safeFetch). */
 export async function getGuide(slug: string): Promise<SanityGuide | null> {
-  if (!sanityClient) return null;
-  try {
-    return await sanityClient.fetch(
-      `*[_type == "guide" && published == true && slug.current == $slug][0]{ ${GUIDE_FIELDS} }`,
-      { slug },
-      { next: { revalidate: 60 } }
-    ).then((guide: SanityGuide | null) => (guide ? cleanGuide(guide) : null));
-  } catch {
-    return null;
-  }
+  const guide = await safeFetch<SanityGuide | null>(
+    `*[_type == "guide" && published == true && slug.current == $slug][0]{ ${GUIDE_FIELDS} }`,
+    { slug }
+  );
+  return guide ? cleanGuide(guide) : null;
 }
 
 export async function getPublishedBustleStyles(): Promise<SanityBustleStyle[] | null> {
@@ -473,17 +476,13 @@ export async function getPublishedLandingPages(): Promise<SanityLandingPage[] | 
   return pages ? pages.map(cleanLandingPage) : null;
 }
 
+/** Null only when the page doesn't exist; a failed read throws (see safeFetch). */
 export async function getLandingPage(slug: string): Promise<SanityLandingPage | null> {
-  if (!sanityClient) return null;
-  try {
-    return await sanityClient.fetch(
-      `*[_type == "landingPage" && published == true && slug.current == $slug][0]{ ${LANDING_FIELDS} }`,
-      { slug },
-      { next: { revalidate: 60 } }
-    ).then((page: SanityLandingPage | null) => (page ? cleanLandingPage(page) : null));
-  } catch {
-    return null;
-  }
+  const page = await safeFetch<SanityLandingPage | null>(
+    `*[_type == "landingPage" && published == true && slug.current == $slug][0]{ ${LANDING_FIELDS} }`,
+    { slug }
+  );
+  return page ? cleanLandingPage(page) : null;
 }
 
 export interface SanityCaseStudy extends SanityPortfolioItem {
@@ -516,17 +515,12 @@ export async function getCaseStudies(): Promise<SanityCaseStudy[] | null> {
     | order(order asc) { ${CASE_STUDY_FIELDS} }`);
 }
 
+/** Null only when the case study doesn't exist; a failed read throws (see safeFetch). */
 export async function getCaseStudy(slug: string): Promise<SanityCaseStudy | null> {
-  if (!sanityClient) return null;
-  try {
-    return await sanityClient.fetch(
-      `*[_type == "portfolioItem" && caseStudy == true && slug.current == $slug][0]{ ${CASE_STUDY_FIELDS} }`,
-      { slug },
-      { next: { revalidate: 60 } }
-    );
-  } catch {
-    return null;
-  }
+  return safeFetch<SanityCaseStudy | null>(
+    `*[_type == "portfolioItem" && caseStudy == true && slug.current == $slug][0]{ ${CASE_STUDY_FIELDS} }`,
+    { slug }
+  );
 }
 
 export interface SanityPolicySection {
@@ -765,11 +759,13 @@ export interface SanityCareCard {
 
 const IMAGE_FIELDS = `asset->{ _id, url, metadata { dimensions, lqip } }, alt, hotspot, crop`;
 
-/** Published, live cards only. The code is the only way in. */
+/**
+ * Published, live cards only. The code is the only way in. A malformed code is
+ * a card that doesn't exist (404); a failed read throws (see safeFetch).
+ */
 export async function getCareCard(code: string): Promise<SanityCareCard | null> {
-  if (!sanityClient || !/^[a-z0-9]{6,20}$/.test(code)) return null;
-  try {
-    return await sanityClient.fetch<SanityCareCard | null>(
+  if (!/^[a-z0-9]{6,20}$/.test(code)) return null;
+  return safeFetch<SanityCareCard | null>(
       `*[_type == "careCard" && code == $code && active != false && !(_id in path("drafts.**"))][0]{
         code, garment, fabric, workDone, clientFirstName, completedOn,
         careNotes[]{ heading, body },
@@ -778,10 +774,6 @@ export async function getCareCard(code: string): Promise<SanityCareCard | null> 
         bustleStyle, bustleTrain, bustlePoints, bustleSteps,
         "bustleVideo": bustleVideo.asset->{ url, mimeType }
       }`,
-      { code },
-      { next: { revalidate: 60 } }
-    );
-  } catch {
-    return null;
-  }
+    { code }
+  );
 }
